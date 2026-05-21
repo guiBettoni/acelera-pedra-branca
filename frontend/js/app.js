@@ -670,4 +670,5 @@ function toggleWs(card) {
 document.addEventListener('DOMContentLoaded', function () {
   updateHome();
   goPage('home', null);
+  checkAdmin();
 });

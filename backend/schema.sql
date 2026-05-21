@@ -29,28 +29,28 @@ alter table public.pontuacoes enable row level security;
 -- Permitir leitura pública, mas gravar apenas para o usuário admin autenticado
 create policy "public_select_startups" on public.startups for select using (true);
 create policy "admin_write_startups" on public.startups for insert with check (
-  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+  auth.role() = 'authenticated' AND auth.email() = 'guilherme@inaitec.com.br'
 );
 create policy "admin_update_startups" on public.startups for update using (
-  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+  auth.role() = 'authenticated' AND auth.email() = 'guilherme@inaitec.com.br'
 ) with check (
-  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+  auth.role() = 'authenticated' AND auth.email() = 'guilherme@inaitec.com.br'
 );
 create policy "admin_delete_startups" on public.startups for delete using (
-  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+  auth.role() = 'authenticated' AND auth.email() = 'guilherme@inaitec.com.br'
 );
 
 create policy "public_select_pontuacoes" on public.pontuacoes for select using (true);
 create policy "admin_write_pontuacoes" on public.pontuacoes for insert with check (
-  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+  auth.role() = 'authenticated' AND auth.email() = 'guilherme@inaitec.com.br'
 );
 create policy "admin_update_pontuacoes" on public.pontuacoes for update using (
-  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+  auth.role() = 'authenticated' AND auth.email() = 'guilherme@inaitec.com.br'
 ) with check (
-  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+  auth.role() = 'authenticated' AND auth.email() = 'guilherme@inaitec.com.br'
 );
 create policy "admin_delete_pontuacoes" on public.pontuacoes for delete using (
-  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+  auth.role() = 'authenticated' AND auth.email() = 'guilherme@inaitec.com.br'
 );
 
 insert into public.startups (id,nome,area,nivel,pontos) values
