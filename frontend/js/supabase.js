@@ -133,13 +133,12 @@ window.refreshAdmin = async function() {
           '<div class="hst">'+safe(l.sname||l.sid)+'</div>'+ 
           '<div class="hact">'+safe(l.ativ)+'</div>'+ 
           (l.obs?'<div class="hnote">'+safe(l.obs)+'</div>':'' )+
-    document.getElementById('ln-startup').innerHTML = ss.map(s=>`<option value="${safe(s.id)}">${safe(s.name)}</option>`).join('');
-    document.getElementById('ln-ativ').innerHTML = av.map(a=>`<option value="${safe(a.id)}" data-pts="${safe(a.pts)}">${safe(a.name)} (${safe(a.pts)} pts)</option>`).join('');
-    const hf=document.getElementById('hist-filter');
-    hf.innerHTML = `<option value="">Todas as startups</option>` + ss.map(s=>`<option value="${safe(s.id)}">${safe(s.name)}</option>`).join('');
-  } else {
-    _origFillDrops();
+        '</div>'+ 
+        '<div class="hpts">+'+l.pts+'</div>'+ 
+      '</div>'
+    ).join('') || '<div class="empty">Sem histórico ainda.</div>';
   }
+  fillDrops();
 };
 
 const _origRenderTS = window.renderTS;
