@@ -25,8 +25,33 @@ create table if not exists public.pontuacoes (
 
 alter table public.startups enable row level security;
 alter table public.pontuacoes enable row level security;
-create policy "pub" on public.startups for all using (true) with check (true);
-create policy "pub" on public.pontuacoes for all using (true) with check (true);
+
+-- Permitir leitura pública, mas gravar apenas para o usuário admin autenticado
+create policy "public_select_startups" on public.startups for select using (true);
+create policy "admin_write_startups" on public.startups for insert with check (
+  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+);
+create policy "admin_update_startups" on public.startups for update using (
+  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+) with check (
+  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+);
+create policy "admin_delete_startups" on public.startups for delete using (
+  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+);
+
+create policy "public_select_pontuacoes" on public.pontuacoes for select using (true);
+create policy "admin_write_pontuacoes" on public.pontuacoes for insert with check (
+  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+);
+create policy "admin_update_pontuacoes" on public.pontuacoes for update using (
+  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+) with check (
+  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+);
+create policy "admin_delete_pontuacoes" on public.pontuacoes for delete using (
+  auth.role() = 'authenticated' AND auth.email() = 'admin@inaitec.com.br'
+);
 
 insert into public.startups (id,nome,area,nivel,pontos) values
 ('00000001-0000-0000-0000-000000000001','Oktopus','ISP / Monitoramento','Explorador',0),

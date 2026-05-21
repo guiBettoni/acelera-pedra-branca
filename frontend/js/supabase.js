@@ -1,7 +1,12 @@
 const { createClient } = supabase;
 const _sb = createClient('https://rircwnjahxebkgcvzfek.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpcmN3bmphaHhlYmtnY3Z6ZmVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzOTI0NTMsImV4cCI6MjA5NDk2ODQ1M30.9R25XApE3vKGfYe6kuEnBcCPphPU9tWh5rMSEgJBw_Y');
+window.sb = _sb;
 
 let _sbReady = false, _sbCache = null;
+
+_sb.auth.onAuthStateChange(() => {
+  if(typeof checkAdmin === 'function') checkAdmin();
+});
 
 async function sbFetch() {
   const { data, error } = await _sb.from('startups').select('*').eq('ativo',true).order('pontos',{ascending:false});
@@ -105,18 +110,15 @@ window.refreshAdmin = async function() {
   if(tblS){
     tblS.innerHTML=startups.map(s=>{
       const lv=getLevel(s.pts||0);
-      return '<tr>'+
-        '<td class="td-n">'+safe(s.name)+'</td>'+
-        '<td>'+safe(s.area)+'</td>'+
-        '<td><span class="chip-s '+(s.stage==1?'st1':s.stage==2?'st2':s.stage==3?'st3':'st4')+'">Est.'+s.stage+'</span></td>'+
-        '<td class="td-pt">'+(s.pts||0)+'</td>'+
-        '<td><span class="rlv '+lv.c+'">'+lv.n+'</span></td>'+
-        '<td>'+
-          '<button class="ab" onclick="editS(\'' + s.id + '\')">Editar</button> '+
-          '<button class="ab" onclick="selParaPontuar(\'' + s.id + '\')">Pontuar</button>'+
-        '</td>'+
-      '</tr>';
-    }).join('') || '<tr><td colspan="6" class="empty">Nenhuma startup.</td></tr>';
+      return '<tr>'+ 
+        '<td class="td-n">'+safe(s.name)+'</td>'+ 
+        '<td>'+safe(s.area)+'</td>'+ 
+        '<td><span class="chip-s '+(s.stage==1?'st1':s.stage==2?'st2':s.stage==3?'st3':'st4')+'">Est.'+safe(s.stage)+'</span></td>'+ 
+        '<td class="td-pt">'+(s.pts||0)+'</td>'+ 
+        '<td><span class="rlv '+lv.c+'">'+lv.n+'</span></td>'+ 
+        '<td>'+ 
+          '<button class="ab" onclick="editS(\'' + escapeJs(s.id) + '\')">Editar</button> '+
+          '<button class="ab" onclick="selParaPontuar(\'' + escapeJs(s.id) + '\')">Pontuar</button>'+ 
   }
 
   const histEl=document.getElementById('hist-list');
@@ -136,6 +138,101 @@ window.refreshAdmin = async function() {
   fillDrops();
 };
 
+const _origFillDrops = window.fillDrops;
+window.fillDrops = async function(){
+  if(_sbReady){
+    const ss = await getSB();
+    const av = getA();
+    document.getElementById('ln-startup').innerHTML = ss.map(s=>`<option value="${safe(s.id)}">${safe(s.name)}</option>`).join('');
+    document.getElementById('ln-ativ').innerHTML = av.map(a=>`<option value="${safe(a.id)}" data-pts="${safe(a.pts)}">${safe(a.name)} (${safe(a.pts)} pts)</option>`).join('');
+    const hf=document.getElementById('hist-filter');
+    hf.innerHTML = `<option value="">Todas as startups</option>` + ss.map(s=>`<option value="${safe(s.id)}">${safe(s.name)}</option>`).join('');
+  } else {
+    _origFillDrops();
+  }
+};
+
+const _origRenderTS = window.renderTS;
+window.renderTS = async function(){
+  if(_sbReady){
+    const startups = await getSB();
+    const sn=['','Ideação','Operação','Tração','Escala'];
+    const tblS=document.getElementById('tbl-s');
+    if(!tblS) return;
+    tblS.innerHTML = startups.length===0
+      ?`<tr><td colspan="6" class="empty" style="padding:2rem">Nenhuma startup cadastrada.</td></tr>`
+      :startups.map(s=>{
+        const p=s.pts||0;
+        const lv=getLevel(p);
+        return `<tr>
+          <td class="td-n">${safe(s.name)}</td>
+          <td style="color:rgba(255,255,255,0.55);font-size:12px">${safe(s.area)}</td>
+          <td style="font-size:12px">Est. ${safe(s.stage)} — ${safe(sn[s.stage]||'')}</td>
+          <td class="td-pt">${p}</td>
+          <td><span class="rlv ${lv.c}">${lv.n}</span></td>
+          <td><button class="ab" onclick="editS('${escapeJs(s.id)}')">Editar</button><button class="ab del" onclick="deleteS('${escapeJs(s.id)}')">Excluir</button></td>
+        </tr>`;
+      }).join('');
+  } else {
+    _origRenderTS();
+  }
+};
+
+const _origRenderHist = window.renderHist;
+window.renderHist = async function(){
+  if(_sbReady){
+    const filter=document.getElementById('hist-filter')?.value||'';
+    const rawLogs = await sbFetchLogs();
+    const logs = rawLogs ? rawLogs.map(l2l) : [];
+    let l = logs;
+    if(filter) l = l.filter(x=>x.sid===filter);
+    const el=document.getElementById('hist-list');
+    if(!el) return;
+    el.innerHTML = l.length===0
+      ?`<div class="empty">Nenhum lançamento encontrado.</div>`
+      :l.map(x=>{
+          const d=x.date?x.date.split('-').reverse().join('/'):'—';
+          return `<div class="hrow">
+            <div class="hdate">${d}</div>
+            <div class="hcont">
+              <div class="hst">${safe(x.sname)||'—'}</div>
+              <div class="hact">${safe(x.ativ)||'—'}</div>
+              ${x.obs?`<div class="hnote">${safe(x.obs)}${x.by?' · por '+safe(x.by):''}</div>`:''}
+            </div>
+            <div class="hpts">+${safe(x.pts)}</div>
+            <button class="hdel" onclick="deleteL('${escapeJs(x.id)}')" title="Remover lançamento">✕</button>
+          </div>`;
+        }).join('');
+  } else {
+    _origRenderHist();
+  }
+};
+
+const _origDeleteS = window.deleteS;
+window.deleteS = async function(id){
+  if(_sbReady){
+    const { error } = await _sb.from('startups').delete().eq('id', id);
+    if(error){ showToast('Erro: '+error.message); return; }
+    _sbCache = null;
+    showToast('Startup removida.');
+    refreshAdmin();
+  } else {
+    _origDeleteS(id);
+  }
+};
+
+const _origDeleteL = window.deleteL;
+window.deleteL = async function(id){
+  if(_sbReady){
+    const { error } = await _sb.from('pontuacoes').delete().eq('id', id);
+    if(error){ showToast('Erro: '+error.message); return; }
+    showToast('Lançamento removido.');
+    refreshAdmin();
+  } else {
+    _origDeleteL(id);
+  }
+};
+
 // Override lancarPontos
 const _origLP = window.lancarPontos;
 window.lancarPontos = async function() {
@@ -149,12 +246,12 @@ window.lancarPontos = async function() {
 
   const ativ=getA().find(a=>a.id===aid);
   if(_sbReady){
-    const {error:logErr}=await _sb.from('pontuacoes').insert({
+    const {error:logErr} = await _sb.from('pontuacoes').insert({
       startup_id:sid,descricao:ativ?.name||'Atividade manual',categoria:ativ?.cat||'Manual',
       pontos:pts,obs,lancado_por:by,criado_em:date+'T12:00:00Z',
     });
     if(logErr){showToast('Erro: '+logErr.message);return;}
-    const {data:curr}=await _sb.from('startups').select('pontos').eq('id',sid).single();
+    const {data:curr} = await _sb.from('startups').select('pontos').eq('id',sid).single();
     const total=(curr?.pontos||0)+pts;
     const nivel=total>=800?'Elite':total>=500?'Destaque':total>=250?'Acelerador':total>=100?'Construtor':'Explorador';
     await _sb.from('startups').update({pontos:total,nivel}).eq('id',sid);
@@ -162,7 +259,9 @@ window.lancarPontos = async function() {
     showToast('+'+pts+' pts registrados!');
     clearLancar();
     refreshAdmin();
-  } else { _origLP?.(); }
+  } else {
+    showToast('Conexão ao Supabase indisponível. Não é possível lançar pontos.');
+  }
 };
 
 // Override saveStartup
@@ -184,7 +283,9 @@ window.saveStartup = async function() {
       showToast('Startup cadastrada!');
     }
     _sbCache=null; closeForm(); refreshAdmin();
-  } else { _origSS?.(); }
+  } else {
+    showToast('Conexão ao Supabase indisponível. Não é possível salvar startup.');
+  }
 };
 
 function selParaPontuar(id) {

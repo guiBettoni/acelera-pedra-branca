@@ -1,7 +1,4 @@
 // ─── DATA ───────────────────────────────────────────
-// Credentials stored as base64 to avoid plain-text exposure in source
-const CREDS = {user:atob('YWRtaW4='), pass:atob('YWNlbGVyYTIwMjc=')};
-
 
 // ─── XSS PROTECTION ──────────────────────────────────
 function safe(str){
@@ -12,6 +9,12 @@ function safe(str){
     .replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;')
     .replace(/'/g,'&#x27;');
+}
+function escapeJs(str){
+  return String(str||'')
+    .replace(/\\/g,'\\\\')
+    .replace(/'/g,"\\'")
+    .replace(/\"/g,'\\\"');
 }
 const DEF_STARTUPS = [
   {id:'S01',name:'Oktopus',area:'ISP / Monitoramento',stage:2,email:''},
@@ -159,35 +162,57 @@ function renderRanking(){
 }
 
 // ─── ADMIN AUTH ───────────────────────────────────────
-function checkAdmin(){
-  const ok=sessionStorage.getItem('apb_ok');
-  document.getElementById('admin-gate').style.display=ok?'none':'flex';
-  document.getElementById('admin-panel').style.display=ok?'block':'none';
-  if(ok) refreshAdmin();
-}
-
-function doLogin(){
-  const u=document.getElementById('gate-user').value.trim();
-  const p=document.getElementById('gate-pass').value;
-  const err=document.getElementById('gate-err');
-  if(u===CREDS.user&&p===CREDS.pass){
-    sessionStorage.setItem('apb_ok','1');
-    document.getElementById('admin-gate').style.display='none';
-    document.getElementById('admin-panel').style.display='block';
-    err.style.display='none';
+async function checkAdmin(){
+  const gate=document.getElementById('admin-gate');
+  const panel=document.getElementById('admin-panel');
+  gate.style.display='flex';
+  panel.style.display='none';
+  if(!window.sb || !window.sb.auth) return;
+  const { data } = await sb.auth.getSession();
+  const user = data?.session?.user;
+  if(user){
+    gate.style.display='none';
+    panel.style.display='block';
+    document.getElementById('gate-err').style.display='none';
     refreshAdmin();
-  } else {
-    err.style.display='block';
-    document.getElementById('gate-pass').value='';
   }
 }
 
-function doLogout(){
-  sessionStorage.removeItem('apb_ok');
+async function doLogin(){
+  const email=document.getElementById('gate-email').value.trim();
+  const password=document.getElementById('gate-pass').value;
+  const err=document.getElementById('gate-err');
+  if(!window.sb || !window.sb.auth){
+    err.textContent='Serviço de autenticação indisponível';
+    err.style.display='block';
+    return;
+  }
+  if(!email||!password){
+    err.textContent='Preencha e-mail e senha.';
+    err.style.display='block';
+    return;
+  }
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  if(error){
+    err.textContent='E-mail ou senha incorretos';
+    err.style.display='block';
+    document.getElementById('gate-pass').value='';
+    return;
+  }
+  err.style.display='none';
+  document.getElementById('admin-gate').style.display='none';
+  document.getElementById('admin-panel').style.display='block';
+  refreshAdmin();
+}
+
+async function doLogout(){
+  if(window.sb && window.sb.auth){
+    await sb.auth.signOut();
+  }
   document.getElementById('admin-gate').style.display='flex';
   document.getElementById('admin-panel').style.display='none';
   document.getElementById('gate-pass').value='';
-  document.getElementById('gate-user').value='';
+  document.getElementById('gate-email').value='';
 }
 
 // ─── ADMIN CORE ───────────────────────────────────────
@@ -220,10 +245,10 @@ function aTab(name,btn){
 
 function fillDrops(){
   const ss=getS(), av=getA();
-  document.getElementById('ln-startup').innerHTML=ss.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
-  document.getElementById('ln-ativ').innerHTML=av.map(a=>`<option value="${a.id}" data-pts="${a.pts}">${a.name} (${a.pts} pts)</option>`).join('');
+  document.getElementById('ln-startup').innerHTML=ss.map(s=>`<option value="${safe(s.id)}">${safe(s.name)}</option>`).join('');
+  document.getElementById('ln-ativ').innerHTML=av.map(a=>`<option value="${safe(a.id)}" data-pts="${safe(a.pts)}">${safe(a.name)} (${safe(a.pts)} pts)</option>`).join('');
   const hf=document.getElementById('hist-filter');
-  hf.innerHTML=`<option value="">Todas as startups</option>`+ss.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+  hf.innerHTML=`<option value="">Todas as startups</option>`+ss.map(s=>`<option value="${safe(s.id)}">${safe(s.name)}</option>`).join('');
 }
 
 // ─── LANÇAR ───────────────────────────────────────────
@@ -272,7 +297,7 @@ function renderTS(){
         <td style="font-size:12px">Est. ${safe(s.stage)} — ${safe(sn[s.stage]||'')}</td>
         <td class="td-pt">${p}</td>
         <td><span class="rlv ${lv.c}">${lv.n}</span></td>
-        <td><button class="ab" onclick="editS('${s.id}')">Editar</button><button class="ab del" onclick="deleteS('${s.id}')">Excluir</button></td>
+        <td><button class="ab" onclick="editS('${escapeJs(s.id)}')">Editar</button><button class="ab del" onclick="deleteS('${escapeJs(s.id)}')">Excluir</button></td>
       </tr>`;}).join('');
 }
 
@@ -333,8 +358,8 @@ function renderTA(){
         <td class="td-n">${safe(a.name)}</td>
         <td><span class="rlv ${catC[safe(a.cat)]||'lv-exp'}">${safe(a.cat)}</span></td>
         <td style="font-size:12px;color:rgba(255,255,255,0.55)">${safe(a.stages)}</td>
-        <td class="td-pt">${a.pts}</td>
-        <td><button class="ab" onclick="editA('${a.id}')">Editar</button><button class="ab del" onclick="deleteA('${a.id}')">Excluir</button></td>
+        <td class="td-pt">${safe(a.pts)}</td>
+        <td><button class="ab" onclick="editA('${escapeJs(a.id)}')">Editar</button><button class="ab del" onclick="deleteA('${escapeJs(a.id)}')">Excluir</button></td>
       </tr>`).join('');
 }
 
@@ -393,8 +418,8 @@ function renderHist(){
             <div class="hact">${safe(x.aname)||'—'}</div>
             ${x.obs?`<div class="hnote">${safe(x.obs)}${x.by?' · por '+safe(x.by):''}</div>`:''}
           </div>
-          <div class="hpts">+${x.pts}</div>
-          <button class="hdel" onclick="deleteL('${x.id}')" title="Remover lançamento">✕</button>
+          <div class="hpts">+${safe(x.pts)}</div>
+          <button class="hdel" onclick="deleteL('${escapeJs(x.id)}')" title="Remover lançamento">✕</button>
         </div>`;}).join('');
 }
 
