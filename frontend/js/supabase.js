@@ -119,30 +119,20 @@ window.refreshAdmin = async function() {
         '<td>'+ 
           '<button class="ab" onclick="editS(\'' + escapeJs(s.id) + '\')">Editar</button> '+
           '<button class="ab" onclick="selParaPontuar(\'' + escapeJs(s.id) + '\')">Pontuar</button>'+ 
+        '</td>'+ 
+      '</tr>';
+    }).join('');
   }
 
   const histEl=document.getElementById('hist-list');
   if(histEl){
     histEl.innerHTML=logs.slice(0,100).map(l=>
       '<div class="hrow">'+
-        '<div class="hdate">'+(l.date||'—')+'</div>'+
+        '<div class="hdate">'+(l.date||'—')+'</div>'+ 
         '<div class="hcont">'+
-          '<div class="hst">'+safe(l.sname||l.sid)+'</div>'+
-          '<div class="hact">'+safe(l.ativ)+'</div>'+
-          (l.obs?'<div class="hnote">'+safe(l.obs)+'</div>':'')+
-        '</div>'+
-        '<div class="hpts">+'+l.pts+'</div>'+
-      '</div>'
-    ).join('') || '<div class="empty">Sem histórico ainda.</div>';
-  }
-  fillDrops();
-};
-
-const _origFillDrops = window.fillDrops;
-window.fillDrops = async function(){
-  if(_sbReady){
-    const ss = await getSB();
-    const av = getA();
+          '<div class="hst">'+safe(l.sname||l.sid)+'</div>'+ 
+          '<div class="hact">'+safe(l.ativ)+'</div>'+ 
+          (l.obs?'<div class="hnote">'+safe(l.obs)+'</div>':'' )+
     document.getElementById('ln-startup').innerHTML = ss.map(s=>`<option value="${safe(s.id)}">${safe(s.name)}</option>`).join('');
     document.getElementById('ln-ativ').innerHTML = av.map(a=>`<option value="${safe(a.id)}" data-pts="${safe(a.pts)}">${safe(a.name)} (${safe(a.pts)} pts)</option>`).join('');
     const hf=document.getElementById('hist-filter');
