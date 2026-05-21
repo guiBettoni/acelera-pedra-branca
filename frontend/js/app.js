@@ -192,9 +192,16 @@ async function doLogin(){
     err.style.display='block';
     return;
   }
-  const { error } = await sb.auth.signInWithPassword({ email, password });
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
   if(error){
-    err.textContent='E-mail ou senha incorretos';
+    console.warn('Supabase signIn error', error);
+    err.textContent = error.message || 'E-mail ou senha incorretos';
+    err.style.display='block';
+    document.getElementById('gate-pass').value='';
+    return;
+  }
+  if(!data?.session?.user){
+    err.textContent = 'Não foi possível autenticar. Verifique e-mail/senha.';
     err.style.display='block';
     document.getElementById('gate-pass').value='';
     return;
