@@ -234,6 +234,12 @@ window.lancarPontos = async function() {
   const date = document.getElementById('ln-data')?.value||new Date().toISOString().slice(0,10);
   if(!sid||!pts||pts<1){showToast('Preencha startup e pontos');return;}
 
+  // Se ainda não conectou, tenta uma vez antes de desistir
+  if (!_sbReady) {
+    const retry = await sbFetch();
+    if (retry !== null) { _sbReady = true; _sbCache = retry.map(s2l); }
+  }
+
   const ativ=getA().find(a=>a.id===aid);
   if(_sbReady){
     const {error:logErr} = await _sb.from('pontuacoes').insert({
