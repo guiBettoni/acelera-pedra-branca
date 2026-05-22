@@ -529,6 +529,55 @@ function toggleWs(card) {
   if (!isOpen) card.classList.add('expanded');
 }
 
+/* -- Workshop status dinâmico --
+   Calcula status de cada ws-card com base na data atual.
+   Requer atributo data-date="YYYY-MM-DD" em cada .ws-card.
+   Estados: Realizado | Hoje | Próximo | Em breve
+*/
+function computeWorkshopStatuses() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const cards = document.querySelectorAll('.ws-card[data-date]');
+  let nextFound = false;
+
+  cards.forEach(function(card) {
+    const wsDate = new Date(card.getAttribute('data-date') + 'T00:00:00');
+    const badge  = card.querySelector('.ws-badge');
+    const diff   = wsDate.getTime() - today.getTime();
+
+    // Reset state classes — preserva 'expanded' se aberto
+    card.classList.remove('done', 'next');
+
+    if (diff < 0) {
+      // Passou: Realizado
+      card.classList.add('done');
+      if (badge) { badge.className = 'ws-badge past'; badge.textContent = 'Realizado'; }
+
+    } else if (diff === 0) {
+      // Hoje (dia do workshop)
+      card.classList.add('next');
+      if (badge) {
+        badge.className = 'ws-badge next-badge';
+        badge.innerHTML = '<span class="ws-blink"></span>Hoje';
+      }
+
+    } else if (!nextFound) {
+      // Próximo (primeiro futuro)
+      nextFound = true;
+      card.classList.add('next');
+      if (badge) {
+        badge.className = 'ws-badge next-badge';
+        badge.innerHTML = '<span class="ws-blink"></span>Próximo';
+      }
+
+    } else {
+      // Demais futuros: Em breve
+      if (badge) { badge.className = 'ws-badge upcoming'; badge.textContent = 'Em breve'; }
+    }
+  });
+}
+
 // /* -- Custom Cursor -- */
 // /* ══ CUSTOM CURSOR — Alta Performance ══════════════════════════════════════
 //    Técnica: CSS Custom Properties + transform:translate3d()
@@ -678,4 +727,5 @@ document.addEventListener('DOMContentLoaded', function () {
   updateHome();
   goPage('home', null);
   checkAdmin();
+  computeWorkshopStatuses();
 });

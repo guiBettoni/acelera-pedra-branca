@@ -19,7 +19,8 @@ async function sbFetchLogs() {
   return data;
 }
 function s2l(s) {
-  const m={'Explorador':1,'Construtor':2,'Acelerador':3,'Destaque':4,'Elite':5};
+  // 'Acelerador' é valor legado no banco — mapeado igual a 'Acelerado'
+  const m={'Explorador':1,'Construtor':2,'Acelerado':3,'Acelerador':3,'Destaque':4,'Elite':5};
   return {id:s.id,name:s.nome,area:s.area,stage:m[s.nivel]||1,email:s.email||'',pts:s.pontos||0};
 }
 function l2l(l) {
@@ -242,7 +243,7 @@ window.lancarPontos = async function() {
     if(logErr){showToast('Erro: '+logErr.message);return;}
     const {data:curr} = await _sb.from('startups').select('pontos').eq('id',sid).single();
     const total=(curr?.pontos||0)+pts;
-    const nivel=total>=800?'Elite':total>=500?'Destaque':total>=250?'Acelerador':total>=100?'Construtor':'Explorador';
+    const nivel=total>=800?'Elite':total>=500?'Destaque':total>=250?'Acelerado':total>=100?'Construtor':'Explorador';
     await _sb.from('startups').update({pontos:total,nivel}).eq('id',sid);
     _sbCache=null;
     showToast('+'+pts+' pts registrados!');
@@ -274,6 +275,22 @@ window.saveStartup = async function() {
     _sbCache=null; closeForm(); refreshAdmin();
   } else {
     showToast('Conexão ao Supabase indisponível. Não é possível salvar startup.');
+  }
+};
+
+// Override updateHome — usa Supabase quando disponível
+const _origUH = window.updateHome;
+window.updateHome = async function() {
+  if (_sbReady) {
+    const startups = await getSB();
+    const { data: logs } = await _sb.from('pontuacoes').select('pontos');
+    const totalPts = logs ? logs.reduce(function(s, l){ return s + (l.pontos || 0); }, 0) : 0;
+    const hn = document.getElementById('hn-s');
+    const hp = document.getElementById('hn-p');
+    if (hn) hn.textContent = startups.length;
+    if (hp) hp.textContent = totalPts;
+  } else {
+    _origUH();
   }
 };
 
