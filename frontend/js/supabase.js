@@ -237,7 +237,11 @@ window.lancarPontos = async function() {
   // Se ainda não conectou, tenta uma vez antes de desistir
   if (!_sbReady) {
     const retry = await sbFetch();
-    if (retry !== null) { _sbReady = true; _sbCache = retry.map(s2l); }
+    if (retry !== null) {
+      _sbReady = true;
+      _sbCache = retry.map(s2l);
+      if (typeof fillDrops === 'function') await fillDrops();
+    }
   }
 
   const ativ=getA().find(a=>a.id===aid);
@@ -300,6 +304,18 @@ window.updateHome = async function() {
   }
 };
 
+// Override fillDrops — sempre tenta Supabase (getSB faz fallback p/ localStorage se falhar)
+window.fillDrops = async function() {
+  const ss  = await getSB();   // retorna UUIDs do Supabase ou IDs do localStorage
+  const av  = getA();
+  const selS = document.getElementById('ln-startup');
+  const selA = document.getElementById('ln-ativ');
+  const hf   = document.getElementById('hist-filter');
+  if (selS) selS.innerHTML = ss.map(s => `<option value="${safe(s.id)}">${safe(s.name)}</option>`).join('');
+  if (selA) selA.innerHTML = av.map(a => `<option value="${safe(a.id)}" data-pts="${safe(a.pts)}">${safe(a.name)} (${safe(a.pts)} pts)</option>`).join('');
+  if (hf)   hf.innerHTML   = `<option value="">Todas as startups</option>` + ss.map(s => `<option value="${safe(s.id)}">${safe(s.name)}</option>`).join('');
+};
+
 function selParaPontuar(id) {
   aTab('lancar');
   const sel=document.getElementById('ln-startup');
@@ -324,6 +340,7 @@ function ativarRealtime() {
       _sbCache=data.length?data.map(s2l):null;
       console.info('[SB] Conectado: '+data.length+' startups');
       ativarRealtime();
+      if (typeof fillDrops === 'function') fillDrops();
       const hn=document.getElementById('hn-s');
       if(hn&&data.length) hn.textContent=data.length;
     }
