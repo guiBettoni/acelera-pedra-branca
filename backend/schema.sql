@@ -1,6 +1,3 @@
--- Acelera Pedra Branca - Schema Supabase
--- Cole no SQL Editor e clique em Run
-
 create table if not exists public.startups (
   id uuid primary key default gen_random_uuid(),
   nome text not null,
@@ -26,13 +23,13 @@ create table if not exists public.pontuacoes (
 alter table public.startups enable row level security;
 alter table public.pontuacoes enable row level security;
 
--- Permissões de role (necessárias para que o RLS seja avaliado)
+
 grant select on public.startups  to anon, authenticated;
 grant select on public.pontuacoes to anon, authenticated;
 grant insert, update, delete on public.startups   to authenticated;
 grant insert, update, delete on public.pontuacoes to authenticated;
 
--- Permitir leitura pública, mas gravar apenas para o usuário admin autenticado
+
 create policy "public_select_startups" on public.startups for select using (true);
 create policy "admin_write_startups" on public.startups for insert with check (
   auth.role() = 'authenticated' AND auth.email() = 'guilherme@inaitec.com.br'
