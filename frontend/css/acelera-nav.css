@@ -542,7 +542,6 @@ nav{
   border-radius:12px;
   border:1px solid var(--border2);
 }
-.ws-bio-content{}
 .ws-bio-name{font-family:var(--head);font-size:15px;font-weight:800;color:var(--text);margin-bottom:2px}
 .ws-bio-role{font-size:11px;color:var(--orange);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.75rem}
 .ws-bio-text{font-size:13px;color:rgba(255,255,255,.62);line-height:1.7}
