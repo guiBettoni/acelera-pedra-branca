@@ -22,15 +22,11 @@ function escapeJs(str){
     .replace(/\"/g,'\\\"');
 }
 const DEF_STARTUPS = [
-  {id:'S01',name:'Oktopus',area:'ISP / Monitoramento',stage:2,email:''},
-  {id:'S02',name:'Smartcitytec',area:'GovTech / Smart Cities',stage:3,email:''},
   {id:'S03',name:'MomCar',area:'Mobilidade / Carona',stage:1,email:''},
-  {id:'S04',name:'Navegou',area:'Marketplace Náutico',stage:2,email:''},
   {id:'S05',name:'Nitemapp',area:'Entretenimento / Geo',stage:1,email:''},
   {id:'S06',name:'IziTag',area:'Tráfego / Analytics',stage:2,email:''},
   {id:'S07',name:'LUMA',area:'Saúde da Mulher',stage:1,email:''},
   {id:'S08',name:'PDV Fluxo',area:'Varejo / PME',stage:2,email:''},
-  {id:'S09',name:'ZOOME',area:'Audiovisual / Eventos',stage:3,email:''},
   {id:'S10',name:'Mr Foster',area:'Hotelaria / Check-in',stage:3,email:''},
   {id:'S11',name:'CompliDataX',area:'Compliance / LGPD',stage:2,email:''},
   {id:'S12',name:'Cuida.VC',area:'RH / GRC',stage:2,email:''},
