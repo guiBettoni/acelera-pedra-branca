@@ -301,6 +301,10 @@ window.updateHome = async function() {
     const hp = document.getElementById('hn-p');
     if (hn) hn.textContent = startups.length;
     if (hp) hp.textContent = totalPts;
+    const h = document.getElementById('hn-startups-h');
+    if (h) h.textContent = startups.length + ' startups';
+    const chips = document.getElementById('startups-chips');
+    if (chips) chips.innerHTML = startups.map(s => `<div class="chip"><div class="chip-n">${safe(s.name)}</div><div class="chip-a">${safe(s.area)}</div><span class="chip-s st${s.stage}">Est. ${s.stage}</span></div>`).join('');
   } else {
     _origUH();
   }

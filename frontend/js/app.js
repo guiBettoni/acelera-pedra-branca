@@ -107,8 +107,13 @@ function goPage(name,btn){
 // ─── HOME ─────────────────────────────────────────────
 function updateHome(){
   const lanc=getL();
-  document.getElementById('hn-s').textContent=getS().length;
+  const startups=getS();
+  document.getElementById('hn-s').textContent=startups.length;
   document.getElementById('hn-p').textContent=lanc.reduce((s,l)=>s+Number(l.pts),0);
+  const h=document.getElementById('hn-startups-h');
+  if(h) h.textContent=startups.length+' startups';
+  const chips=document.getElementById('startups-chips');
+  if(chips) chips.innerHTML=startups.map(s=>`<div class="chip"><div class="chip-n">${safe(s.name)}</div><div class="chip-a">${safe(s.area)}</div><span class="chip-s st${s.stage}">Est. ${s.stage}</span></div>`).join('');
 }
 
 // ─── RANKING ──────────────────────────────────────────
