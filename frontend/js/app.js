@@ -1,3 +1,8 @@
+// URL do backend — preencha com a URL do seu servidor em produção
+// Exemplo: 'https://meu-backend.railway.app'
+// Deixe vazio apenas se frontend e backend rodarem no mesmo servidor
+const BACKEND_URL = 'http://localhost:3000';
+
 // ─── DATA ───────────────────────────────────────────
 
 // ─── XSS PROTECTION ──────────────────────────────────
@@ -170,7 +175,7 @@ async function checkAdmin(){
   const token=sessionStorage.getItem('admin_token');
   if(!token) return;
   try {
-    const r=await fetch('/api/auth/check',{headers:{'Authorization':'Bearer '+token}});
+    const r=await fetch(BACKEND_URL+'/api/auth/check',{headers:{'Authorization':'Bearer '+token}});
     if(r.ok){ gate.style.display='none'; panel.style.display='block'; refreshAdmin(); }
     else { sessionStorage.removeItem('admin_token'); }
   } catch(e) {}
@@ -186,7 +191,7 @@ async function doLogin(){
     return;
   }
   try {
-    const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    const r=await fetch(BACKEND_URL+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
     const d=await r.json();
     if(!r.ok){
       err.textContent=d.error||'E-mail ou senha incorretos';

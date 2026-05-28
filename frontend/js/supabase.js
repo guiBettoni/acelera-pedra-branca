@@ -1,11 +1,15 @@
-// Supabase client removed from frontend for security.
-// Frontend will call backend proxy endpoints under `/api`.
+// Leitura pública via Supabase REST API (chave anon — somente SELECT)
+// Escrita protegida via backend local (BACKEND_URL em app.js)
+const SUPABASE_URL = 'https://rircwnjahxebkgcvzfek.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpcmN3bmphaHhlYmtnY3Z6ZmVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzOTI0NTMsImV4cCI6MjA5NDk2ODQ1M30.9R25XApE3vKGfYe6kuEnBcCPphPU9tWh5rMSEgJBw_Y';
+const _sbHeaders = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
+
 window.sb = null;
 let _sbReady = false, _sbCache = null;
 
 async function sbFetch() {
   try {
-    const r = await fetch('/api/startups');
+    const r = await fetch(SUPABASE_URL + '/rest/v1/startups?ativo=eq.true&order=pontos.desc', { headers: _sbHeaders });
     if (!r.ok) return null;
     const data = await r.json();
     _sbReady = true;
@@ -14,7 +18,7 @@ async function sbFetch() {
 }
 async function sbFetchLogs() {
   try {
-    const r = await fetch('/api/logs');
+    const r = await fetch(SUPABASE_URL + '/rest/v1/pontuacoes?select=*,startups(nome)&order=criado_em.desc&limit=200', { headers: _sbHeaders });
     if (!r.ok) return null;
     const data = await r.json();
     _sbReady = true;
@@ -51,7 +55,6 @@ async function getSB() {
 }
 
 // Override renderRanking
-const _origRR = window.renderRanking;
 window.renderRanking = async function() {
   const ranked = await getSB();
   const maxP = ranked[0]?.pts||0;
@@ -110,7 +113,6 @@ window.renderRanking = async function() {
 };
 
 // Override refreshAdmin
-const _origRA = window.refreshAdmin;
 window.refreshAdmin = async function() {
   const startups = await getSB();
   const rawLogs  = _sbReady ? await sbFetchLogs() : null;
@@ -217,7 +219,7 @@ const _origDeleteS = window.deleteS;
 window.deleteS = async function(id){
   if(_sbReady){
     if(!confirm('Excluir esta startup? Os lançamentos associados serão removidos junto.')) return;
-    const r = await fetch('/api/startups/'+encodeURIComponent(id),{method:'DELETE',headers:authHeaders()});
+    const r = await fetch(BACKEND_URL+'/api/startups/'+encodeURIComponent(id),{method:'DELETE',headers:authHeaders()});
     if(handleUnauthorized(r)) return;
     if(!r.ok){ const d=await r.json().catch(()=>({error:'Erro desconhecido'})); showToast('Erro: '+d.error); return; }
     _sbCache = null;
@@ -232,7 +234,7 @@ const _origDeleteL = window.deleteL;
 window.deleteL = async function(id){
   if(_sbReady){
     if(!confirm('Remover este lançamento? Os pontos serão descontados do ranking.')) return;
-    const r = await fetch('/api/pontuacoes/'+encodeURIComponent(id),{method:'DELETE',headers:authHeaders()});
+    const r = await fetch(BACKEND_URL+'/api/pontuacoes/'+encodeURIComponent(id),{method:'DELETE',headers:authHeaders()});
     if(handleUnauthorized(r)) return;
     if(!r.ok){ const d=await r.json().catch(()=>({error:'Erro desconhecido'})); showToast('Erro: '+d.error); return; }
     showToast('Lançamento removido.');
@@ -243,7 +245,6 @@ window.deleteL = async function(id){
 };
 
 // Override lancarPontos
-const _origLP = window.lancarPontos;
 window.lancarPontos = async function() {
   const sid  = document.getElementById('ln-startup')?.value;
   const aid  = document.getElementById('ln-ativ')?.value;
@@ -266,7 +267,7 @@ window.lancarPontos = async function() {
   const ativ=getA().find(a=>a.id===aid);
   if(_sbReady){
     // Post pontuação to backend; backend will update startup points
-    const r = await fetch('/api/pontuacoes',{method:'POST',headers:authHeaders(),body:JSON.stringify({startup_id:sid,descricao:ativ?.name||'Atividade manual',categoria:ativ?.cat||'Manual',pontos:pts,obs,lancado_por:by,criado_em:date+'T12:00:00Z'})});
+    const r = await fetch(BACKEND_URL+'/api/pontuacoes',{method:'POST',headers:authHeaders(),body:JSON.stringify({startup_id:sid,descricao:ativ?.name||'Atividade manual',categoria:ativ?.cat||'Manual',pontos:pts,obs,lancado_por:by,criado_em:date+'T12:00:00Z'})});
     if(handleUnauthorized(r)) return;
     if(!r.ok){ const d=await r.json().catch(()=>({error:'Erro desconhecido'})); showToast('Erro: '+d.error);return; }
     _sbCache=null;
@@ -279,7 +280,6 @@ window.lancarPontos = async function() {
 };
 
 // Override saveStartup
-const _origSS = window.saveStartup;
 window.saveStartup = async function() {
   const name  = document.getElementById('st-nome')?.value.trim();
   const area  = document.getElementById('st-area')?.value.trim();
@@ -289,12 +289,12 @@ window.saveStartup = async function() {
   if(!name||!area){showToast('Preencha nome e área');return;}
   if(_sbReady){
     if(eid){
-      const r=await fetch('/api/startups/'+encodeURIComponent(eid),{method:'PUT',headers:authHeaders(),body:JSON.stringify({nome:name,area,email})});
+      const r=await fetch(BACKEND_URL+'/api/startups/'+encodeURIComponent(eid),{method:'PUT',headers:authHeaders(),body:JSON.stringify({nome:name,area,email})});
       if(handleUnauthorized(r)) return;
       if(!r.ok){ showToast('Erro ao atualizar startup'); return; }
       showToast('Startup atualizada!');
     } else {
-      const r=await fetch('/api/startups',{method:'POST',headers:authHeaders(),body:JSON.stringify({nome:name,area,email,nivel:'Explorador',pontos:0,ativo:true})});
+      const r=await fetch(BACKEND_URL+'/api/startups',{method:'POST',headers:authHeaders(),body:JSON.stringify({nome:name,area,email,nivel:'Explorador',pontos:0,ativo:true})});
       if(handleUnauthorized(r)) return;
       if(!r.ok){ showToast('Erro ao cadastrar startup'); return; }
       showToast('Startup cadastrada!');
@@ -310,8 +310,7 @@ const _origUH = window.updateHome;
 window.updateHome = async function() {
   if (_sbReady) {
     const startups = await getSB();
-    const r = await fetch('/api/logs');
-    const logs = r.ok ? await r.json() : null;
+    const logs = await sbFetchLogs();
     const totalPts = logs ? logs.reduce(function(s, l){ return s + (l.pontos || 0); }, 0) : 0;
     const hn = document.getElementById('hn-s');
     const hp = document.getElementById('hn-p');
@@ -341,10 +340,6 @@ function selParaPontuar(id) {
   document.getElementById('asec-lancar')?.scrollIntoView({behavior:'smooth'});
 }
 
-function ativarRealtime() {
-  // Realtime desativado: o cliente Supabase não está disponível no frontend.
-  // Para reativar, adicione o Supabase JS SDK com a chave anon e reconecte aqui.
-}
 
 (async function() {
   try {
@@ -353,7 +348,6 @@ function ativarRealtime() {
       _sbReady=true;
       _sbCache=data.length?data.map(s2l):null;
       console.info('[SB] Conectado: '+data.length+' startups');
-      ativarRealtime();
       if (typeof fillDrops === 'function') fillDrops();
       const hn=document.getElementById('hn-s');
       if(hn&&data.length) hn.textContent=data.length;
