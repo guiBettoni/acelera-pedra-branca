@@ -1,7 +1,7 @@
 // URL do backend — preencha com a URL do seu servidor em produção
 // Exemplo: 'https://meu-backend.railway.app'
 // Deixe vazio apenas se frontend e backend rodarem no mesmo servidor
-const BACKEND_URL = 'http://localhost:3000';
+const BACKEND_URL = 'https://acelera-pedra-branca.onrender.com';
 
 // ─── DATA ───────────────────────────────────────────
 
