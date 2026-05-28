@@ -1,23 +1,40 @@
-const { createClient } = supabase;
-const _sb = createClient('https://rircwnjahxebkgcvzfek.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpcmN3bmphaHhlYmtnY3Z6ZmVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzOTI0NTMsImV4cCI6MjA5NDk2ODQ1M30.9R25XApE3vKGfYe6kuEnBcCPphPU9tWh5rMSEgJBw_Y');
-window.sb = _sb;
-
+// Supabase client removed from frontend for security.
+// Frontend will call backend proxy endpoints under `/api`.
+window.sb = null;
 let _sbReady = false, _sbCache = null;
 
-_sb.auth.onAuthStateChange(() => {
-  if(typeof checkAdmin === 'function') checkAdmin();
-});
-
 async function sbFetch() {
-  const { data, error } = await _sb.from('startups').select('*').eq('ativo',true).order('pontos',{ascending:false});
-  if (error) { console.warn('[SB]', error.message); return null; }
-  return data;
+  try {
+    const r = await fetch('/api/startups');
+    if (!r.ok) return null;
+    const data = await r.json();
+    _sbReady = true;
+    return data;
+  } catch(e){ console.warn('[SB] fetch error', e); return null; }
 }
 async function sbFetchLogs() {
-  const { data, error } = await _sb.from('pontuacoes').select('*, startups(nome)').order('criado_em',{ascending:false}).limit(200);
-  if (error) return null;
-  return data;
+  try {
+    const r = await fetch('/api/logs');
+    if (!r.ok) return null;
+    const data = await r.json();
+    _sbReady = true;
+    return data;
+  } catch(e){ return null; }
 }
+// Retorna headers com auth token quando disponível
+function authHeaders() {
+  const token = sessionStorage.getItem('admin_token');
+  const h = {'Content-Type':'application/json'};
+  if (token) h['Authorization'] = 'Bearer ' + token;
+  return h;
+}
+
+// Se a escrita retornar 401, desloga e informa o usuário
+function handleUnauthorized(r) {
+  if (r.status === 401) { doLogout(); showToast('Sessão expirada. Faça login novamente.'); return true; }
+  return false;
+}
+
 function s2l(s) {
   // 'Acelerador' é valor legado no banco — mapeado igual a 'Acelerado'
   const m={'Explorador':1,'Construtor':2,'Acelerado':3,'Acelerador':3,'Destaque':4,'Elite':5};
@@ -102,10 +119,8 @@ window.refreshAdmin = async function() {
   const totalPts=startups.reduce((a,s)=>a+(s.pts||0),0);
   const asS=document.getElementById('as-s'); if(asS) asS.textContent=startups.length;
   const asP=document.getElementById('as-p'); if(asP) asP.textContent=totalPts;
-  const asA=document.getElementById('as-a'); if(asA) asA.textContent=logs.length;
-  const asL=document.getElementById('as-l'); if(asL){
-    asL.textContent=logs.filter(l=>(l.date||'').slice(0,10)===new Date().toISOString().slice(0,10)).length;
-  }
+  const asA=document.getElementById('as-a'); if(asA) asA.textContent=getA().length;
+  const asL=document.getElementById('as-l'); if(asL) asL.textContent=logs.length;
 
   const tblS=document.getElementById('tbl-s');
   if(tblS){
@@ -201,8 +216,10 @@ window.renderHist = async function(){
 const _origDeleteS = window.deleteS;
 window.deleteS = async function(id){
   if(_sbReady){
-    const { error } = await _sb.from('startups').delete().eq('id', id);
-    if(error){ showToast('Erro: '+error.message); return; }
+    if(!confirm('Excluir esta startup? Os lançamentos associados serão removidos junto.')) return;
+    const r = await fetch('/api/startups/'+encodeURIComponent(id),{method:'DELETE',headers:authHeaders()});
+    if(handleUnauthorized(r)) return;
+    if(!r.ok){ const d=await r.json().catch(()=>({error:'Erro desconhecido'})); showToast('Erro: '+d.error); return; }
     _sbCache = null;
     showToast('Startup removida.');
     refreshAdmin();
@@ -214,8 +231,10 @@ window.deleteS = async function(id){
 const _origDeleteL = window.deleteL;
 window.deleteL = async function(id){
   if(_sbReady){
-    const { error } = await _sb.from('pontuacoes').delete().eq('id', id);
-    if(error){ showToast('Erro: '+error.message); return; }
+    if(!confirm('Remover este lançamento? Os pontos serão descontados do ranking.')) return;
+    const r = await fetch('/api/pontuacoes/'+encodeURIComponent(id),{method:'DELETE',headers:authHeaders()});
+    if(handleUnauthorized(r)) return;
+    if(!r.ok){ const d=await r.json().catch(()=>({error:'Erro desconhecido'})); showToast('Erro: '+d.error); return; }
     showToast('Lançamento removido.');
     refreshAdmin();
   } else {
@@ -246,15 +265,10 @@ window.lancarPontos = async function() {
 
   const ativ=getA().find(a=>a.id===aid);
   if(_sbReady){
-    const {error:logErr} = await _sb.from('pontuacoes').insert({
-      startup_id:sid,descricao:ativ?.name||'Atividade manual',categoria:ativ?.cat||'Manual',
-      pontos:pts,obs,lancado_por:by,criado_em:date+'T12:00:00Z',
-    });
-    if(logErr){showToast('Erro: '+logErr.message);return;}
-    const {data:curr} = await _sb.from('startups').select('pontos').eq('id',sid).single();
-    const total=(curr?.pontos||0)+pts;
-    const nivel=total>=800?'Elite':total>=500?'Destaque':total>=250?'Acelerado':total>=100?'Construtor':'Explorador';
-    await _sb.from('startups').update({pontos:total,nivel}).eq('id',sid);
+    // Post pontuação to backend; backend will update startup points
+    const r = await fetch('/api/pontuacoes',{method:'POST',headers:authHeaders(),body:JSON.stringify({startup_id:sid,descricao:ativ?.name||'Atividade manual',categoria:ativ?.cat||'Manual',pontos:pts,obs,lancado_por:by,criado_em:date+'T12:00:00Z'})});
+    if(handleUnauthorized(r)) return;
+    if(!r.ok){ const d=await r.json().catch(()=>({error:'Erro desconhecido'})); showToast('Erro: '+d.error);return; }
     _sbCache=null;
     showToast('+'+pts+' pts registrados!');
     clearLancar();
@@ -275,14 +289,17 @@ window.saveStartup = async function() {
   if(!name||!area){showToast('Preencha nome e área');return;}
   if(_sbReady){
     if(eid){
-      await _sb.from('startups').update({nome:name,area,email}).eq('id',eid);
+      const r=await fetch('/api/startups/'+encodeURIComponent(eid),{method:'PUT',headers:authHeaders(),body:JSON.stringify({nome:name,area,email})});
+      if(handleUnauthorized(r)) return;
+      if(!r.ok){ showToast('Erro ao atualizar startup'); return; }
       showToast('Startup atualizada!');
     } else {
-      const {error}=await _sb.from('startups').insert({nome:name,area,email,nivel:'Explorador',pontos:0,ativo:true});
-      if(error){showToast('Erro: '+error.message);return;}
+      const r=await fetch('/api/startups',{method:'POST',headers:authHeaders(),body:JSON.stringify({nome:name,area,email,nivel:'Explorador',pontos:0,ativo:true})});
+      if(handleUnauthorized(r)) return;
+      if(!r.ok){ showToast('Erro ao cadastrar startup'); return; }
       showToast('Startup cadastrada!');
     }
-    _sbCache=null; closeForm(); refreshAdmin();
+    _sbCache=null; closeForm('form-startup'); refreshAdmin();
   } else {
     showToast('Conexão ao Supabase indisponível. Não é possível salvar startup.');
   }
@@ -293,7 +310,8 @@ const _origUH = window.updateHome;
 window.updateHome = async function() {
   if (_sbReady) {
     const startups = await getSB();
-    const { data: logs } = await _sb.from('pontuacoes').select('pontos');
+    const r = await fetch('/api/logs');
+    const logs = r.ok ? await r.json() : null;
     const totalPts = logs ? logs.reduce(function(s, l){ return s + (l.pontos || 0); }, 0) : 0;
     const hn = document.getElementById('hn-s');
     const hp = document.getElementById('hn-p');
@@ -324,12 +342,8 @@ function selParaPontuar(id) {
 }
 
 function ativarRealtime() {
-  _sb.channel('ranking-live')
-    .on('postgres_changes',{event:'*',schema:'public',table:'startups'},()=>{
-      _sbCache=null;
-      if(document.getElementById('page-ranking')?.classList.contains('on')) renderRanking();
-    })
-    .subscribe();
+  // Realtime desativado: o cliente Supabase não está disponível no frontend.
+  // Para reativar, adicione o Supabase JS SDK com a chave anon e reconecte aqui.
 }
 
 (async function() {

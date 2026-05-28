@@ -167,55 +167,46 @@ async function checkAdmin(){
   const panel=document.getElementById('admin-panel');
   gate.style.display='flex';
   panel.style.display='none';
-  if(!window.sb || !window.sb.auth) return;
-  const { data } = await sb.auth.getSession();
-  const user = data?.session?.user;
-  if(user){
-    gate.style.display='none';
-    panel.style.display='block';
-    document.getElementById('gate-err').style.display='none';
-    refreshAdmin();
-  }
+  const token=sessionStorage.getItem('admin_token');
+  if(!token) return;
+  try {
+    const r=await fetch('/api/auth/check',{headers:{'Authorization':'Bearer '+token}});
+    if(r.ok){ gate.style.display='none'; panel.style.display='block'; refreshAdmin(); }
+    else { sessionStorage.removeItem('admin_token'); }
+  } catch(e) {}
 }
 
 async function doLogin(){
   const email=document.getElementById('gate-email').value.trim();
   const password=document.getElementById('gate-pass').value;
   const err=document.getElementById('gate-err');
-  if(!window.sb || !window.sb.auth){
-    err.textContent='Serviço de autenticação indisponível';
-    err.style.display='block';
-    return;
-  }
   if(!email||!password){
     err.textContent='Preencha e-mail e senha.';
     err.style.display='block';
     return;
   }
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
-  if(error){
-    console.warn('Supabase signIn error', error);
-    err.textContent = error.message || 'E-mail ou senha incorretos';
+  try {
+    const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    const d=await r.json();
+    if(!r.ok){
+      err.textContent=d.error||'E-mail ou senha incorretos';
+      err.style.display='block';
+      document.getElementById('gate-pass').value='';
+      return;
+    }
+    sessionStorage.setItem('admin_token',d.token);
+    err.style.display='none';
+    document.getElementById('admin-gate').style.display='none';
+    document.getElementById('admin-panel').style.display='block';
+    refreshAdmin();
+  } catch(e){
+    err.textContent='Erro de conexão com o servidor.';
     err.style.display='block';
-    document.getElementById('gate-pass').value='';
-    return;
   }
-  if(!data?.session?.user){
-    err.textContent = 'Não foi possível autenticar. Verifique e-mail/senha.';
-    err.style.display='block';
-    document.getElementById('gate-pass').value='';
-    return;
-  }
-  err.style.display='none';
-  document.getElementById('admin-gate').style.display='none';
-  document.getElementById('admin-panel').style.display='block';
-  refreshAdmin();
 }
 
-async function doLogout(){
-  if(window.sb && window.sb.auth){
-    await sb.auth.signOut();
-  }
+function doLogout(){
+  sessionStorage.removeItem('admin_token');
   document.getElementById('admin-gate').style.display='flex';
   document.getElementById('admin-panel').style.display='none';
   document.getElementById('gate-pass').value='';
@@ -244,7 +235,7 @@ function aTab(name,btn){
   document.querySelectorAll('.asec').forEach(s=>s.classList.remove('on'));
   document.querySelectorAll('.atab').forEach(b=>b.classList.remove('on'));
   document.getElementById('asec-'+name).classList.add('on');
-  btn.classList.add('on');
+  if(btn) btn.classList.add('on');
   if(name==='startups') renderTS();
   if(name==='atividades') renderTA();
   if(name==='historico') renderHist();
