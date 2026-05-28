@@ -326,7 +326,7 @@ nav{
 .fl{font-size:10px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:.07em;font-weight:500}
 .fc-inp{padding:9px 12px;font-size:13px;background:var(--surf2);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);outline:none;transition:border-color .2s;width:100%}
 .fc-inp:focus{border-color:var(--orange)}
-.fc-inp option{background:var(--surf2)}
+.fc-inp option{background:#fff;color:#111}
 .factions{display:flex;gap:8px;margin-top:.875rem;flex-wrap:wrap}
 .btn-s{padding:9px 20px;font-size:13px;font-weight:600;background:var(--orange);color:#fff;border:none;border-radius:var(--r);transition:all .15s}
 .btn-s:hover{background:var(--orange-lt)}
