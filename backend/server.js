@@ -142,7 +142,7 @@ app.post('/api/pontuacoes', requireAuth, async (req, res) => {
   const { startup_id, pontos, descricao, categoria, obs, lancado_por, criado_em } = req.body || {};
   if (!startup_id) return res.status(400).json({ error: 'startup_id é obrigatório' });
   const pts = parseInt(pontos);
-  if (!pts || pts < 1) return res.status(400).json({ error: 'Pontos deve ser um número positivo' });
+  if (!pts || pts === 0) return res.status(400).json({ error: 'Pontos não pode ser zero' });
   try {
     const payload = {
       startup_id,

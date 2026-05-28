@@ -249,10 +249,12 @@ window.lancarPontos = async function() {
   const sid  = document.getElementById('ln-startup')?.value;
   const aid  = document.getElementById('ln-ativ')?.value;
   const pts  = parseInt(document.getElementById('ln-pts')?.value)||0;
+  const tipo = document.getElementById('ln-tipo')?.value||'add';
   const obs  = document.getElementById('ln-obs')?.value?.trim()||'';
   const by   = document.getElementById('ln-by')?.value?.trim()||'';
   const date = document.getElementById('ln-data')?.value||new Date().toISOString().slice(0,10);
   if(!sid||!pts||pts<1){showToast('Preencha startup e pontos');return;}
+  const finalPts = tipo === 'rem' ? -pts : pts;
 
   // Se ainda não conectou, tenta uma vez antes de desistir
   if (!_sbReady) {
@@ -266,12 +268,11 @@ window.lancarPontos = async function() {
 
   const ativ=getA().find(a=>a.id===aid);
   if(_sbReady){
-    // Post pontuação to backend; backend will update startup points
-    const r = await fetch(BACKEND_URL+'/api/pontuacoes',{method:'POST',headers:authHeaders(),body:JSON.stringify({startup_id:sid,descricao:ativ?.name||'Atividade manual',categoria:ativ?.cat||'Manual',pontos:pts,obs,lancado_por:by,criado_em:date+'T12:00:00Z'})});
+    const r = await fetch(BACKEND_URL+'/api/pontuacoes',{method:'POST',headers:authHeaders(),body:JSON.stringify({startup_id:sid,descricao:ativ?.name||'Atividade manual',categoria:ativ?.cat||'Manual',pontos:finalPts,obs,lancado_por:by,criado_em:date+'T12:00:00Z'})});
     if(handleUnauthorized(r)) return;
     if(!r.ok){ const d=await r.json().catch(()=>({error:'Erro desconhecido'})); showToast('Erro: '+d.error);return; }
     _sbCache=null;
-    showToast('+'+pts+' pts registrados!');
+    showToast(tipo==='rem'?'-'+pts+' pts removidos!':'+'+pts+' pts registrados!');
     clearLancar();
     refreshAdmin();
   } else {

@@ -265,22 +265,25 @@ function lancarPontos(){
   const sid=document.getElementById('ln-startup').value;
   const aid=document.getElementById('ln-ativ').value;
   const pts=parseInt(document.getElementById('ln-pts').value);
+  const tipo=document.getElementById('ln-tipo').value;
   const date=document.getElementById('ln-data').value;
   const obs=document.getElementById('ln-obs').value.trim();
   const by=document.getElementById('ln-by').value.trim();
   if(!sid||!aid||!pts||pts<1||!date){ showToast('Preencha todos os campos obrigatórios.'); return; }
+  const finalPts = tipo === 'rem' ? -pts : pts;
   const startup=getS().find(s=>s.id===sid);
   const ativ=getA().find(a=>a.id===aid);
   const l=getL();
-  l.unshift({id:uid(),sid,sname:startup?.name||'',aid,aname:ativ?.name||'',pts,date,obs,by,ts:Date.now()});
+  l.unshift({id:uid(),sid,sname:startup?.name||'',aid,aname:ativ?.name||'',pts:finalPts,date,obs,by,ts:Date.now()});
   setL(l);
   updateStats();
   updateHome();
-  showToast(`+${pts} pts lançados para ${safe(startup?.name)}!`);
+  showToast(tipo==='rem'?`-${pts} pts removidos de ${safe(startup?.name)}!`:`+${pts} pts lançados para ${safe(startup?.name)}!`);
   clearLancar();
 }
 
 function clearLancar(){
+  document.getElementById('ln-tipo').value='add';
   document.getElementById('ln-pts').value='';
   document.getElementById('ln-obs').value='';
   document.getElementById('ln-by').value='';
