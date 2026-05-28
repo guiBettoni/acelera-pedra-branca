@@ -124,23 +124,7 @@ window.refreshAdmin = async function() {
   const asA=document.getElementById('as-a'); if(asA) asA.textContent=getA().length;
   const asL=document.getElementById('as-l'); if(asL) asL.textContent=logs.length;
 
-  const tblS=document.getElementById('tbl-s');
-  if(tblS){
-    tblS.innerHTML=startups.map(s=>{
-      const lv=getLevel(s.pts||0);
-      return '<tr>'+ 
-        '<td class="td-n">'+safe(s.name)+'</td>'+ 
-        '<td>'+safe(s.area)+'</td>'+ 
-        '<td><span class="chip-s '+(s.stage==1?'st1':s.stage==2?'st2':s.stage==3?'st3':'st4')+'">Est.'+safe(s.stage)+'</span></td>'+ 
-        '<td class="td-pt">'+(s.pts||0)+'</td>'+ 
-        '<td><span class="rlv '+lv.c+'">'+lv.n+'</span></td>'+ 
-        '<td>'+ 
-          '<button class="ab" onclick="editS(\'' + escapeJs(s.id) + '\')">Editar</button> '+
-          '<button class="ab" onclick="selParaPontuar(\'' + escapeJs(s.id) + '\')">Pontuar</button>'+ 
-        '</td>'+ 
-      '</tr>';
-    }).join('');
-  }
+  renderTS();
 
   const histEl=document.getElementById('hist-list');
   if(histEl){
