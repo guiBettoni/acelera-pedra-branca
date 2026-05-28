@@ -34,8 +34,8 @@
   --bronze:#FA8400;
 
   /* ── Estágio badges ── */
-  --s1:#60C4D8;--s2:var(--verde);--s3:#FA8400;--s4:#A78BFA;
   --verde:#00C08B;
+  --s1:#60C4D8;--s2:var(--verde);--s3:#FA8400;--s4:#A78BFA;
   --olive-lt:#8AAD52;
   --accent:var(--orange);
   --teal-900:var(--bg-deep);
@@ -85,7 +85,6 @@ nav{
   border-bottom:1px solid var(--border);box-shadow:0 1px 0 var(--orange);
 }
 .nav-logo{display:flex;align-items:center;flex-shrink:0}
-.nav-logo svg text{}
 
 /* Desktop center items — always visible on wide screens */
 .nav-center{display:flex;gap:4px;align-items:center}
