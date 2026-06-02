@@ -319,8 +319,7 @@ const _origUH = window.updateHome;
 window.updateHome = async function() {
   if (_sbReady) {
     const startups = await getSB();
-    const logs = await sbFetchLogs();
-    const totalPts = logs ? logs.reduce(function(s, l){ return s + (l.pontos || 0); }, 0) : 0;
+    const totalPts = startups.reduce(function(a, s){ return a + (s.pts || 0); }, 0);
     const hn = document.getElementById('hn-s');
     const hp = document.getElementById('hn-p');
     if (hn) hn.textContent = startups.length;
