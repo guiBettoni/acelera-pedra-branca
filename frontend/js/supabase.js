@@ -169,6 +169,24 @@ window.renderTS = async function(){
   }
 };
 
+// editS usa getS() (localStorage) para buscar pelo id, mas com Supabase os IDs são UUIDs
+// que não existem no localStorage — por isso o formulário não abria
+const _origEditS = window.editS;
+window.editS = async function(id){
+  if(!_sbReady){ _origEditS && _origEditS(id); return; }
+  const startups = await getSB();
+  const s = startups.find(x=>x.id===id);
+  if(!s) return;
+  document.getElementById('form-startup').style.display='block';
+  document.getElementById('fst-title').textContent='Editar Startup';
+  document.getElementById('st-nome').value=s.name;
+  document.getElementById('st-area').value=s.area;
+  document.getElementById('st-estagio').value=s.stage;
+  document.getElementById('st-email').value=s.email||'';
+  document.getElementById('st-eid').value=id;
+  document.getElementById('form-startup').scrollIntoView({behavior:'smooth'});
+};
+
 const _origRenderHist = window.renderHist;
 window.renderHist = async function(){
   if(_sbReady){
