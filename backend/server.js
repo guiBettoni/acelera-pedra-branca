@@ -32,16 +32,15 @@ function requireAuth(req, res, next) {
   next();
 }
 
-// ── Recalcula pontos da startup a partir da soma real das pontuações ────────
+function getLevel(pts) {
+  return pts >= 800 ? 'Elite' : pts >= 500 ? 'Destaque' : pts >= 250 ? 'Acelerado' : pts >= 100 ? 'Construtor' : 'Explorador';
+}
+
+// Utilitário de reparo: recalcula pontos a partir da soma do histórico (apenas entradas com pontos > 0)
 async function recalcStartupPoints(startupId) {
   const { data } = await supabase.from('pontuacoes').select('pontos').eq('startup_id', startupId);
-  const total = (data || []).reduce((sum, p) => sum + (p.pontos || 0), 0);
-  const nivel = total >= 800 ? 'Elite'
-               : total >= 500 ? 'Destaque'
-               : total >= 250 ? 'Acelerado'
-               : total >= 100 ? 'Construtor'
-               : 'Explorador';
-  await supabase.from('startups').update({ pontos: total, nivel }).eq('id', startupId);
+  const total = (data || []).reduce((sum, p) => sum + (p.pontos > 0 ? p.pontos : 0), 0);
+  await supabase.from('startups').update({ pontos: total, nivel: getLevel(total) }).eq('id', startupId);
 }
 
 // ── Auth ────────────────────────────────────────────────────────────────────
@@ -139,36 +138,43 @@ app.delete('/api/startups/:id', requireAuth, async (req, res) => {
 });
 
 app.post('/api/pontuacoes', requireAuth, async (req, res) => {
-  const { startup_id, pontos, descricao, categoria, obs, lancado_por, criado_em } = req.body || {};
+  const { startup_id, pontos, descricao, categoria, obs, lancado_por, criado_em, tipo } = req.body || {};
   if (!startup_id) return res.status(400).json({ error: 'startup_id é obrigatório' });
-  const pts = parseInt(pontos);
-  if (!pts || pts === 0) return res.status(400).json({ error: 'Pontos não pode ser zero' });
+  const ptsAbs = Math.abs(parseInt(pontos) || 0);
+  if (!ptsAbs) return res.status(400).json({ error: 'Pontos não pode ser zero' });
+  const isRemoval = tipo === 'rem';
   try {
     const payload = {
       startup_id,
-      pontos: pts,
-      descricao: (descricao || '').trim() || 'Atividade manual',
-      categoria: (categoria || 'Manual').trim(),
+      pontos: isRemoval ? 0 : ptsAbs,
+      descricao: (descricao || '').trim() || (isRemoval ? `Remoção de ${ptsAbs} pts` : 'Atividade manual'),
+      categoria: (categoria || (isRemoval ? 'Ajuste' : 'Manual')).trim(),
       obs: (obs || '').trim(),
       lancado_por: (lancado_por || '').trim(),
       ...(criado_em ? { criado_em } : {}),
     };
     const { data, error } = await supabase.from('pontuacoes').insert(payload).select().single();
     if (error) return res.status(500).json({ error: error.message });
-    try { await recalcStartupPoints(startup_id); } catch (e) { console.warn('recalc pts failed', e.message); }
+    // Atualiza saldo diretamente (incremental) sem recalcular da soma
+    const { data: startup } = await supabase.from('startups').select('pontos').eq('id', startup_id).single();
+    const newPts = (startup?.pontos || 0) + (isRemoval ? -ptsAbs : ptsAbs);
+    await supabase.from('startups').update({ pontos: newPts, nivel: getLevel(newPts) }).eq('id', startup_id);
     res.status(201).json(data);
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.delete('/api/pontuacoes/:id', requireAuth, async (req, res) => {
   try {
-    // Busca startup_id antes de deletar para poder recalcular depois
     const { data: pontuacao } = await supabase
-      .from('pontuacoes').select('startup_id').eq('id', req.params.id).single();
+      .from('pontuacoes').select('startup_id, pontos').eq('id', req.params.id).single();
     const { error } = await supabase.from('pontuacoes').delete().eq('id', req.params.id);
     if (error) return res.status(500).json({ error: error.message });
-    if (pontuacao?.startup_id) {
-      try { await recalcStartupPoints(pontuacao.startup_id); } catch (e) { console.warn('recalc pts failed', e.message); }
+    // Só reverte o saldo se era uma entrada de adição (pontos > 0)
+    // Entradas de remoção têm pontos=0 e não afetam o saldo ao serem excluídas
+    if (pontuacao?.startup_id && pontuacao.pontos > 0) {
+      const { data: startup } = await supabase.from('startups').select('pontos').eq('id', pontuacao.startup_id).single();
+      const newPts = (startup?.pontos || 0) - pontuacao.pontos;
+      await supabase.from('startups').update({ pontos: newPts, nivel: getLevel(newPts) }).eq('id', pontuacao.startup_id);
     }
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }

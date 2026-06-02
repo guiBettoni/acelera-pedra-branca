@@ -252,7 +252,11 @@ window.lancarPontos = async function() {
 
   const ativ=getA().find(a=>a.id===aid);
   if(_sbReady){
-    const r = await fetch(BACKEND_URL+'/api/pontuacoes',{method:'POST',headers:authHeaders(),body:JSON.stringify({startup_id:sid,descricao:ativ?.name||'Atividade manual',categoria:ativ?.cat||'Manual',pontos:finalPts,obs,lancado_por:by,criado_em:date+'T12:00:00Z'})});
+    const descricao = tipo==='rem'
+      ? `Remoção de ${pts} pts${ativ?' ('+ativ.name+')':''}`
+      : (ativ?.name||'Atividade manual');
+    const categoria = tipo==='rem' ? 'Ajuste' : (ativ?.cat||'Manual');
+    const r = await fetch(BACKEND_URL+'/api/pontuacoes',{method:'POST',headers:authHeaders(),body:JSON.stringify({startup_id:sid,descricao,categoria,pontos:pts,tipo,obs,lancado_por:by,criado_em:date+'T12:00:00Z'})});
     if(handleUnauthorized(r)) return;
     if(!r.ok){ const d=await r.json().catch(()=>({error:'Erro desconhecido'})); showToast('Erro: '+d.error);return; }
     _sbCache=null;

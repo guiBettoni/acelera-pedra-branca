@@ -425,7 +425,7 @@ function renderHist(){
             <div class="hact">${safe(x.aname)||'—'}</div>
             ${x.obs?`<div class="hnote">${safe(x.obs)}${x.by?' · por '+safe(x.by):''}</div>`:''}
           </div>
-          <div class="hpts">+${safe(x.pts)}</div>
+          <div class="hpts${x.cat==='Ajuste'?' hpts-ajuste':''}">${x.cat==='Ajuste'?'ajuste':'+'+safe(x.pts)}</div>
           <button class="hdel" onclick="deleteL('${escapeJs(x.id)}')" title="Remover lançamento">✕</button>
         </div>`;}).join('');
 }
