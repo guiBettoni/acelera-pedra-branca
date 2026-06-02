@@ -296,7 +296,9 @@ window.saveStartup = async function() {
   if(!name||!area){showToast('Preencha nome e área');return;}
   if(_sbReady){
     if(eid){
-      const r=await fetch(BACKEND_URL+'/api/startups/'+encodeURIComponent(eid),{method:'PUT',headers:authHeaders(),body:JSON.stringify({nome:name,area,email})});
+      const nivelMap=['','Explorador','Construtor','Acelerado','Destaque','Elite'];
+      const nivel=nivelMap[stage]||'Explorador';
+      const r=await fetch(BACKEND_URL+'/api/startups/'+encodeURIComponent(eid),{method:'PUT',headers:authHeaders(),body:JSON.stringify({nome:name,area,email,nivel})});
       if(handleUnauthorized(r)) return;
       if(!r.ok){ showToast('Erro ao atualizar startup'); return; }
       showToast('Startup atualizada!');
