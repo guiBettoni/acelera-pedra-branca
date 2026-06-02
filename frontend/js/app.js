@@ -547,7 +547,7 @@ function computeWorkshopStatuses() {
     const diff   = wsDate.getTime() - today.getTime();
 
     // Reset state classes — preserva 'expanded' se aberto
-    card.classList.remove('done', 'next');
+    card.classList.remove('done', 'next', 'today');
 
     if (diff < 0) {
       // Passou: Realizado
