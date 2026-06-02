@@ -1,7 +1,7 @@
 // Leitura pública via Supabase REST API (chave anon — somente SELECT)
 // Escrita protegida via backend local (BACKEND_URL em app.js)
 const SUPABASE_URL = 'https://rircwnjahxebkgcvzfek.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpcmN3bmphaHhlYmtnY3Z6ZmVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzOTI0NTMsImV4cCI6MjA5NDk2ODQ1M30.9R25XApE3vKGfYe6kuEnBcCPphPU9tWh5rMSEgJBw_Y';
+const SUPABASE_ANON_KEY = 'sb_publishable_ABJiLcssFSB_ln-U_51fUw_KwHZAGDZ';
 const _sbHeaders = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
 
 window.sb = null;

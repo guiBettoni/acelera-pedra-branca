@@ -156,7 +156,7 @@ function renderRanking(){
         const bw=Math.max(pct,s.pts>0?2:0);
         return `<div class="rrow">
           <div class="rpos">${i+1}</div>
-          <div class="rinfo"><div class="rname">${s.name}</div><div class="rmeta">Est. ${s.stage} · ${s.area}</div></div>
+          <div class="rinfo"><div class="rname">${safe(s.name)}</div><div class="rmeta">Est. ${s.stage} · ${safe(s.area)}</div></div>
           <div class="rtrack"><div class="rbar-bg"><div class="rbar" style="width:${bw}%"></div></div></div>
           <div class="rright">
             <div class="rpts">${s.pts}</div>
