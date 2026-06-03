@@ -234,6 +234,48 @@ app.post('/api/pontuacoes', requireAuth, async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+app.post('/api/startups/:id/redistribuir', requireAuth, async (req, res) => {
+  const { categorias } = req.body || {};
+  if (!categorias || typeof categorias !== 'object') {
+    return res.status(400).json({ error: 'categorias é obrigatório' });
+  }
+  const allowed = ['Engajamento', 'Desenvolvimento', 'Tração', 'Bônus', 'Manual'];
+  const distribuicao = {};
+  for (const k of allowed) {
+    const v = parseInt(categorias[k]) || 0;
+    if (v > 0) distribuicao[k] = v;
+  }
+  const soma = Object.values(distribuicao).reduce((s, v) => s + v, 0);
+  if (soma === 0) return res.status(400).json({ error: 'Informe ao menos uma categoria com pontos' });
+  try {
+    const { data: startup } = await supabase.from('startups').select('pontos').eq('id', req.params.id).single();
+    if (!startup) return res.status(404).json({ error: 'Startup não encontrada' });
+    if (soma > startup.pontos) {
+      return res.status(400).json({ error: `Soma da distribuição (${soma}) não pode exceder os pontos atuais (${startup.pontos})` });
+    }
+    const restante = startup.pontos - soma;
+    if (restante > 0) distribuicao['Manual'] = (distribuicao['Manual'] || 0) + restante;
+
+    await supabase.from('pontuacoes').delete().eq('startup_id', req.params.id);
+
+    const now = new Date().toISOString();
+    const inserts = Object.entries(distribuicao).map(([cat, pts]) => ({
+      startup_id: req.params.id,
+      pontos: pts,
+      descricao: `Redistribuição — ${cat}`,
+      categoria: cat,
+      obs: 'Redistribuição de categorias via admin',
+      lancado_por: 'Admin',
+      criado_em: now,
+    }));
+    const { error } = await supabase.from('pontuacoes').insert(inserts);
+    if (error) return res.status(500).json({ error: error.message });
+
+    await recalcStartupPoints(req.params.id);
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 app.put('/api/pontuacoes/:id', requireAuth, async (req, res) => {
   const allowed = ['descricao', 'categoria', 'obs', 'lancado_por', 'criado_em'];
   const payload = {};

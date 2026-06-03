@@ -115,10 +115,12 @@ window.renderRanking = async function() {
           const lv=getLevel(pts);
           const bw=Math.max(pct,pts>0?2:0);
           const sCats=catBySid[s.id]||{};
+          const rawTotal=catDefs.reduce((sum,c)=>sum+Math.max(0,sCats[c.k]||0),0);
+          const scale=(rawTotal>pts&&rawTotal>0)?pts/rawTotal:1;
           const catsHtml=pts>0
             ?catDefs.map(c=>{
-                const p=Math.max(0,sCats[c.k]||0);
-                const w=pts>0?Math.round(p/pts*100):0;
+                const p=Math.round(Math.max(0,sCats[c.k]||0)*scale);
+                const w=pts>0?Math.min(100,Math.round(p/pts*100)):0;
                 return `<div class="rcat-item">
                   <div class="rcat-lbl">${c.k}</div>
                   <div class="rcat-bar-bg"><div class="rcat-bar" style="width:${w}%;background:${c.color}"></div></div>
@@ -195,7 +197,7 @@ window.renderTS = async function(){
           <td style="font-size:12px">Est. ${safe(s.stage)} — ${safe(sn[s.stage]||'')}</td>
           <td class="td-pt">${p}</td>
           <td><span class="rlv ${lv.c}">${lv.n}</span></td>
-          <td><button class="ab" onclick="editS('${escapeJs(s.id)}')">Editar</button><button class="ab del" onclick="deleteS('${escapeJs(s.id)}')">Excluir</button></td>
+          <td><button class="ab" onclick="editS('${escapeJs(s.id)}')">Editar</button><button class="ab" onclick="openRedistribuir('${escapeJs(s.id)}','${escapeJs(s.name)}',${p})">Redistribuir</button><button class="ab del" onclick="deleteS('${escapeJs(s.id)}')">Excluir</button></td>
         </tr>`;
       }).join('');
   } else {
@@ -445,6 +447,93 @@ function selParaPontuar(id) {
   document.getElementById('asec-lancar')?.scrollIntoView({behavior:'smooth'});
 }
 
+
+async function openRedistribuir(id, name, pts) {
+  const rawLogs = await sbFetchLogs();
+  const sCats = {};
+  if (rawLogs) {
+    rawLogs.filter(function(l){ return l.startup_id===id && l.pontos>0; }).forEach(function(l){
+      var cat = l.categoria||'Manual';
+      sCats[cat] = (sCats[cat]||0) + l.pontos;
+    });
+  }
+  const cats = [
+    {k:'Engajamento',label:'🔵 Engajamento'},
+    {k:'Desenvolvimento',label:'🟢 Desenvolvimento'},
+    {k:'Tração',label:'🟠 Tração'},
+    {k:'Bônus',label:'🟡 Bônus'},
+  ];
+  const rawTotal = cats.reduce(function(s,c){ return s+Math.max(0,sCats[c.k]||0); },0);
+  const scale = rawTotal>pts && rawTotal>0 ? pts/rawTotal : 1;
+
+  var panel = document.getElementById('form-redistribuir');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'form-redistribuir';
+    var asec = document.getElementById('asec-startups');
+    if (asec) asec.insertBefore(panel, asec.firstChild);
+  }
+
+  var inputs = cats.map(function(c){
+    var cur = Math.round(Math.max(0,sCats[c.k]||0)*scale);
+    return '<div><div class="fc-label">'+c.label+'</div>'
+      +'<input class="fc-inp" type="number" min="0" id="rd-'+c.k+'" value="'+cur+'" oninput="updateRedistribSum('+pts+')"></div>';
+  }).join('');
+
+  panel.innerHTML = '<div class="fc-card" style="margin-bottom:1.5rem">'
+    +'<div class="fc-head">Redistribuir Pontos — '+safe(name)+'</div>'
+    +'<p style="font-size:12px;color:rgba(255,255,255,.6);margin:8px 0 16px">Total atual: <strong style="color:var(--orange)">'+pts+' pts</strong>. '
+    +'O restante não distribuído será salvo como "Manual".</p>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'+inputs+'</div>'
+    +'<p style="font-size:12px;color:rgba(255,255,255,.55);margin-bottom:14px">'
+    +'Distribuído: <strong id="redistrib-sum" style="color:var(--orange)">0</strong> pts &nbsp;·&nbsp; '
+    +'Manual: <strong id="redistrib-rest">0</strong> pts</p>'
+    +'<div style="display:flex;gap:10px">'
+    +'<button class="btn-s" onclick="saveRedistribuicao(\''+escapeJs(id)+'\','+pts+')">Confirmar redistribuição</button>'
+    +'<button class="btn-s" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.7)" onclick="closeRedistribuir()">Cancelar</button>'
+    +'</div></div>';
+
+  panel.style.display = 'block';
+  updateRedistribSum(pts);
+  panel.scrollIntoView({behavior:'smooth'});
+}
+
+function updateRedistribSum(total) {
+  var cats = ['Engajamento','Desenvolvimento','Tração','Bônus'];
+  var sum = cats.reduce(function(s,c){ return s+(parseInt(document.getElementById('rd-'+c)?.value)||0); },0);
+  var rest = total - sum;
+  var sumEl = document.getElementById('redistrib-sum');
+  var restEl = document.getElementById('redistrib-rest');
+  if (sumEl) { sumEl.textContent = sum; sumEl.style.color = sum>total ? '#F87171' : 'var(--orange)'; }
+  if (restEl) { restEl.textContent = rest>=0 ? rest+' pts' : '⚠️ excede o total!'; restEl.style.color = rest<0 ? '#F87171' : 'rgba(255,255,255,.7)'; }
+}
+
+function closeRedistribuir() {
+  var panel = document.getElementById('form-redistribuir');
+  if (panel) panel.style.display = 'none';
+}
+
+async function saveRedistribuicao(id, currentPts) {
+  var cats = ['Engajamento','Desenvolvimento','Tração','Bônus'];
+  var categorias = {};
+  var sum = 0;
+  cats.forEach(function(c){
+    var v = parseInt(document.getElementById('rd-'+c)?.value)||0;
+    if (v>0) categorias[c]=v;
+    sum += v;
+  });
+  if (sum === 0) { showToast('Informe pelo menos uma categoria.'); return; }
+  if (sum > currentPts) { showToast('A soma ('+sum+') excede o total de '+currentPts+' pts.'); return; }
+  var r = await fetch(BACKEND_URL+'/api/startups/'+encodeURIComponent(id)+'/redistribuir', {
+    method:'POST', headers:authHeaders(), body:JSON.stringify({categorias:categorias})
+  });
+  if (handleUnauthorized(r)) return;
+  if (!r.ok) { var d=await r.json().catch(function(){return{error:'Erro'};}); showToast('Erro: '+d.error); return; }
+  showToast('Pontos redistribuídos com sucesso!');
+  closeRedistribuir();
+  _sbCache = null;
+  renderHist();
+}
 
 (async function() {
   try {

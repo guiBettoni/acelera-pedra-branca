@@ -175,10 +175,12 @@ function renderRanking(){
         const lv=getLevel(s.pts);
         const bw=Math.max(pct,s.pts>0?2:0);
         const sCats=catMap[s.id]||{};
+        const rawTotal=catDefs.reduce((sum,c)=>sum+Math.max(0,sCats[c.k]||0),0);
+        const scale=(rawTotal>s.pts&&rawTotal>0)?s.pts/rawTotal:1;
         const catsHtml=s.pts>0
           ?catDefs.map(c=>{
-              const p=Math.max(0,sCats[c.k]||0);
-              const w=s.pts>0?Math.round(p/s.pts*100):0;
+              const p=Math.round(Math.max(0,sCats[c.k]||0)*scale);
+              const w=s.pts>0?Math.min(100,Math.round(p/s.pts*100)):0;
               return `<div class="rcat-item">
                 <div class="rcat-lbl">${c.k}</div>
                 <div class="rcat-bar-bg"><div class="rcat-bar" style="width:${w}%;background:${c.color}"></div></div>
