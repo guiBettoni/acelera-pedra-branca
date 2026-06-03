@@ -265,7 +265,7 @@ nav{
 .race{display:flex;flex-direction:column;gap:6px}
 .rrow{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--r);background:var(--surf);transition:border-color .2s,background .2s;cursor:pointer}
 .rrow:hover{border-color:var(--border2);background:var(--surf2)}
-.rrow-main{display:flex;align-items:center;gap:12px;padding:11px 16px;width:100%}
+.rrow-main{display:flex;align-items:center;gap:12px;padding:11px 16px}
 .rpos{font-family:var(--head);font-weight:700;font-size:14px;width:28px;text-align:center;color:rgba(255,255,255,0.55);flex-shrink:0}
 .rinfo{flex:1;min-width:0}
 .rname{font-family:var(--head);font-size:14px;font-weight:700}
@@ -286,8 +286,8 @@ nav{
 /* ── Ranking expand ── */
 .rrow-chev{font-size:13px;color:rgba(255,255,255,.3);flex-shrink:0;transition:transform .25s;margin-left:4px}
 .rrow.expanded .rrow-chev{transform:rotate(180deg)}
-.rrow-panel{max-height:0;overflow:hidden;opacity:0;transition:max-height .38s cubic-bezier(.4,0,.2,1),opacity .28s ease}
-.rrow.expanded .rrow-panel{max-height:300px;opacity:1}
+.rrow-panel{max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1)}
+.rrow.expanded .rrow-panel{max-height:300px}
 .rrow-cats{display:flex;flex-direction:column;gap:9px;padding:8px 16px 14px;border-top:1px solid var(--border)}
 .rcat-item{display:grid;grid-template-columns:110px 1fr 42px;align-items:center;gap:10px}
 .rcat-lbl{font-size:11px;color:rgba(255,255,255,.5)}
