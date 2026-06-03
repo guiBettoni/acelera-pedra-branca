@@ -486,17 +486,9 @@ function showToast(msg){
 }
 
 function toggleRrow(el){
-  const panel=el.querySelector('.rrow-panel');
-  if(!panel) return;
-  const isOpen=el.classList.contains('expanded');
-  document.querySelectorAll('.rrow.expanded').forEach(r=>{
-    r.classList.remove('expanded');
-    r.querySelector('.rrow-panel').style.maxHeight='0';
-  });
-  if(!isOpen){
-    el.classList.add('expanded');
-    panel.style.maxHeight=panel.scrollHeight+'px';
-  }
+  var isOpen=el.classList.contains('expanded');
+  document.querySelectorAll('.rrow.expanded').forEach(function(r){ r.classList.remove('expanded'); });
+  if(!isOpen) el.classList.add('expanded');
 }
 
 // ─── NAV TOGGLE ───────────────────────────────────────
