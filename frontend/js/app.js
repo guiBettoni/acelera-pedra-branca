@@ -76,6 +76,18 @@ function ptsByS(){
   return map;
 }
 
+function ptsByCatByS(){
+  const actMap={};
+  getA().forEach(a=>{ actMap[a.id]=a.cat; });
+  const result={};
+  getL().forEach(l=>{
+    if(!result[l.sid]) result[l.sid]={};
+    const cat=actMap[l.aid]||'Outros';
+    result[l.sid][cat]=(result[l.sid][cat]||0)+Number(l.pts);
+  });
+  return result;
+}
+
 function getLevel(p){
   if(p>=800) return {n:'Elite',c:'lv-eli'};
   if(p>=500) return {n:'Destaque',c:'lv-des'};
@@ -147,6 +159,14 @@ function renderRanking(){
     </div>`;
   }).join('');
 
+  const catMap=ptsByCatByS();
+  const catDefs=[
+    {k:'Engajamento',color:'#60C4D8'},
+    {k:'Desenvolvimento',color:'var(--green)'},
+    {k:'Tração',color:'var(--orange)'},
+    {k:'Bônus',color:'#F5C842'},
+  ];
+
   const raceEl=document.getElementById('race-area');
   raceEl.innerHTML=ranked.length===0
     ?`<div class="empty">Nenhuma startup cadastrada ainda.</div>`
@@ -154,14 +174,32 @@ function renderRanking(){
         const pct=maxP>0?Math.round(s.pts/maxP*100):0;
         const lv=getLevel(s.pts);
         const bw=Math.max(pct,s.pts>0?2:0);
-        return `<div class="rrow">
-          <div class="rpos">${i+1}</div>
-          <div class="rinfo"><div class="rname">${safe(s.name)}</div><div class="rmeta">Est. ${s.stage} · ${safe(s.area)}</div></div>
-          <div class="rtrack"><div class="rbar-bg"><div class="rbar" style="width:${bw}%"></div></div></div>
-          <div class="rright">
-            <div class="rpts">${s.pts}</div>
-            <div class="rpts-l">pontos</div>
-            <div class="rlv ${lv.c}">${lv.n}</div>
+        const sCats=catMap[s.id]||{};
+        const catsHtml=s.pts>0
+          ?catDefs.map(c=>{
+              const p=Math.max(0,sCats[c.k]||0);
+              const w=s.pts>0?Math.round(p/s.pts*100):0;
+              return `<div class="rcat-item">
+                <div class="rcat-lbl">${c.k}</div>
+                <div class="rcat-bar-bg"><div class="rcat-bar" style="width:${w}%;background:${c.color}"></div></div>
+                <div class="rcat-pts">${p||'—'}</div>
+              </div>`;
+            }).join('')
+          :`<div class="rcat-empty">Nenhum ponto lançado ainda.</div>`;
+        return `<div class="rrow" onclick="toggleRrow(this)">
+          <div class="rrow-main">
+            <div class="rpos">${i+1}</div>
+            <div class="rinfo"><div class="rname">${safe(s.name)}</div><div class="rmeta">Est. ${s.stage} · ${safe(s.area)}</div></div>
+            <div class="rtrack"><div class="rbar-bg"><div class="rbar" style="width:${bw}%"></div></div></div>
+            <div class="rright">
+              <div class="rpts">${s.pts}</div>
+              <div class="rpts-l">pontos</div>
+              <div class="rlv ${lv.c}">${lv.n}</div>
+            </div>
+            <div class="rrow-chev">▾</div>
+          </div>
+          <div class="rrow-panel">
+            <div class="rrow-cats">${catsHtml}</div>
           </div>
         </div>`;
       }).join('');
@@ -445,6 +483,12 @@ function showToast(msg){
   t.classList.add('show');
   clearTimeout(toastT);
   toastT=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function toggleRrow(el){
+  const isOpen=el.classList.contains('expanded');
+  document.querySelectorAll('.rrow.expanded').forEach(r=>r.classList.remove('expanded'));
+  if(!isOpen) el.classList.add('expanded');
 }
 
 // ─── NAV TOGGLE ───────────────────────────────────────

@@ -263,8 +263,9 @@ nav{
 .pod-lv{display:inline-block;margin-top:6px;font-size:10px;font-weight:500;padding:2px 8px;border-radius:99px}
 
 .race{display:flex;flex-direction:column;gap:6px}
-.rrow{display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:var(--r);padding:11px 16px;background:var(--surf);transition:all .2s}
+.rrow{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--r);background:var(--surf);transition:border-color .2s,background .2s;cursor:pointer}
 .rrow:hover{border-color:var(--border2);background:var(--surf2)}
+.rrow-main{display:flex;align-items:center;gap:12px;padding:11px 16px;width:100%}
 .rpos{font-family:var(--head);font-weight:700;font-size:14px;width:28px;text-align:center;color:rgba(255,255,255,0.55);flex-shrink:0}
 .rinfo{flex:1;min-width:0}
 .rname{font-family:var(--head);font-size:14px;font-weight:700}
@@ -281,6 +282,19 @@ nav{
 .lv-ace{background:rgba(250,132,0,.16);color:var(--orange-lt)}
 .lv-des{background:rgba(245,200,66,.16);color:#F5C842}
 .lv-eli{background:rgba(167,139,250,.16);color:#C4B5FD}
+
+/* ── Ranking expand ── */
+.rrow-chev{font-size:13px;color:rgba(255,255,255,.3);flex-shrink:0;transition:transform .25s;margin-left:4px}
+.rrow.expanded .rrow-chev{transform:rotate(180deg)}
+.rrow-panel{max-height:0;overflow:hidden;opacity:0;transition:max-height .38s cubic-bezier(.4,0,.2,1),opacity .28s ease}
+.rrow.expanded .rrow-panel{max-height:300px;opacity:1}
+.rrow-cats{display:flex;flex-direction:column;gap:9px;padding:8px 16px 14px;border-top:1px solid var(--border)}
+.rcat-item{display:grid;grid-template-columns:110px 1fr 42px;align-items:center;gap:10px}
+.rcat-lbl{font-size:11px;color:rgba(255,255,255,.5)}
+.rcat-bar-bg{height:5px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.rcat-bar{height:100%;border-radius:99px;transition:width .7s ease}
+.rcat-pts{font-family:var(--head);font-size:12px;font-weight:700;color:rgba(255,255,255,.65);text-align:right}
+.rcat-empty{font-size:12px;color:rgba(255,255,255,.35);padding:4px 0}
 
 .empty{text-align:center;padding:3rem 2rem;color:rgba(255,255,255,0.55);font-size:14px}
 
@@ -676,8 +690,9 @@ nav{
   .pod-pts{font-size:18px}
   .pod-area{display:none}
   .pod-lv{font-size:9px}
-  .rrow{gap:8px;padding:10px 12px}
+  .rrow-main{gap:8px;padding:10px 12px}
   .rtrack{display:none}
+  .rcat-item{grid-template-columns:90px 1fr 36px;gap:8px}
   .rname{font-size:13px}
   .rmeta{font-size:10px}
   .rpts{font-size:15px}
