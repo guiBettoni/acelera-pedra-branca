@@ -359,17 +359,29 @@ nav{
 .ab:hover{border-color:var(--border2);color:var(--text)}
 .ab.del:hover{border-color:rgba(248,113,113,.4);color:#F87171}
 
+.hrow-wrap{border-bottom:1px solid var(--border)}
+.hrow-wrap:last-child{border-bottom:none}
 .hrow{display:flex;gap:12px;align-items:flex-start;padding:.75rem 0;border-bottom:1px solid var(--border)}
+.hrow-wrap .hrow{border-bottom:none;padding-bottom:.5rem}
 .hrow:last-child{border-bottom:none}
 .hdate{font-size:11px;color:rgba(255,255,255,0.55);min-width:72px;margin-top:2px;flex-shrink:0}
 .hcont{flex:1}
 .hst{font-weight:500;font-family:var(--head);font-size:13px}
 .hact{font-size:12px;color:rgba(255,255,255,0.55);margin-top:1px}
-.hnote{font-size:11px;color:rgba(255,255,255,.28);margin-top:2px;font-style:italic}
+.hnote{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px;font-style:italic}
 .hpts{font-family:var(--head);font-size:15px;font-weight:700;color:var(--orange);flex-shrink:0}
-.hpts-ajuste{font-size:11px;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.5px}
-.hdel{background:transparent;border:none;color:rgba(255,255,255,.2);font-size:13px;padding:2px 6px;flex-shrink:0}
+.hpts-ajuste{font-size:11px;font-weight:600;color:rgba(255,255,255,.60);text-transform:uppercase;letter-spacing:.5px}
+.hdel{background:transparent;border:none;color:rgba(255,255,255,.35);font-size:13px;padding:2px 6px;flex-shrink:0;cursor:pointer;border-radius:4px;transition:color .15s}
 .hdel:hover{color:#F87171}
+.hedit{background:transparent;border:none;color:rgba(255,255,255,.35);font-size:14px;padding:2px 6px;flex-shrink:0;cursor:pointer;border-radius:4px;transition:color .15s,background .15s}
+.hedit:hover{color:var(--orange);background:rgba(250,132,0,.1)}
+.hedit-panel{display:none;padding:4px 0 12px}
+.hrow-wrap.editing .hedit-panel{display:block}
+.hedit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.hedit-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.55);margin-bottom:4px}
+.hedit-actions{display:flex;gap:8px}
+.hedit-cancel{padding:7px 16px;font-size:12px;font-weight:500;background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);border:none;border-radius:var(--r);cursor:pointer;transition:background .15s}
+.hedit-cancel:hover{background:rgba(255,255,255,.13)}
 
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--surf2);border:1px solid var(--border2);border-radius:var(--r);padding:.75rem 1.25rem;font-size:13px;color:var(--text);display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}

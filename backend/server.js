@@ -234,6 +234,30 @@ app.post('/api/pontuacoes', requireAuth, async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+app.put('/api/pontuacoes/:id', requireAuth, async (req, res) => {
+  const allowed = ['descricao', 'categoria', 'obs', 'lancado_por', 'criado_em'];
+  const payload = {};
+  for (const k of allowed) if (req.body[k] !== undefined) payload[k] = req.body[k];
+  if (payload.descricao !== undefined) {
+    payload.descricao = String(payload.descricao).trim();
+    if (payload.descricao.length > 200) return res.status(400).json({ error: 'Descrição muito longa (máx 200)' });
+  }
+  if (payload.categoria !== undefined) payload.categoria = String(payload.categoria).trim();
+  if (payload.obs !== undefined) payload.obs = String(payload.obs || '').trim();
+  if (payload.lancado_por !== undefined) payload.lancado_por = String(payload.lancado_por || '').trim();
+  if (payload.criado_em !== undefined) {
+    const d = new Date(payload.criado_em);
+    if (isNaN(d.getTime())) return res.status(400).json({ error: 'criado_em inválido' });
+    payload.criado_em = d.toISOString();
+  }
+  if (!Object.keys(payload).length) return res.status(400).json({ error: 'Nenhum campo para atualizar' });
+  try {
+    const { error } = await supabase.from('pontuacoes').update(payload).eq('id', req.params.id);
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 app.delete('/api/pontuacoes/:id', requireAuth, async (req, res) => {
   try {
     const { data: pontuacao } = await supabase

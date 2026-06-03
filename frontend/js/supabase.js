@@ -231,25 +231,84 @@ window.renderHist = async function(){
     if(filter) l = l.filter(x=>x.sid===filter);
     const el=document.getElementById('hist-list');
     if(!el) return;
+    const cats=['Engajamento','Desenvolvimento','Tração','Bônus','Manual','Ajuste'];
     el.innerHTML = l.length===0
       ?`<div class="empty">Nenhum lançamento encontrado.</div>`
       :l.map(x=>{
           const d=x.date?x.date.split('-').reverse().join('/'):'—';
-          return `<div class="hrow">
-            <div class="hdate">${d}</div>
-            <div class="hcont">
-              <div class="hst">${safe(x.sname)||'—'}</div>
-              <div class="hact">${safe(x.ativ)||'—'}</div>
-              ${x.obs?`<div class="hnote">${safe(x.obs)}${x.by?' · por '+safe(x.by):''}</div>`:''}
+          const catOpts=cats.map(c=>`<option value="${c}"${x.cat===c?' selected':''}>${c}</option>`).join('');
+          return `<div class="hrow-wrap" id="hwrap-${escapeJs(x.id)}">
+            <div class="hrow">
+              <div class="hdate">${d}</div>
+              <div class="hcont">
+                <div class="hst">${safe(x.sname)||'—'}</div>
+                <div class="hact">${safe(x.ativ)||'—'}</div>
+                ${x.obs?`<div class="hnote">${safe(x.obs)}${x.by?' · por '+safe(x.by):''}</div>`:''}
+              </div>
+              <div class="hpts">+${safe(x.pts)}</div>
+              <button class="hedit" onclick="editL('${escapeJs(x.id)}')" title="Editar lançamento">✎</button>
+              <button class="hdel" onclick="deleteL('${escapeJs(x.id)}')" title="Remover lançamento">✕</button>
             </div>
-            <div class="hpts">+${safe(x.pts)}</div>
-            <button class="hdel" onclick="deleteL('${escapeJs(x.id)}')" title="Remover lançamento">✕</button>
+            <div class="hedit-panel">
+              <div class="hedit-grid">
+                <div>
+                  <div class="hedit-label">Categoria</div>
+                  <select class="fc-inp" id="hef-cat-${escapeJs(x.id)}">${catOpts}</select>
+                </div>
+                <div>
+                  <div class="hedit-label">Descrição</div>
+                  <input class="fc-inp" type="text" id="hef-desc-${escapeJs(x.id)}" value="${safe(x.ativ)}" maxlength="200">
+                </div>
+                <div>
+                  <div class="hedit-label">Observação</div>
+                  <input class="fc-inp" type="text" id="hef-obs-${escapeJs(x.id)}" value="${safe(x.obs)}" maxlength="500">
+                </div>
+                <div>
+                  <div class="hedit-label">Data</div>
+                  <input class="fc-inp" type="date" id="hef-date-${escapeJs(x.id)}" value="${x.date||''}">
+                </div>
+              </div>
+              <div class="hedit-actions">
+                <button class="btn-s" onclick="saveEditL('${escapeJs(x.id)}')">Salvar</button>
+                <button class="hedit-cancel" onclick="closeEditL('${escapeJs(x.id)}')">Cancelar</button>
+              </div>
+            </div>
           </div>`;
         }).join('');
   } else {
     _origRenderHist();
   }
 };
+
+function editL(id){
+  document.querySelectorAll('.hrow-wrap.editing').forEach(function(w){
+    if(w.id!=='hwrap-'+id) w.classList.remove('editing');
+  });
+  var wrap=document.getElementById('hwrap-'+id);
+  if(wrap) wrap.classList.toggle('editing');
+}
+
+function closeEditL(id){
+  var wrap=document.getElementById('hwrap-'+id);
+  if(wrap) wrap.classList.remove('editing');
+}
+
+async function saveEditL(id){
+  var cat=document.getElementById('hef-cat-'+id)?.value;
+  var desc=document.getElementById('hef-desc-'+id)?.value?.trim();
+  var obs=document.getElementById('hef-obs-'+id)?.value?.trim();
+  var date=document.getElementById('hef-date-'+id)?.value;
+  if(!cat){showToast('Selecione uma categoria.');return;}
+  var body={categoria:cat};
+  if(desc) body.descricao=desc;
+  if(obs!==undefined) body.obs=obs;
+  if(date) body.criado_em=date+'T12:00:00Z';
+  var r=await fetch(BACKEND_URL+'/api/pontuacoes/'+encodeURIComponent(id),{method:'PUT',headers:authHeaders(),body:JSON.stringify(body)});
+  if(handleUnauthorized(r)) return;
+  if(!r.ok){var d=await r.json().catch(function(){return{error:'Erro desconhecido'};});showToast('Erro: '+d.error);return;}
+  showToast('Lançamento atualizado!');
+  renderHist();
+}
 
 const _origDeleteS = window.deleteS;
 window.deleteS = async function(id){
