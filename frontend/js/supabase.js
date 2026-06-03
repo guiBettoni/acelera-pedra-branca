@@ -74,40 +74,74 @@ window.renderRanking = async function() {
       const mvis = top3.length>=2?[medals[1],medals[0],medals[2]].filter(Boolean):medals;
       pod.innerHTML=vis.map((s,i)=>{
         const mi=mvis[i],lv=getLevel(s.pts||0);
-        return '<div class="pod '+mi.cls+'">'+
-          '<div class="pod-medal">'+mi.m+'</div>'+
-          '<div class="pod-pos '+mi.p+'">'+mi.pos+'</div>'+
-          '<div class="pod-name">'+safe(s.name)+'</div>'+
-          '<div class="pod-area">'+safe(s.area)+'</div>'+
-          '<div class="pod-pts '+mi.p+'">'+( s.pts||0)+'</div>'+
-          '<div class="pod-lbl">pontos</div>'+
-          '<div class="pod-lv '+lv.c+'">'+lv.n+'</div>'+
-        '</div>';
+        return `<div class="pod ${mi.cls}">
+          <div class="pod-medal">${mi.m}</div>
+          <div class="pod-pos ${mi.p}">${mi.pos}</div>
+          <div class="pod-name">${safe(s.name)}</div>
+          <div class="pod-area">${safe(s.area)}</div>
+          <div class="pod-pts ${mi.p}">${s.pts||0}</div>
+          <div class="pod-lbl">pontos</div>
+          <div class="pod-lv ${lv.c}">${lv.n}</div>
+        </div>`;
       }).join('');
     }
   }
+
+  const rawLogs = await sbFetchLogs();
+  const catBySid = {};
+  if (rawLogs) {
+    rawLogs.forEach(l => {
+      const sid = l.startup_id;
+      const cat = l.categoria || 'Manual';
+      if (!catBySid[sid]) catBySid[sid] = {};
+      catBySid[sid][cat] = (catBySid[sid][cat] || 0) + (l.pontos || 0);
+    });
+  }
+
+  const catDefs=[
+    {k:'Engajamento',color:'#60C4D8'},
+    {k:'Desenvolvimento',color:'var(--green)'},
+    {k:'Tração',color:'var(--orange)'},
+    {k:'Bônus',color:'#F5C842'},
+  ];
 
   const race=document.getElementById('race-area');
   if (race) {
     race.innerHTML=!ranked.length
       ? '<div class="empty">Nenhuma startup cadastrada ainda.</div>'
       : ranked.map((s,i)=>{
-          const pct=maxP>0?Math.round((s.pts||0)/maxP*100):0;
-          const lv=getLevel(s.pts||0);
-          const bw=Math.max(pct,(s.pts||0)>0?2:0);
-          return '<div class="rrow">'+
-            '<div class="rpos">'+(i+1)+'</div>'+
-            '<div class="rinfo">'+
-              '<div class="rname">'+safe(s.name)+'</div>'+
-              '<div class="rmeta">'+safe(s.area)+'</div>'+
-              '<div class="rtrack"><div class="rbar-bg"><div class="rbar" style="width:'+bw+'%"></div></div></div>'+
-            '</div>'+
-            '<div class="rright">'+
-              '<div class="rpts">'+(s.pts||0)+'</div>'+
-              '<div class="rpts-l">pontos</div>'+
-              '<div class="rlv '+lv.c+'">'+lv.n+'</div>'+
-            '</div>'+
-          '</div>';
+          const pts=s.pts||0;
+          const pct=maxP>0?Math.round(pts/maxP*100):0;
+          const lv=getLevel(pts);
+          const bw=Math.max(pct,pts>0?2:0);
+          const sCats=catBySid[s.id]||{};
+          const catsHtml=pts>0
+            ?catDefs.map(c=>{
+                const p=Math.max(0,sCats[c.k]||0);
+                const w=pts>0?Math.round(p/pts*100):0;
+                return `<div class="rcat-item">
+                  <div class="rcat-lbl">${c.k}</div>
+                  <div class="rcat-bar-bg"><div class="rcat-bar" style="width:${w}%;background:${c.color}"></div></div>
+                  <div class="rcat-pts">${p||'—'}</div>
+                </div>`;
+              }).join('')
+            :`<div class="rcat-empty">Nenhum ponto lançado ainda.</div>`;
+          return `<div class="rrow" onclick="toggleRrow(this)">
+            <div class="rrow-main">
+              <div class="rpos">${i+1}</div>
+              <div class="rinfo"><div class="rname">${safe(s.name)}</div><div class="rmeta">Est. ${s.stage} · ${safe(s.area)}</div></div>
+              <div class="rtrack"><div class="rbar-bg"><div class="rbar" style="width:${bw}%"></div></div></div>
+              <div class="rright">
+                <div class="rpts">${pts}</div>
+                <div class="rpts-l">pontos</div>
+                <div class="rlv ${lv.c}">${lv.n}</div>
+              </div>
+              <div class="rrow-chev">▾</div>
+            </div>
+            <div class="rrow-panel">
+              <div class="rrow-cats">${catsHtml}</div>
+            </div>
+          </div>`;
         }).join('');
   }
 };
