@@ -81,8 +81,9 @@ nav{
   height:62px;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 2rem;
-  background:rgba(13, 46, 56, 0.015);backdrop-filter:blur(15px);
-  border-bottom:1px solid var(--border);box-shadow:0 1px 0 var(--orange);
+  background:rgba(13, 46, 56, 0.72);backdrop-filter:blur(18px) saturate(1.4);
+  -webkit-backdrop-filter:blur(18px) saturate(1.4);
+  border-bottom:1px solid rgba(255,255,255,0.07);box-shadow:0 1px 0 var(--orange);
 }
 .nav-logo{display:flex;align-items:center;flex-shrink:0}
 
@@ -183,9 +184,11 @@ nav{
 .btn-p:hover{background:var(--orange-lt);transform:translateY(-1px)}
 .btn-o{padding:12px 26px;font-size:14px;background:transparent;color:var(--text);border:1px solid rgba(0,192,139,.35);border-radius:99px;transition:all .18s;position:relative;z-index:5}
 .btn-o:hover{background:rgba(0,192,139,.08);border-color:rgba(0,192,139,.55);color:var(--green)}
-.hero-nums{display:flex;gap:3rem;flex-wrap:wrap;justify-content:center;margin-top:4rem;padding-top:2.5rem;border-top:1px solid var(--border);position:relative;z-index:5}
-.hnum-v{font-family:var(--head);font-size:40px;font-weight:800;color:var(--orange)}
-.hnum-l{font-size:11px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+.hero-nums{display:flex;flex-wrap:wrap;justify-content:center;margin-top:4rem;padding-top:2.5rem;border-top:1px solid var(--border);position:relative;z-index:5}
+.hero-nums > div{text-align:center;padding:0 2.5rem}
+.hero-nums > div + div{border-left:1px solid var(--border)}
+.hnum-v{font-family:var(--head);font-size:48px;font-weight:800;color:var(--orange);line-height:1}
+.hnum-l{font-size:11px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:.07em;margin-top:6px}
 
 /* Números da hero — alternância laranja/verde */
 .hero-nums > div:nth-child(2) .hnum-v,
@@ -200,15 +203,18 @@ nav{
 .sec-h{font-family:var(--head);font-size:clamp(30px,4vw,50px);font-weight:800;letter-spacing:-.03em;line-height:1.06;margin-bottom:1.25rem}
 .sec-h em{font-style:normal;color:var(--orange)}
 .sec-sub{font-size:15px;color:rgba(255,255,255,0.55);max-width:560px;line-height:1.7;margin-bottom:3rem}
-.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden}
-.pill-card{background:var(--surf2);padding:2rem;transition:background .22s,transform .22s;position:relative;overflow:hidden}
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;counter-reset:pill-counter}
+.pill-card{background:var(--surf2);padding:2rem;transition:background .22s,transform .22s;position:relative;overflow:hidden;counter-increment:pill-counter}
+.pill-card::before{content:counter(pill-counter,decimal-leading-zero);position:absolute;top:1.25rem;left:1.5rem;font-family:var(--head);font-size:11px;font-weight:700;color:rgba(255,255,255,0.22);letter-spacing:.04em;z-index:2}
 .pill-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(250,132,0,.07),transparent 60%);opacity:0;transition:opacity .25s}
 .pill-card:hover{background:var(--surf3)}
 .pill-card:hover::after{opacity:1}
-.pill-ico{font-size:24px;margin-bottom:.875rem;transition:transform .25s}
+.pill-ico{font-size:24px;margin-bottom:.875rem;margin-top:1.5rem;transition:transform .25s}
 .pill-card:hover .pill-ico{transform:scale(1.15) rotate(-4deg)}
 .pill-t{font-family:var(--head);font-size:16px;font-weight:700;margin-bottom:.4rem}
 .pill-d{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.65}
+.pill-status{position:absolute;top:1.25rem;right:1.25rem;display:inline-flex;align-items:center;gap:5px;background:rgba(0,192,139,0.12);color:var(--green);border:1px solid rgba(0,192,139,0.25);border-radius:99px;font-size:10px;font-weight:600;padding:2px 10px;letter-spacing:.03em;z-index:2}
+.pill-status::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0}
 
 .startups-sec{padding:5rem 2rem;background:var(--bg)}
 .chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-top:2rem}
@@ -276,7 +282,7 @@ nav{
 .rright{text-align:right;flex-shrink:0}
 .rpts{font-family:var(--head);font-size:17px;font-weight:700;color:var(--orange)}
 .rpts-l{font-size:10px;color:rgba(255,255,255,0.55)}
-.rlv{font-size:9px;font-weight:500;padding:2px 7px;border-radius:99px;margin-top:3px;display:inline-block}
+.rlv{font-size:11px;font-weight:600;padding:2px 10px;border-radius:99px;margin-top:4px;display:inline-block;letter-spacing:.02em}
 .lv-exp{background:rgba(96,196,216,.16);color:#60C4D8}
 .lv-con{background:rgba(0,192,139,.15);color:var(--green)}
 .lv-ace{background:rgba(250,132,0,.16);color:var(--orange-lt)}
@@ -1056,6 +1062,7 @@ button.nav-logo {
   flex-shrink: 0;
   border-radius: 8px;
   transition: opacity .18s ease, transform .18s ease;
+  cursor: pointer;
   /* Foco visível por teclado já herdado do :focus-visible global */
 }
 
