@@ -67,6 +67,8 @@ const getA = () => ld('apb_a', DEF_ATIV);
 const setA = v => sv('apb_a',v);
 const getL = () => ld('apb_l',[]);
 const setL = v => sv('apb_l',v);
+const getDemoday = () => ld('apb_demoday', '2026-07-23');
+const setDemoday = v => sv('apb_demoday', v);
 
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
 
@@ -89,11 +91,10 @@ function ptsByCatByS(){
 }
 
 function getLevel(p){
-  if(p>=800) return {n:'Elite',c:'lv-eli'};
-  if(p>=500) return {n:'Destaque',c:'lv-des'};
-  if(p>=250) return {n:'Acelerado',c:'lv-ace'};
-  if(p>=100) return {n:'Construtor',c:'lv-con'};
-  return {n:'Explorador',c:'lv-exp'};
+  if(p>=300) return {n:'Elite',c:'lv-eli'};
+  if(p>=150) return {n:'Acelerada',c:'lv-ace'};
+  if(p>=50)  return {n:'Em Tração',c:'lv-con'};
+  return {n:'Iniciante',c:'lv-exp'};
 }
 
 function getRanked(){
@@ -117,11 +118,21 @@ function goPage(name,btn){
 }
 
 // ─── HOME ─────────────────────────────────────────────
+function calcDiasDemo(){
+  const d=getDemoday();
+  if(!d) return '—';
+  const diff=Math.ceil((new Date(d+'T00:00:00')-new Date().setHours(0,0,0,0))/(1000*60*60*24));
+  if(diff<0) return 0;
+  return diff;
+}
+
 function updateHome(){
   const lanc=getL();
   const startups=getS();
   document.getElementById('hn-s').textContent=startups.length;
   document.getElementById('hn-p').textContent=lanc.reduce((s,l)=>s+Number(l.pts),0);
+  const hnD=document.getElementById('hn-d');
+  if(hnD) hnD.textContent=calcDiasDemo();
   const h=document.getElementById('hn-startups-h');
   if(h) h.textContent=startups.length+' startups';
   const chips=document.getElementById('startups-chips');
@@ -267,6 +278,16 @@ function refreshAdmin(){
   renderTA();
   renderHist();
   document.getElementById('ln-data').value=new Date().toISOString().split('T')[0];
+  const cfgD=document.getElementById('cfg-demoday');
+  if(cfgD) cfgD.value=getDemoday()||'2026-07-23';
+}
+
+function saveConfig(){
+  const d=document.getElementById('cfg-demoday').value;
+  if(!d){ showToast('Informe a data do Demoday.','error'); return; }
+  setDemoday(d);
+  updateHome();
+  showToast('Configurações salvas!');
 }
 
 function updateStats(){

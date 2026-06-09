@@ -62,7 +62,7 @@
     </div>
     <div class="hero-nums">
       <div><div class="hnum-v" id="hn-s">15</div><div class="hnum-l">Startups</div></div>
-      <div><div class="hnum-v">20</div><div class="hnum-l">Atividades</div></div>
+      <div><div class="hnum-v" id="hn-d">—</div><div class="hnum-l">Dias para o Demoday</div></div>
       <div><div class="hnum-v" id="hn-p">0</div><div class="hnum-l">Pontos lançados</div></div>
       <div><div class="hnum-v">15</div><div class="hnum-l">Anos INAITEC</div></div>
     </div>
@@ -501,6 +501,7 @@
       <button class="atab" onclick="aTab('startups',this)">Startups</button>
       <button class="atab" onclick="aTab('atividades',this)">Atividades</button>
       <button class="atab" onclick="aTab('historico',this)">Histórico</button>
+      <button class="atab" onclick="aTab('config',this)">Configurações</button>
     </div>
 
     <!-- Lançar -->
@@ -582,6 +583,22 @@
       <div class="fc" style="padding:0;overflow:hidden">
         <table class="dt"><thead><tr><th>Atividade</th><th>Categoria</th><th>Estágios</th><th>Pontos</th><th></th></tr></thead>
         <tbody id="tbl-a"></tbody></table>
+      </div>
+    </div>
+
+    <!-- Configurações -->
+    <div class="asec" id="asec-config">
+      <div class="fc">
+        <h4>Configurações do programa</h4>
+        <div class="frow f2">
+          <div class="fg">
+            <label class="fl">Data do Demoday</label>
+            <input class="fc-inp" type="date" id="cfg-demoday"/>
+          </div>
+        </div>
+        <div class="factions">
+          <button class="btn-s" onclick="saveConfig()">Salvar</button>
+        </div>
       </div>
     </div>
 
