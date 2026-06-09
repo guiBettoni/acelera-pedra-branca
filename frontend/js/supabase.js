@@ -40,9 +40,8 @@ function handleUnauthorized(r) {
 }
 
 function s2l(s) {
-  // 'Acelerador' é valor legado no banco — mapeado igual a 'Acelerado'
-  const m={'Explorador':1,'Construtor':2,'Acelerado':3,'Acelerador':3,'Destaque':4,'Elite':5};
-  return {id:s.id,name:s.nome,area:s.area,stage:m[s.nivel]||1,email:s.email||'',pts:s.pontos||0};
+  // estagio é a coluna separada (Ideação/Operação/Tração/Escala), independente do nivel de gamificação
+  return {id:s.id,name:s.nome,area:s.area,stage:s.estagio||1,email:s.email||'',pts:s.pontos||0};
 }
 function l2l(l) {
   return {id:l.id,sid:l.startup_id,sname:l.startups?.nome||'?',ativ:l.descricao||'Atividade',cat:l.categoria||'Manual',pts:l.pontos,obs:l.obs||'',by:l.lancado_por||'',date:(l.criado_em||'').slice(0,10)};
@@ -391,14 +390,12 @@ window.saveStartup = async function() {
   if(!name||!area){showToast('Preencha nome e área');return;}
   if(_sbReady){
     if(eid){
-      const nivelMap=['','Explorador','Construtor','Acelerado','Destaque','Elite'];
-      const nivel=nivelMap[stage]||'Explorador';
-      const r=await fetch(BACKEND_URL+'/api/startups/'+encodeURIComponent(eid),{method:'PUT',headers:authHeaders(),body:JSON.stringify({nome:name,area,email,nivel})});
+      const r=await fetch(BACKEND_URL+'/api/startups/'+encodeURIComponent(eid),{method:'PUT',headers:authHeaders(),body:JSON.stringify({nome:name,area,email,estagio:stage})});
       if(handleUnauthorized(r)) return;
       if(!r.ok){ showToast('Erro ao atualizar startup'); return; }
       showToast('Startup atualizada!');
     } else {
-      const r=await fetch(BACKEND_URL+'/api/startups',{method:'POST',headers:authHeaders(),body:JSON.stringify({nome:name,area,email,nivel:'Explorador',pontos:0,ativo:true})});
+      const r=await fetch(BACKEND_URL+'/api/startups',{method:'POST',headers:authHeaders(),body:JSON.stringify({nome:name,area,email,estagio:stage,nivel:'Explorador',pontos:0,ativo:true})});
       if(handleUnauthorized(r)) return;
       if(!r.ok){ showToast('Erro ao cadastrar startup'); return; }
       showToast('Startup cadastrada!');
@@ -477,35 +474,31 @@ async function openRedistribuir(id, name, pts) {
   var inputs = cats.map(function(c){
     var cur = Math.round(Math.max(0,sCats[c.k]||0)*scale);
     return '<div><div class="fc-label">'+c.label+'</div>'
-      +'<input class="fc-inp" type="number" min="0" id="rd-'+c.k+'" value="'+cur+'" oninput="updateRedistribSum('+pts+')"></div>';
+      +'<input class="fc-inp" type="number" min="0" id="rd-'+c.k+'" value="'+cur+'" oninput="updateRedistribSum()"></div>';
   }).join('');
 
   panel.innerHTML = '<div class="fc-card" style="margin-bottom:1.5rem">'
-    +'<div class="fc-head">Redistribuir Pontos — '+safe(name)+'</div>'
-    +'<p style="font-size:12px;color:rgba(255,255,255,.6);margin:8px 0 16px">Total atual: <strong style="color:var(--orange)">'+pts+' pts</strong>. '
-    +'O restante não distribuído será salvo como "Manual".</p>'
+    +'<div class="fc-head">Atribuir Pontos por Categoria — '+safe(name)+'</div>'
+    +'<p style="font-size:12px;color:rgba(255,255,255,.6);margin:8px 0 16px">'
+    +'Os lançamentos anteriores serão substituídos pelo total que você definir abaixo. Pontos atuais: <strong style="color:var(--orange)">'+pts+'</strong>.</p>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'+inputs+'</div>'
     +'<p style="font-size:12px;color:rgba(255,255,255,.55);margin-bottom:14px">'
-    +'Distribuído: <strong id="redistrib-sum" style="color:var(--orange)">0</strong> pts &nbsp;·&nbsp; '
-    +'Manual: <strong id="redistrib-rest">0</strong> pts</p>'
+    +'Total novo: <strong id="redistrib-sum" style="color:var(--orange)">0</strong> pts</p>'
     +'<div style="display:flex;gap:10px">'
-    +'<button class="btn-s" onclick="saveRedistribuicao(\''+escapeJs(id)+'\','+pts+')">Confirmar redistribuição</button>'
+    +'<button class="btn-s" onclick="saveRedistribuicao(\''+escapeJs(id)+'\')">Confirmar</button>'
     +'<button class="btn-s" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.7)" onclick="closeRedistribuir()">Cancelar</button>'
     +'</div></div>';
 
   panel.style.display = 'block';
-  updateRedistribSum(pts);
+  updateRedistribSum();
   panel.scrollIntoView({behavior:'smooth'});
 }
 
-function updateRedistribSum(total) {
+function updateRedistribSum() {
   var cats = ['Engajamento','Desenvolvimento','Tração','Bônus'];
   var sum = cats.reduce(function(s,c){ return s+(parseInt(document.getElementById('rd-'+c)?.value)||0); },0);
-  var rest = total - sum;
   var sumEl = document.getElementById('redistrib-sum');
-  var restEl = document.getElementById('redistrib-rest');
-  if (sumEl) { sumEl.textContent = sum; sumEl.style.color = sum>total ? '#F87171' : 'var(--orange)'; }
-  if (restEl) { restEl.textContent = rest>=0 ? rest+' pts' : '⚠️ excede o total!'; restEl.style.color = rest<0 ? '#F87171' : 'rgba(255,255,255,.7)'; }
+  if (sumEl) { sumEl.textContent = sum; sumEl.style.color = sum>0 ? 'var(--orange)' : 'rgba(255,255,255,.5)'; }
 }
 
 function closeRedistribuir() {
@@ -513,7 +506,18 @@ function closeRedistribuir() {
   if (panel) panel.style.display = 'none';
 }
 
-async function saveRedistribuicao(id, currentPts) {
+async function resetAllPontos() {
+  if (!confirm('⚠️ Zerar TODOS os pontos e TODOS os lançamentos de TODAS as startups?\n\nEsta ação não pode ser desfeita.')) return;
+  const r = await fetch(BACKEND_URL+'/api/admin/reset-pontos', {method:'POST', headers:authHeaders()});
+  if (handleUnauthorized(r)) return;
+  if (!r.ok) { const d=await r.json().catch(()=>({error:'Erro desconhecido'})); showToast('Erro: '+d.error); return; }
+  _sbCache = null;
+  showToast('Todos os pontos e lançamentos foram zerados.');
+  refreshAdmin();
+  renderRanking();
+}
+
+async function saveRedistribuicao(id) {
   var cats = ['Engajamento','Desenvolvimento','Tração','Bônus'];
   var categorias = {};
   var sum = 0;
@@ -523,16 +527,16 @@ async function saveRedistribuicao(id, currentPts) {
     sum += v;
   });
   if (sum === 0) { showToast('Informe pelo menos uma categoria.'); return; }
-  if (sum > currentPts) { showToast('A soma ('+sum+') excede o total de '+currentPts+' pts.'); return; }
   var r = await fetch(BACKEND_URL+'/api/startups/'+encodeURIComponent(id)+'/redistribuir', {
     method:'POST', headers:authHeaders(), body:JSON.stringify({categorias:categorias})
   });
   if (handleUnauthorized(r)) return;
   if (!r.ok) { var d=await r.json().catch(function(){return{error:'Erro'};}); showToast('Erro: '+d.error); return; }
-  showToast('Pontos redistribuídos com sucesso!');
+  showToast('Pontos atribuídos com sucesso!');
   closeRedistribuir();
   _sbCache = null;
-  renderHist();
+  refreshAdmin();
+  renderRanking();
 }
 
 (async function() {

@@ -590,9 +590,12 @@
       <div class="fc">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
           <h4 style="margin:0">Histórico de lançamentos</h4>
-          <select class="fc-inp" style="width:auto;min-width:160px" id="hist-filter" onchange="renderHist()">
-            <option value="">Todas as startups</option>
-          </select>
+          <div style="display:flex;align-items:center;gap:8px">
+            <select class="fc-inp" style="width:auto;min-width:160px" id="hist-filter" onchange="renderHist()">
+              <option value="">Todas as startups</option>
+            </select>
+            <button class="ab del" style="white-space:nowrap" onclick="resetAllPontos()">Zerar tudo</button>
+          </div>
         </div>
         <div id="hist-list"></div>
       </div>

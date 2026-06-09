@@ -144,12 +144,14 @@ app.post('/api/startups', requireAuth, async (req, res) => {
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.status(400).json({ error: 'Email inválido' });
   }
+  const estagioNum = parseInt(req.body.estagio);
   try {
     const payload = {
       nome: nome.trim(),
       area: area.trim(),
       email: (email || '').trim(),
       nivel: ['Explorador','Construtor','Acelerado','Destaque','Elite'].includes(nivel) ? nivel : 'Explorador',
+      estagio: [1,2,3,4].includes(estagioNum) ? estagioNum : 1,
       pontos: Math.max(0, parseInt(pontos) || 0),
       ativo: ativo !== false,
     };
@@ -160,7 +162,7 @@ app.post('/api/startups', requireAuth, async (req, res) => {
 });
 
 app.put('/api/startups/:id', requireAuth, async (req, res) => {
-  const allowed = ['nome', 'area', 'email', 'nivel', 'ativo'];
+  const allowed = ['nome', 'area', 'email', 'nivel', 'estagio', 'ativo'];
   const payload = {};
   for (const k of allowed) if (req.body[k] !== undefined) payload[k] = req.body[k];
   if (payload.nome !== undefined) {
@@ -176,6 +178,10 @@ app.put('/api/startups/:id', requireAuth, async (req, res) => {
   }
   if (payload.nivel && !['Explorador','Construtor','Acelerado','Destaque','Elite'].includes(payload.nivel)) {
     return res.status(400).json({ error: 'Nível inválido' });
+  }
+  if (payload.estagio !== undefined) {
+    payload.estagio = parseInt(payload.estagio);
+    if (![1,2,3,4].includes(payload.estagio)) return res.status(400).json({ error: 'Estágio inválido (1–4)' });
   }
   if (!Object.keys(payload).length) return res.status(400).json({ error: 'Nenhum campo para atualizar' });
   try {
@@ -248,13 +254,8 @@ app.post('/api/startups/:id/redistribuir', requireAuth, async (req, res) => {
   const soma = Object.values(distribuicao).reduce((s, v) => s + v, 0);
   if (soma === 0) return res.status(400).json({ error: 'Informe ao menos uma categoria com pontos' });
   try {
-    const { data: startup } = await supabase.from('startups').select('pontos').eq('id', req.params.id).single();
+    const { data: startup } = await supabase.from('startups').select('id').eq('id', req.params.id).single();
     if (!startup) return res.status(404).json({ error: 'Startup não encontrada' });
-    if (soma > startup.pontos) {
-      return res.status(400).json({ error: `Soma da distribuição (${soma}) não pode exceder os pontos atuais (${startup.pontos})` });
-    }
-    const restante = startup.pontos - soma;
-    if (restante > 0) distribuicao['Manual'] = (distribuicao['Manual'] || 0) + restante;
 
     await supabase.from('pontuacoes').delete().eq('startup_id', req.params.id);
 
@@ -312,6 +313,17 @@ app.delete('/api/pontuacoes/:id', requireAuth, async (req, res) => {
       const newPts = (startup?.pontos || 0) - pontuacao.pontos;
       await supabase.from('startups').update({ pontos: newPts, nivel: getLevel(newPts) }).eq('id', pontuacao.startup_id);
     }
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Zera todos os pontos e limpa o histórico de lançamentos
+app.post('/api/admin/reset-pontos', requireAuth, async (req, res) => {
+  try {
+    const { error: delErr } = await supabase.from('pontuacoes').delete().not('id', 'is', null);
+    if (delErr) return res.status(500).json({ error: delErr.message });
+    const { error: updErr } = await supabase.from('startups').update({ pontos: 0, nivel: 'Explorador' }).not('id', 'is', null);
+    if (updErr) return res.status(500).json({ error: updErr.message });
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
