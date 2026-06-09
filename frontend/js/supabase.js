@@ -547,6 +547,9 @@ async function saveRedistribuicao(id) {
       _sbCache=data.length?data.map(s2l):null;
       console.info('[SB] Conectado: '+data.length+' startups');
       if (typeof fillDrops === 'function') fillDrops();
+      if (typeof updateHome === 'function') updateHome();
+      const rankPage = document.getElementById('page-ranking');
+      if (rankPage && rankPage.classList.contains('on') && typeof renderRanking === 'function') renderRanking();
       const hn=document.getElementById('hn-s');
       if(hn&&data.length) hn.textContent=data.length;
     }

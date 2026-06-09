@@ -22,17 +22,17 @@ function escapeJs(str){
     .replace(/\"/g,'\\\"');
 }
 const DEF_STARTUPS = [
-  {id:'S03',name:'MomCar',area:'Mobilidade / Carona',stage:1,email:''},
-  {id:'S05',name:'Nitemapp',area:'Entretenimento / Geo',stage:1,email:''},
-  {id:'S06',name:'IziTag',area:'Tráfego / Analytics',stage:2,email:''},
-  {id:'S07',name:'LUMA',area:'Saúde da Mulher',stage:1,email:''},
-  {id:'S08',name:'PDV Fluxo',area:'Varejo / PME',stage:2,email:''},
-  {id:'S10',name:'Mr Foster',area:'Hotelaria / Check-in',stage:3,email:''},
-  {id:'S11',name:'CompliDataX',area:'Compliance / LGPD',stage:2,email:''},
-  {id:'S12',name:'Cuida.VC',area:'RH / GRC',stage:2,email:''},
-  {id:'S13',name:'L. Bonenberger',area:'Edtech / Conteúdo',stage:1,email:''},
-  {id:'S14',name:'Baos Innovation',area:'IA Generativa',stage:4,email:''},
-  {id:'S15',name:'Délia',area:'Fintech / Mulheres MEI',stage:1,email:''},
+  {id:'00000001-0000-0000-0000-000000000003',name:'MomCar',area:'Mobilidade / Carona',stage:2,email:''},
+  {id:'00000001-0000-0000-0000-000000000005',name:'Nitemapp',area:'Entretenimento / Geo',stage:2,email:''},
+  {id:'00000001-0000-0000-0000-000000000006',name:'IziTag',area:'Mídia Offline',stage:2,email:''},
+  {id:'00000001-0000-0000-0000-000000000007',name:'LUMA',area:'Saúde da Mulher',stage:1,email:''},
+  {id:'00000001-0000-0000-0000-000000000008',name:'PDV Fluxo',area:'Varejo / PDV',stage:2,email:''},
+  {id:'00000001-0000-0000-0000-000000000011',name:'CompliDataX',area:'Compliance / LGPD',stage:1,email:''},
+  {id:'00000001-0000-0000-0000-000000000012',name:'Cuida.VC',area:'RH / GRC',stage:2,email:''},
+  {id:'00000001-0000-0000-0000-000000000013',name:'Ochs',area:'Conteúdo Mobile',stage:1,email:''},
+  {id:'00000001-0000-0000-0000-000000000014',name:'Baos Innovation',area:'IA Generativa',stage:2,email:''},
+  {id:'00000001-0000-0000-0000-000000000015',name:'Délia',area:'Fintech / Mulheres MEI',stage:2,email:''},
+  {id:'fbfb0aed-c574-4995-9886-82d080d41cd9',name:'Kayris',area:'Saúde/Estética Avançada',stage:2,email:''},
 ];
 
 const DEF_ATIV = [
