@@ -91,10 +91,10 @@ function ptsByCatByS(){
 }
 
 function getLevel(p){
-  if(p>=300) return {n:'Elite',c:'lv-eli'};
-  if(p>=150) return {n:'Acelerada',c:'lv-ace'};
-  if(p>=50)  return {n:'Em Tração',c:'lv-con'};
-  return {n:'Iniciante',c:'lv-exp'};
+  if(p>=200) return {n:'Destaque',c:'lv-eli'};
+  if(p>=150) return {n:'Acelerando',c:'lv-ace'};
+  if(p>=100) return {n:'Tração',c:'lv-con'};
+  return {n:'Validando',c:'lv-exp'};
 }
 
 function getRanked(){
