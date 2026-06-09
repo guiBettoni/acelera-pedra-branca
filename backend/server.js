@@ -320,10 +320,12 @@ app.delete('/api/pontuacoes/:id', requireAuth, async (req, res) => {
 // Zera todos os pontos e limpa o histórico de lançamentos
 app.post('/api/admin/reset-pontos', requireAuth, async (req, res) => {
   try {
-    const { error: delErr } = await supabase.from('pontuacoes').delete().not('id', 'is', null);
-    if (delErr) return res.status(500).json({ error: delErr.message });
-    const { error: updErr } = await supabase.from('startups').update({ pontos: 0, nivel: 'Explorador' }).not('id', 'is', null);
-    if (updErr) return res.status(500).json({ error: updErr.message });
+    // startup_id é NOT NULL em pontuacoes, então este filtro captura todos os registros
+    const { error: delErr } = await supabase.from('pontuacoes').delete().not('startup_id', 'is', null);
+    if (delErr) return res.status(500).json({ error: 'Falha ao limpar lançamentos: ' + delErr.message });
+    // nome é NOT NULL em startups, então este filtro captura todas as startups
+    const { error: updErr } = await supabase.from('startups').update({ pontos: 0, nivel: 'Explorador' }).not('nome', 'is', null);
+    if (updErr) return res.status(500).json({ error: 'Falha ao zerar pontos: ' + updErr.message });
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
