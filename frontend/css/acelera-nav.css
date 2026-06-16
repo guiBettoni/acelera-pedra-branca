@@ -214,8 +214,7 @@ nav{
 .pill-card:hover .pill-ico{transform:scale(1.15) rotate(-4deg)}
 .pill-t{font-family:var(--head);font-size:16px;font-weight:700;margin-bottom:.4rem}
 .pill-d{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.65}
-.pill-status{position:absolute;top:1.25rem;right:1.25rem;display:inline-flex;align-items:center;gap:5px;background:rgba(0,192,139,0.12);color:var(--green);border:1px solid rgba(0,192,139,0.25);border-radius:99px;font-size:10px;font-weight:600;padding:2px 10px;letter-spacing:.03em;z-index:2}
-.pill-status::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0}
+
 
 .startups-sec{padding:5rem 2rem;background:var(--bg)}
 .chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-top:2rem}
