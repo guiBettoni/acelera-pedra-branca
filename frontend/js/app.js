@@ -103,18 +103,18 @@ function getRanked(){
 }
 
 // ─── NAVIGATION ──────────────────────────────────────
-function goPage(name,btn){
+function goPage(name,btn,noScroll){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
   document.getElementById('page-'+name).classList.add('on');
   if(btn) btn.classList.add('on');
-  else document.querySelectorAll('.nav-btn').forEach(b=>{
-    if((b.getAttribute('onclick')||'').includes("'"+name+"'")) b.classList.add('on');
+  else document.querySelectorAll('.nav-btn[data-page]').forEach(b=>{
+    if(b.getAttribute('data-page')===name) b.classList.add('on');
   });
   if(name==='ranking') renderRanking();
   if(name==='admin') checkAdmin();
   if(name==='home') updateHome();
-  window.scrollTo({top:0,behavior:'smooth'});
+  if(!noScroll) window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // ─── HOME ─────────────────────────────────────────────
