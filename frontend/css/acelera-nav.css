@@ -91,7 +91,7 @@ nav{
   backdrop-filter:blur(20px) saturate(1.6);
   -webkit-backdrop-filter:blur(20px) saturate(1.6);
   border:1px solid rgba(255,255,255,0.10);
-  border-radius:16px;
+  border-radius:50px;
   box-shadow:0 4px 28px rgba(0,0,0,0.30), inset 0 0 0 1px rgba(250,132,0,0.12);
 }
 .nav-logo{display:flex;align-items:center;flex-shrink:0}
