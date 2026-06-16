@@ -100,7 +100,8 @@ nav{
 .nav-center{display:flex;gap:4px;align-items:center}
 .nav-btn{padding:5px 14px;font-size:13px;color:rgba(255,255,255,0.55);background:transparent;border:none;border-radius:99px;transition:all .18s;white-space:nowrap;cursor:pointer;outline:none;text-decoration:none;display:inline-block}
 .nav-btn:focus-visible{outline:2px solid rgba(255,255,255,0.3);outline-offset:2px}
-.nav-btn:hover,.nav-btn.on{color:var(--text);background:rgba(255,255,255,0.10)}
+.nav-btn:hover{color:var(--orange);background:transparent}
+.nav-btn.on{color:var(--text);background:rgba(255,255,255,0.10)}
 .nav-cta{padding:7px 18px;font-size:13px;font-weight:600;color:#fff;background:var(--orange);border:none;border-radius:99px;transition:all .15s;white-space:nowrap}
 .nav-cta:hover{background:var(--orange-lt);transform:scale(1.03)}
 
