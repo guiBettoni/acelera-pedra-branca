@@ -552,11 +552,17 @@ function closeNav(){
     spot.style.left = x + 'px';
     spot.style.top  = y + 'px';
 
+    // reveal on first move into hero
+    glow.style.opacity = '1';
+    spot.style.opacity = '1';
+
     // grid parallax — subtle offset opposite to mouse
     grid.style.transform = `translate(${nx * -10}px, ${ny * -8}px)`;
   });
 
   hero.addEventListener('mouseleave', () => {
+    glow.style.opacity = '0';
+    spot.style.opacity = '0';
     glow.style.left = '50%';
     glow.style.top  = '40%';
     spot.style.left = '50%';
