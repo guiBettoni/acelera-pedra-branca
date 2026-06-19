@@ -433,5 +433,25 @@ app.post('/api/sheets/sync', requireAuth, async (req, res) => {
   res.json({ synced, unmatched, errors });
 });
 
+// ── Upload de foto para Supabase Storage ─────────────────────────────────────
+app.post('/api/upload-foto', requireAuth,
+  express.raw({ type: /^image\//, limit: '5mb' }),
+  async (req, res) => {
+    const orig = (req.query.name || 'foto.jpg').replace(/[^a-zA-Z0-9._-]/g, '_');
+    const ext  = orig.split('.').pop().toLowerCase() || 'jpg';
+    const path = Date.now() + '_' + orig.slice(0, 60);
+    const mime = req.headers['content-type'] || 'image/jpeg';
+
+    const { error } = await supabase.storage
+      .from('startup-fotos')
+      .upload(path, req.body, { contentType: mime, upsert: true });
+
+    if (error) return res.status(500).json({ error: error.message });
+
+    const { data } = supabase.storage.from('startup-fotos').getPublicUrl(path);
+    res.json({ url: data.publicUrl });
+  }
+);
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log('Backend listening on', port));

@@ -453,18 +453,19 @@ function _setFotoPreview(src) {
   }
 }
 
-async function _uploadFotoStorage(file, startupName) {
-  var ext = file.name.split('.').pop().toLowerCase() || 'jpg';
-  var slug = (startupName||'startup').toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-').slice(0,40);
-  var path = slug + '-' + Date.now() + '.' + ext;
-  var uploadUrl = SUPABASE_URL + '/storage/v1/object/startup-fotos/' + path;
-  var r = await fetch(uploadUrl, {
+async function _uploadFotoStorage(file) {
+  var url = BACKEND_URL + '/api/upload-foto?name=' + encodeURIComponent(file.name);
+  var r = await fetch(url, {
     method: 'POST',
-    headers: Object.assign({'Content-Type': file.type, 'x-upsert': 'true'}, _sbHeaders),
+    headers: Object.assign({'Content-Type': file.type}, authHeaders()),
     body: file
   });
-  if (!r.ok) { var e = await r.text(); throw new Error('Upload falhou: ' + e); }
-  return SUPABASE_URL + '/storage/v1/object/public/startup-fotos/' + path;
+  if (!r.ok) {
+    var e = await r.json().catch(function(){ return {}; });
+    throw new Error(e.error || ('HTTP ' + r.status));
+  }
+  var d = await r.json();
+  return d.url;
 }
 
 // Override saveStartup
@@ -481,7 +482,7 @@ window.saveStartup = async function() {
   if (_fotoFile) {
     try {
       showToast('Enviando foto…');
-      foto = await _uploadFotoStorage(_fotoFile, name);
+      foto = await _uploadFotoStorage(_fotoFile);
     } catch(err) {
       showToast('Erro no upload da foto: ' + err.message);
       return;
