@@ -549,7 +549,18 @@
           <div class="fg"><label class="fl">E-mail contato</label><input class="fc-inp" type="email" id="st-email" placeholder="contato@startup.com"/></div>
         </div>
         <div class="frow">
-          <div class="fg" style="width:100%"><label class="fl">Foto / logo da empresa (URL)</label><input class="fc-inp" type="url" id="st-foto" placeholder="https://i.imgur.com/exemplo.png"/></div>
+          <div class="fg" style="width:100%">
+            <label class="fl">Foto / logo da empresa</label>
+            <div class="foto-upload-wrap">
+              <div class="foto-preview" id="foto-preview"><span class="foto-preview-ph">Sem foto</span></div>
+              <div class="foto-upload-actions">
+                <label class="btn-upload" for="st-foto-file">📁 Escolher arquivo</label>
+                <input type="file" id="st-foto-file" accept="image/*" style="display:none" onchange="onFotoFileChange(this)"/>
+                <span class="foto-or">ou</span>
+                <input class="fc-inp foto-url-inp" type="url" id="st-foto" placeholder="Cole uma URL de imagem" oninput="onFotoUrlChange(this)"/>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="factions">
           <button class="btn-s" onclick="saveStartup()">Salvar</button>

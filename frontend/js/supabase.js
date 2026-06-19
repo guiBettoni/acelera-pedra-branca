@@ -261,6 +261,9 @@ window.editS = async function(id){
   document.getElementById('st-email').value=s.email||'';
   document.getElementById('st-foto').value=s.foto||'';
   document.getElementById('st-eid').value=id;
+  _fotoFile = null;
+  var fi = document.getElementById('st-foto-file'); if(fi) fi.value='';
+  _setFotoPreview(s.foto||'');
   document.getElementById('form-startup').scrollIntoView({behavior:'smooth'});
 };
 
@@ -422,15 +425,69 @@ window.lancarPontos = async function() {
   }
 };
 
+// ── Foto upload helpers ──────────────────────────────────────
+var _fotoFile = null; // file selected locally
+
+window.onFotoFileChange = function(input) {
+  _fotoFile = input.files[0] || null;
+  if (_fotoFile) {
+    var reader = new FileReader();
+    reader.onload = function(e) { _setFotoPreview(e.target.result); };
+    reader.readAsDataURL(_fotoFile);
+    document.getElementById('st-foto').value = '';
+  }
+};
+
+window.onFotoUrlChange = function(input) {
+  _fotoFile = null;
+  _setFotoPreview(input.value.trim());
+};
+
+function _setFotoPreview(src) {
+  var p = document.getElementById('foto-preview');
+  if (!p) return;
+  if (src) {
+    p.innerHTML = '<img src="'+src+'" alt="" onerror="this.style.display=\'none\'">';
+  } else {
+    p.innerHTML = '<span class="foto-preview-ph">Sem foto</span>';
+  }
+}
+
+async function _uploadFotoStorage(file, startupName) {
+  var ext = file.name.split('.').pop().toLowerCase() || 'jpg';
+  var slug = (startupName||'startup').toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-').slice(0,40);
+  var path = slug + '-' + Date.now() + '.' + ext;
+  var uploadUrl = SUPABASE_URL + '/storage/v1/object/startup-fotos/' + path;
+  var r = await fetch(uploadUrl, {
+    method: 'POST',
+    headers: Object.assign({'Content-Type': file.type, 'x-upsert': 'true'}, _sbHeaders),
+    body: file
+  });
+  if (!r.ok) { var e = await r.text(); throw new Error('Upload falhou: ' + e); }
+  return SUPABASE_URL + '/storage/v1/object/public/startup-fotos/' + path;
+}
+
 // Override saveStartup
 window.saveStartup = async function() {
   const name  = document.getElementById('st-nome')?.value.trim();
   const area  = document.getElementById('st-area')?.value.trim();
   const stage = parseInt(document.getElementById('st-estagio')?.value)||1;
   const email = document.getElementById('st-email')?.value.trim()||'';
-  const foto  = document.getElementById('st-foto')?.value.trim()||'';
   const eid   = document.getElementById('st-eid')?.value;
   if(!name||!area){showToast('Preencha nome e área');return;}
+
+  let foto = document.getElementById('st-foto')?.value.trim()||'';
+
+  if (_fotoFile) {
+    try {
+      showToast('Enviando foto…');
+      foto = await _uploadFotoStorage(_fotoFile, name);
+    } catch(err) {
+      showToast('Erro no upload da foto: ' + err.message);
+      return;
+    }
+  }
+
   if(_sbReady){
     if(eid){
       const r=await fetch(BACKEND_URL+'/api/startups/'+encodeURIComponent(eid),{method:'PUT',headers:authHeaders(),body:JSON.stringify({nome:name,area,email,estagio:stage,foto_url:foto})});
@@ -443,6 +500,7 @@ window.saveStartup = async function() {
       if(!r.ok){ showToast('Erro ao cadastrar startup'); return; }
       showToast('Startup cadastrada!');
     }
+    _fotoFile = null;
     _sbCache=null; closeForm('form-startup'); refreshAdmin();
   } else {
     showToast('Conexão ao Supabase indisponível. Não é possível salvar startup.');
