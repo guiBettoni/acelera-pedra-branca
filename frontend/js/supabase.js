@@ -457,7 +457,7 @@ async function _uploadFotoStorage(file) {
   var url = BACKEND_URL + '/api/upload-foto?name=' + encodeURIComponent(file.name);
   var r = await fetch(url, {
     method: 'POST',
-    headers: Object.assign({'Content-Type': file.type}, authHeaders()),
+    headers: Object.assign(authHeaders(), {'Content-Type': file.type}),
     body: file
   });
   if (!r.ok) {
