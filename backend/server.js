@@ -338,7 +338,12 @@ app.post('/api/sheets/sync', requireAuth, async (req, res) => {
   }
 
   function parseBoolean(val) {
-    return val === true || String(val).toLowerCase().trim() === 'sim';
+    if (val === true) return true;
+    const str = String(val).toLowerCase().trim();
+    if (!str || str.startsWith('nao')) return false;
+    if (str === 'sim') return true;
+    const num = parseInt(val);
+    return !isNaN(num) && num > 0;
   }
 
   function calcPoints(row) {
@@ -382,9 +387,9 @@ app.post('/api/sheets/sync', requireAuth, async (req, res) => {
     try {
       const { total, breakdown } = calcPoints(row);
 
-      // Remove apenas entradas anteriores deste sync (preserva bônus manuais)
+      // Remove todas as entradas anteriores (planilha é fonte da verdade)
       await supabase.from('pontuacoes')
-        .delete().eq('startup_id', startup.id).eq('lancado_por', 'Planilha');
+        .delete().eq('startup_id', startup.id);
 
       const inserts = Object.entries(breakdown)
         .filter(([, pts]) => pts > 0)
