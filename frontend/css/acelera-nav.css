@@ -309,6 +309,20 @@ nav{
 .rrow-panel{max-height:0;overflow:hidden;opacity:0;transition:max-height .38s cubic-bezier(.4,0,.2,1),opacity .28s ease}
 .rrow.expanded .rrow-panel{max-height:600px;opacity:1}
 .rrow-cats{display:flex;flex-direction:column;gap:9px;padding:8px 16px 14px;border-top:1px solid var(--border)}
+/* ── Expedition Map ── */
+.expmap-wrap{margin:0 0 2rem;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.expmap-header{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--border);background:var(--surf)}
+.expmap-title{font-family:var(--head);font-size:14px;font-weight:700}
+.expmap-sub{font-size:11px;color:rgba(255,255,255,.4)}
+.expmap-container{background:linear-gradient(180deg,#0a1020 0%,#0f1a28 60%,#1a1408 100%);padding:8px}
+#expmap-svg{width:100%;display:block}
+.zone-label{font-size:10px;fill:rgba(255,255,255,.38);font-family:system-ui,sans-serif;font-weight:600;pointer-events:none}
+.map-piece{transition:filter .2s}
+.map-piece:hover{filter:brightness(1.25)}
+.map-piece.map-active circle:nth-child(2){stroke:#FFE066 !important;stroke-width:3px}
+.rrow-highlight{border-color:var(--gold) !important;background:rgba(245,200,66,.07) !important}
+.map-tooltip{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);padding:7px 16px;border-radius:99px;font-size:12px;font-weight:700;color:#000;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999;white-space:nowrap}
+.map-tooltip.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .rcat-item{display:grid;grid-template-columns:110px 1fr 42px;align-items:center;gap:10px}
 .rcat-lbl{font-size:11px;color:rgba(255,255,255,.65)}
 .rcat-bar-bg{height:5px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
