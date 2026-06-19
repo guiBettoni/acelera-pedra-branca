@@ -330,5 +330,95 @@ app.post('/api/admin/reset-pontos', requireAuth, async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// ── Sync via Google Sheets ────────────────────────────────────────────────────
+app.post('/api/sheets/sync', requireAuth, async (req, res) => {
+  const { startups: rows } = req.body || {};
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return res.status(400).json({ error: 'startups deve ser um array não-vazio' });
+  }
+
+  function parseBoolean(val) {
+    return val === true || String(val).toLowerCase().trim() === 'sim';
+  }
+
+  function calcPoints(row) {
+    const aulas    = Math.max(0, parseInt(row.aulas) || 0);
+    const mentoria = Math.max(0, parseInt(row.mentoria) || 0);
+    const canvas   = parseBoolean(row.canvas_feito) ? 15 : 0;
+    const entrev   = parseBoolean(row.entrevistas) ? 15 : 0;
+    const mvp      = parseBoolean(row.mvp_funcional) ? 30 : 0;
+    const pessoas  = parseBoolean(row.pessoas_testando) ? 30 : 0;
+    const clientes = parseBoolean(row.clientes_pagantes) ? 40 : 0;
+    return {
+      total: aulas * 10 + mentoria * 5 + canvas + entrev + mvp + pessoas + clientes,
+      breakdown: {
+        Engajamento:     aulas * 10 + mentoria * 5,
+        Desenvolvimento: canvas + entrev + mvp,
+        Tração:          pessoas + clientes,
+      },
+    };
+  }
+
+  const { data: allStartups, error: fetchErr } = await supabase
+    .from('startups').select('id, nome, pontos').eq('ativo', true);
+  if (fetchErr) return res.status(500).json({ error: fetchErr.message });
+
+  const synced    = [];
+  const unmatched = [];
+  const errors    = [];
+  const now       = new Date().toISOString();
+
+  for (const row of rows) {
+    const nomeLower = String(row.nome || '').trim().toLowerCase();
+    if (!nomeLower) continue;
+
+    const startup = allStartups.find(s => {
+      const dbLower = s.nome.toLowerCase();
+      return dbLower === nomeLower || dbLower.includes(nomeLower) || nomeLower.includes(dbLower);
+    });
+
+    if (!startup) { unmatched.push(row.nome); continue; }
+
+    try {
+      const { total, breakdown } = calcPoints(row);
+
+      // Remove apenas entradas anteriores deste sync (preserva bônus manuais)
+      await supabase.from('pontuacoes')
+        .delete().eq('startup_id', startup.id).eq('lancado_por', 'Planilha');
+
+      const inserts = Object.entries(breakdown)
+        .filter(([, pts]) => pts > 0)
+        .map(([cat, pts]) => ({
+          startup_id:  startup.id,
+          pontos:      pts,
+          descricao:   `Sync planilha — ${cat}`,
+          categoria:   cat,
+          obs:         'Sincronizado via Google Sheets',
+          lancado_por: 'Planilha',
+          criado_em:   now,
+        }));
+
+      if (inserts.length > 0) {
+        const { error: insErr } = await supabase.from('pontuacoes').insert(inserts);
+        if (insErr) throw new Error(insErr.message);
+      }
+
+      // Recalcula total a partir de TODAS as pontuacoes (preserva bônus manuais)
+      await recalcStartupPoints(startup.id);
+
+      const estagioNum = parseInt(row.estagio_atual);
+      if ([1, 2, 3, 4].includes(estagioNum)) {
+        await supabase.from('startups').update({ estagio: estagioNum }).eq('id', startup.id);
+      }
+
+      synced.push({ nome: startup.nome, pontos: total });
+    } catch (e) {
+      errors.push({ nome: row.nome, error: e.message });
+    }
+  }
+
+  res.json({ synced, unmatched, errors });
+});
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log('Backend listening on', port));
