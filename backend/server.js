@@ -154,6 +154,7 @@ app.post('/api/startups', requireAuth, async (req, res) => {
       estagio: [1,2,3,4].includes(estagioNum) ? estagioNum : 1,
       pontos: Math.max(0, parseInt(pontos) || 0),
       ativo: ativo !== false,
+      foto_url: (req.body.foto_url || '').trim() || null,
     };
     const { data, error } = await supabase.from('startups').insert(payload).select().single();
     if (error) return res.status(500).json({ error: error.message });
@@ -162,7 +163,7 @@ app.post('/api/startups', requireAuth, async (req, res) => {
 });
 
 app.put('/api/startups/:id', requireAuth, async (req, res) => {
-  const allowed = ['nome', 'area', 'email', 'nivel', 'estagio', 'ativo'];
+  const allowed = ['nome', 'area', 'email', 'nivel', 'estagio', 'ativo', 'foto_url'];
   const payload = {};
   for (const k of allowed) if (req.body[k] !== undefined) payload[k] = req.body[k];
   if (payload.nome !== undefined) {
