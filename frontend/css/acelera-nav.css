@@ -1178,3 +1178,114 @@ button.nav-logo:active {
 
 /* location badge — hide on mobile */
 @media (max-width:768px){.location-badge{display:none}}
+
+/* ══════════════════════════════════════════════
+   MAPA DA EXPEDIÇÃO  —  Mario World Style
+══════════════════════════════════════════════ */
+.expmap-wrap{margin:2.5rem auto 0;max-width:920px;padding:0 1rem;position:relative;z-index:1}
+.expmap-header{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.expmap-title{font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:.08em;text-transform:uppercase}
+.expmap-sub{font-size:11px;color:rgba(255,255,255,0.3)}
+.expmap-container{border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.10);box-shadow:0 10px 48px rgba(0,0,0,0.55),inset 0 0 0 1px rgba(255,255,255,0.04);line-height:0}
+#expmap-svg{display:block;width:100%;height:auto}
+.map-piece{transition:transform .15s cubic-bezier(.34,1.56,.64,1)}
+.map-piece:hover{transform:scale(1.28)!important}
+.map-tooltip{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);padding:8px 22px;border-radius:99px;font-size:13px;font-weight:700;color:#000;opacity:0;transition:opacity .3s ease,transform .3s ease;pointer-events:none;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.4);white-space:nowrap}
+.map-tooltip.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.rrow-highlight{outline:2px solid var(--orange)!important;border-radius:12px;background:rgba(250,132,0,0.06)!important}
+
+/* ══════════════════════════════════════════════
+   NUVENS 3D DECORATIVAS
+══════════════════════════════════════════════ */
+.rk-clouds{position:absolute;inset:0;pointer-events:none;z-index:0}
+.rk-cloud{position:absolute;pointer-events:none;width:90px;height:34px;background:rgba(255,255,255,0.055);border-radius:100px}
+.rk-cloud::before{content:'';position:absolute;width:46px;height:46px;background:rgba(255,255,255,0.055);border-radius:50%;top:-24px;left:12px}
+.rk-cloud::after{content:'';position:absolute;width:32px;height:32px;background:rgba(255,255,255,0.045);border-radius:50%;top:-16px;left:46px}
+.rk-cloud.sm{width:60px;height:22px}
+.rk-cloud.sm::before{width:30px;height:30px;top:-16px;left:8px}
+.rk-cloud.sm::after{width:22px;height:22px;top:-11px;left:30px}
+.rk-cloud.lg{width:130px;height:48px}
+.rk-cloud.lg::before{width:66px;height:66px;top:-34px;left:18px}
+.rk-cloud.lg::after{width:48px;height:48px;top:-22px;left:68px}
+@keyframes cloud-drift-a{0%,100%{transform:translate(0,0)}50%{transform:translate(10px,-8px)}}
+@keyframes cloud-drift-b{0%,100%{transform:translate(0,0)}50%{transform:translate(-8px,-10px)}}
+@keyframes cloud-drift-c{0%,100%{transform:translate(0,0)}50%{transform:translate(6px,-14px)}}
+
+/* ══════════════════════════════════════════════
+   PÓDIO  —  Gaming Shield Style (INAITEC)
+══════════════════════════════════════════════ */
+#podium-area{
+  display:flex!important;
+  grid-template-columns:unset!important;
+  align-items:flex-end;
+  justify-content:center;
+  gap:12px;
+  padding:1.5rem 1rem 0;
+  position:relative;
+  z-index:1;
+}
+#podium-area .pod{
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;flex:1;max-width:210px;border:none!important;
+  background:transparent!important;padding:0!important;
+  border-radius:0!important;
+}
+#podium-area .pod:hover{transform:none!important}
+#podium-area .pod.p1{order:2}
+#podium-area .pod.p2{order:1}
+#podium-area .pod.p3{order:3}
+.pod-rank-num{font-size:60px;font-weight:900;line-height:1;position:absolute;top:0;z-index:0;opacity:0.08;font-family:system-ui;letter-spacing:-.02em;pointer-events:none}
+.p1 .pod-rank-num{color:#F5C842}
+.p2 .pod-rank-num{color:#00C08B}
+.p3 .pod-rank-num{color:#FA8400}
+.pod-shield{
+  width:100%;
+  border-radius:14px 14px 50% 50%/14px 14px 22px 22px;
+  padding:18px 16px 36px;
+  display:flex;flex-direction:column;align-items:center;gap:7px;
+  position:relative;z-index:1;
+  transition:transform .22s ease;
+}
+.pod-shield:hover{transform:translateY(-5px)}
+.p1 .pod-shield{background:linear-gradient(160deg,#0F3C4C 0%,#1A5468 55%,#0E2E3C 100%);border:2px solid rgba(245,200,66,0.42);box-shadow:0 0 32px rgba(245,200,66,0.16),0 14px 44px rgba(0,0,0,0.52);min-height:215px}
+.p2 .pod-shield{background:linear-gradient(160deg,#0A3040 0%,#124A5A 55%,#0A2230 100%);border:2px solid rgba(0,192,139,0.35);box-shadow:0 0 22px rgba(0,192,139,0.12),0 12px 36px rgba(0,0,0,0.5);min-height:180px}
+.p3 .pod-shield{background:linear-gradient(160deg,#0A2838 0%,#123848 55%,#0A2030 100%);border:2px solid rgba(250,132,0,0.35);box-shadow:0 0 22px rgba(250,132,0,0.12),0 12px 36px rgba(0,0,0,0.5);min-height:180px}
+.pod-ico{font-size:22px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5))}
+.pod-av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:system-ui;letter-spacing:-.01em}
+.p1 .pod-av{width:70px;height:70px;font-size:22px;background:linear-gradient(135deg,#F5C842,#FA8400);color:#0D2E38;border:3px solid rgba(255,255,255,0.32);box-shadow:0 4px 18px rgba(245,200,66,0.32)}
+.p2 .pod-av{width:60px;height:60px;font-size:19px;background:linear-gradient(135deg,#00C08B,#4A9EE0);color:#fff;border:2px solid rgba(255,255,255,0.22)}
+.p3 .pod-av{width:60px;height:60px;font-size:19px;background:linear-gradient(135deg,#FA8400,#FF9B26);color:#fff;border:2px solid rgba(255,255,255,0.22)}
+.pod-nm{font-size:13px;font-weight:700;color:#fff;text-align:center;line-height:1.3;margin-top:2px}
+.pod-area-s{font-size:10px;color:rgba(255,255,255,0.4);text-align:center}
+.pod-ptsrow{display:flex;align-items:baseline;gap:3px;margin-top:3px}
+.pod-ptsn{font-size:26px;font-weight:900;line-height:1}
+.p2 .pod-ptsn,.p3 .pod-ptsn{font-size:21px}
+.p1 .pod-ptsn{color:#F5C842}
+.p2 .pod-ptsn{color:#00C08B}
+.p3 .pod-ptsn{color:#FA8400}
+.pod-ptsl{font-size:10px;font-weight:600;color:rgba(255,255,255,0.42)}
+.pod-lvb{display:inline-flex;align-items:center;padding:2px 10px;border-radius:99px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+.p1 .pod-lvb{background:rgba(245,200,66,0.12);color:#F5C842;border:1px solid rgba(245,200,66,0.22)}
+.p2 .pod-lvb{background:rgba(0,192,139,0.10);color:#00C08B;border:1px solid rgba(0,192,139,0.16)}
+.p3 .pod-lvb{background:rgba(250,132,0,0.10);color:#FA8400;border:1px solid rgba(250,132,0,0.16)}
+.pod-pedestal{width:58%;margin-top:-1px;border-radius:0 0 6px 6px}
+.p1 .pod-pedestal{height:12px;background:linear-gradient(180deg,rgba(245,200,66,0.22),transparent)}
+.p2 .pod-pedestal{height:8px;background:linear-gradient(180deg,rgba(0,192,139,0.18),transparent)}
+.p3 .pod-pedestal{height:8px;background:linear-gradient(180deg,rgba(250,132,0,0.18),transparent)}
+
+@media(max-width:640px){
+  #podium-area .pod{max-width:160px}
+  .pod-shield{padding:14px 10px 32px;min-height:160px!important}
+  .p1 .pod-av{width:56px;height:56px;font-size:18px}
+  .p2 .pod-av,.p3 .pod-av{width:48px;height:48px;font-size:15px}
+  .pod-nm{font-size:11px}
+  .pod-ptsn{font-size:20px!important}
+  .expmap-wrap{margin-top:1.5rem}
+}
+@media(max-width:480px){
+  #podium-area{gap:6px}
+  #podium-area .pod{max-width:130px}
+  .pod-shield{padding:12px 8px 28px}
+  .pod-nm{font-size:10px}
+  .pod-area-s{display:none}
+}
