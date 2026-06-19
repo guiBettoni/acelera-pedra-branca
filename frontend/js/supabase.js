@@ -58,125 +58,6 @@ async function getSB() {
   return getS();
 }
 
-// ── Expedition Map ──────────────────────────────────────────
-function renderMap(ranked) {
-  const svg = document.getElementById('expmap-svg');
-  if (!svg) return;
-
-  const PALETTE = ['#FF6B6B','#4DD9AC','#FFE566','#89C4F4','#FF9A8B','#B39DDB','#80CBC4','#FFB74D','#81D4FA','#F48FB1','#A5D6A7','#FFCC02'];
-  const MAX_PTS = 300;
-  const PATH_D = 'M 720,350 C 560,350 240,350 80,315 C -30,285 700,255 740,225 C 780,195 60,170 60,150 C 60,130 720,115 740,88 C 760,60 120,35 400,18';
-
-  const ZONES = [
-    { name: '🏕️ Acampamento Base',      color: 'rgba(160,110,50,0.22)',  y: 300, h: 80 },
-    { name: '🌲 Floresta da Pesquisa',   color: 'rgba(30,110,60,0.22)',   y: 220, h: 80 },
-    { name: '⛰️ Serra do Produto',       color: 'rgba(70,95,150,0.22)',   y: 140, h: 80 },
-    { name: '🏙️ Vale do Mercado',        color: 'rgba(150,130,40,0.22)',  y: 60,  h: 80 },
-    { name: '🏆 Cume do Demo Day',       color: 'rgba(255,215,0,0.14)',   y: 0,   h: 60 },
-  ];
-
-  // Static content
-  let html = '';
-  ZONES.forEach(z => {
-    html += `<rect x="0" y="${z.y}" width="800" height="${z.h}" fill="${z.color}"/>`;
-    html += `<text x="12" y="${z.y+17}" class="zone-label">${z.name}</text>`;
-  });
-  [300,220,140,60].forEach(y => {
-    html += `<line x1="0" y1="${y}" x2="800" y2="${y}" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>`;
-  });
-  html += `<path d="${PATH_D}" fill="none" stroke="rgba(255,200,80,0.07)" stroke-width="26" stroke-linecap="round"/>`;
-  html += `<path d="${PATH_D}" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="12" stroke-linecap="round"/>`;
-  html += `<path id="expmap-trail" d="${PATH_D}" fill="none" stroke="rgba(255,200,80,0.40)" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 7"/>`;
-  svg.innerHTML = html;
-
-  const trail = document.getElementById('expmap-trail');
-  if (!trail) return;
-  const pathLen = trail.getTotalLength();
-
-  // Start / finish markers
-  function addText(parent, x, y, emoji) {
-    const el = document.createElementNS('http://www.w3.org/2000/svg','text');
-    el.setAttribute('x', x); el.setAttribute('y', y);
-    el.setAttribute('text-anchor','middle'); el.setAttribute('font-size','18');
-    el.setAttribute('pointer-events','none'); el.textContent = emoji;
-    parent.appendChild(el);
-  }
-  const sp = trail.getPointAtLength(0);
-  const ep = trail.getPointAtLength(pathLen);
-  addText(svg, sp.x, sp.y - 22, '🚩');
-  addText(svg, ep.x, ep.y - 22, '🏆');
-
-  // Render pieces (lower pts first so higher ones appear on top)
-  const sorted = [...ranked].sort((a,b) => (a.pts||0)-(b.pts||0));
-  sorted.forEach(s => {
-    const origIdx = ranked.findIndex(r => r.id === s.id);
-    const color   = PALETTE[origIdx % PALETTE.length];
-    const pts     = s.pts || 0;
-    const frac    = pts > 0 ? Math.min(pts / MAX_PTS, 0.98) : 0.005 + origIdx * 0.006;
-    const pt      = trail.getPointAtLength(frac * pathLen);
-    const initials = s.name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
-
-    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
-    g.setAttribute('class','map-piece');
-    g.setAttribute('data-id', s.id);
-    g.style.cursor = 'pointer';
-
-    // Shadow
-    const sh = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    sh.setAttribute('cx', pt.x+1.5); sh.setAttribute('cy', pt.y+2);
-    sh.setAttribute('r','15'); sh.setAttribute('fill','rgba(0,0,0,0.4)');
-    g.appendChild(sh);
-
-    // Piece
-    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y);
-    c.setAttribute('r','15'); c.setAttribute('fill', color);
-    c.setAttribute('stroke','rgba(255,255,255,0.75)'); c.setAttribute('stroke-width','2');
-    g.appendChild(c);
-
-    // Initials
-    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x', pt.x); t.setAttribute('y', pt.y+4);
-    t.setAttribute('text-anchor','middle'); t.setAttribute('font-size','8');
-    t.setAttribute('font-weight','800'); t.setAttribute('fill','rgba(0,0,0,0.85)');
-    t.setAttribute('font-family','system-ui,sans-serif'); t.setAttribute('pointer-events','none');
-    t.textContent = initials;
-    g.appendChild(t);
-
-    // Pts label
-    const pl = document.createElementNS('http://www.w3.org/2000/svg','text');
-    pl.setAttribute('x', pt.x); pl.setAttribute('y', pt.y+28);
-    pl.setAttribute('text-anchor','middle'); pl.setAttribute('font-size','7.5');
-    pl.setAttribute('fill', color); pl.setAttribute('font-weight','700');
-    pl.setAttribute('font-family','system-ui,sans-serif'); pl.setAttribute('pointer-events','none');
-    pl.textContent = pts > 0 ? pts+'pts' : '';
-    g.appendChild(pl);
-
-    g.addEventListener('click', function() {
-      document.querySelectorAll('.map-piece').forEach(p => p.classList.remove('map-active'));
-      g.classList.add('map-active');
-      // Highlight card
-      const card = document.querySelector(`.rrow[data-sid="${s.id}"]`);
-      if (card) {
-        document.querySelectorAll('.rrow').forEach(r => r.classList.remove('rrow-highlight'));
-        card.classList.add('rrow-highlight');
-        card.scrollIntoView({behavior:'smooth', block:'center'});
-        setTimeout(() => card.classList.remove('rrow-highlight'), 2000);
-      }
-      // Tooltip
-      const tip = document.getElementById('map-tooltip');
-      if (tip) {
-        tip.textContent = s.name + ' · ' + pts + ' pts';
-        tip.style.background = color;
-        tip.classList.add('show');
-        setTimeout(() => tip.classList.remove('show'), 2500);
-      }
-    });
-
-    svg.appendChild(g);
-  });
-}
-
 // Override renderRanking
 window.renderRanking = async function() {
   const ranked = await getSB();
@@ -277,7 +158,6 @@ window.renderRanking = async function() {
           </div>`;
         }).join('');
   }
-  renderMap(ranked);
 };
 
 // Override refreshAdmin
