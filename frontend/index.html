@@ -467,13 +467,7 @@
       <div class="rk-stat"><div class="rk-stat-v" id="rs-a" style="color:var(--accent)">—</div><div class="rk-stat-l">Média do grupo</div></div>
     </div>
     <div class="expmap-wrap">
-      <div class="expmap-header">
-        <span class="expmap-title">🗺️ Mapa da Expedição</span>
-        <span class="expmap-sub">Clique numa peça para ver no ranking</span>
-      </div>
-      <div class="expmap-container">
-        <svg id="expmap-svg" viewBox="0 0 800 380" preserveAspectRatio="xMidYMid meet"></svg>
-      </div>
+      <div id="expmap-box" class="expmap-container"></div>
     </div>
     <div id="map-tooltip" class="map-tooltip"></div>
     <div class="podium" id="podium-area"></div>
@@ -553,6 +547,9 @@
               <option value="1">1 — Ideação</option><option value="2">2 — Operação</option><option value="3">3 — Tração</option><option value="4">4 — Escala</option>
             </select></div>
           <div class="fg"><label class="fl">E-mail contato</label><input class="fc-inp" type="email" id="st-email" placeholder="contato@startup.com"/></div>
+        </div>
+        <div class="frow">
+          <div class="fg" style="width:100%"><label class="fl">Foto / logo da empresa (URL)</label><input class="fc-inp" type="url" id="st-foto" placeholder="https://i.imgur.com/exemplo.png"/></div>
         </div>
         <div class="factions">
           <button class="btn-s" onclick="saveStartup()">Salvar</button>

@@ -1240,16 +1240,16 @@ button.nav-logo:active {
 .p3 .pod-rank-num{color:#FA8400}
 .pod-shield{
   width:100%;
-  border-radius:14px 14px 50% 50%/14px 14px 22px 22px;
-  padding:18px 16px 36px;
+  border-radius:14px;
+  padding:18px 16px 28px;
   display:flex;flex-direction:column;align-items:center;gap:7px;
   position:relative;z-index:1;
   transition:transform .22s ease;
 }
 .pod-shield:hover{transform:translateY(-5px)}
-.p1 .pod-shield{background:linear-gradient(160deg,#0F3C4C 0%,#1A5468 55%,#0E2E3C 100%);border:2px solid rgba(245,200,66,0.42);box-shadow:0 0 32px rgba(245,200,66,0.16),0 14px 44px rgba(0,0,0,0.52);min-height:215px}
-.p2 .pod-shield{background:linear-gradient(160deg,#0A3040 0%,#124A5A 55%,#0A2230 100%);border:2px solid rgba(0,192,139,0.35);box-shadow:0 0 22px rgba(0,192,139,0.12),0 12px 36px rgba(0,0,0,0.5);min-height:180px}
-.p3 .pod-shield{background:linear-gradient(160deg,#0A2838 0%,#123848 55%,#0A2030 100%);border:2px solid rgba(250,132,0,0.35);box-shadow:0 0 22px rgba(250,132,0,0.12),0 12px 36px rgba(0,0,0,0.5);min-height:180px}
+.p1 .pod-shield{background:linear-gradient(160deg,#0F3C4C 0%,#1A5468 55%,#0E2E3C 100%);border:2px solid rgba(245,200,66,0.42);box-shadow:0 0 28px rgba(245,200,66,0.14),0 8px 24px rgba(0,0,0,0.42);min-height:215px}
+.p2 .pod-shield{background:linear-gradient(160deg,#0A3040 0%,#124A5A 55%,#0A2230 100%);border:2px solid rgba(0,192,139,0.35);box-shadow:0 0 18px rgba(0,192,139,0.10),0 6px 20px rgba(0,0,0,0.38);min-height:180px}
+.p3 .pod-shield{background:linear-gradient(160deg,#0A2838 0%,#123848 55%,#0A2030 100%);border:2px solid rgba(250,132,0,0.35);box-shadow:0 0 18px rgba(250,132,0,0.10),0 6px 20px rgba(0,0,0,0.38);min-height:180px}
 .pod-ico{font-size:22px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5))}
 .pod-av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:system-ui;letter-spacing:-.01em}
 .p1 .pod-av{width:70px;height:70px;font-size:22px;background:linear-gradient(135deg,#F5C842,#FA8400);color:#0D2E38;border:3px solid rgba(255,255,255,0.32);box-shadow:0 4px 18px rgba(245,200,66,0.32)}
@@ -1288,4 +1288,56 @@ button.nav-logo:active {
   .pod-shield{padding:12px 8px 28px}
   .pod-nm{font-size:10px}
   .pod-area-s{display:none}
+}
+
+/* ══════════════════════════════════════════════
+   AVATAR — circle with initials + optional photo
+══════════════════════════════════════════════ */
+.rav{position:relative;border-radius:50%;overflow:hidden;flex-shrink:0}
+.rav-ini{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800;font-family:system-ui,sans-serif;color:rgba(0,0,0,0.72);font-size:12px;letter-spacing:-.01em}
+.rav-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
+.pod-av-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+.pod-av-wrap .rav{width:64px;height:64px}
+.pod-av-wrap .rav-ini{font-size:20px}
+.p1 .pod-av-wrap .rav{width:72px;height:72px;border:3px solid rgba(255,255,255,0.3)}
+.p1 .pod-av-wrap .rav-ini{font-size:22px}
+
+/* ══════════════════════════════════════════════
+   CORRIDA DE CAVALOS — Race Track
+══════════════════════════════════════════════ */
+.expmap-container{padding:0}
+.race-wrap{background:linear-gradient(180deg,#0c2333 0%,#0a1e2c 100%);border-radius:16px;overflow:hidden;padding:0 0 12px}
+.race-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid rgba(255,255,255,0.07)}
+.race-hd-t{font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:.04em}
+.race-hd-m{font-size:11px;color:rgba(255,255,255,0.38);font-weight:600}
+.race-ls{display:flex;flex-direction:column;gap:0}
+.race-lane{display:flex;align-items:center;gap:10px;padding:8px 14px;cursor:pointer;transition:background .18s}
+.race-lane:hover{background:rgba(255,255,255,0.04)}
+.race-lane.lead{background:rgba(245,200,66,0.04)}
+.rl-info{display:flex;align-items:center;gap:7px;min-width:170px;max-width:170px}
+.rl-rk{width:26px;text-align:center;flex-shrink:0;font-size:18px;line-height:1}
+.rl-rn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.08);font-size:11px;font-weight:700;color:rgba(255,255,255,0.5)}
+.rl-nm{font-size:12px;font-weight:600;color:rgba(255,255,255,0.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.rl-track{flex:1;position:relative;height:32px;background:rgba(255,255,255,0.05);border-radius:99px;overflow:visible}
+.rl-fin{position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:16px;line-height:1;z-index:1;opacity:.55}
+.rl-fin::after{content:'🏁'}
+.rl-prog{position:absolute;left:0;top:0;height:100%;width:0;border-radius:99px;overflow:visible;transition:width 1.4s cubic-bezier(.25,.8,.25,1)}
+.rl-bar{position:absolute;inset:0;border-radius:99px;opacity:.9}
+.rl-piece{position:absolute;right:-17px;top:50%;transform:translateY(-50%);z-index:2}
+.rl-rav{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,0.35);overflow:hidden;position:relative;background:#0a1e2c;box-shadow:0 2px 8px rgba(0,0,0,0.5)}
+.rl-rav .rav-ini{font-size:11px;font-weight:800}
+.rl-rav .rav-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
+.rl-pts{font-size:12px;font-weight:700;color:rgba(255,255,255,0.55);min-width:42px;text-align:right}
+.race-lane.lead .rl-nm{color:#fff}
+.race-lane.lead .rl-pts{color:#F5C842}
+
+@media(max-width:640px){
+  .rl-info{min-width:120px;max-width:120px}
+  .rl-nm{font-size:11px}
+  .race-lane{padding:6px 10px;gap:7px}
+}
+@media(max-width:480px){
+  .rl-info{min-width:90px;max-width:90px}
+  .rl-rk{display:none}
+  .race-hd{padding:10px 12px 8px}
 }
