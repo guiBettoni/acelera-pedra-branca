@@ -26,7 +26,7 @@ if (!corsOrigin) {
 }
 app.use(cors(corsOrigin ? { origin: corsOrigin } : {}));
 
-app.use(express.json({ limit: '100kb' }));
+app.use(express.json({ limit: '200kb' }));
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 // Login: máximo 10 tentativas por IP em 15 minutos

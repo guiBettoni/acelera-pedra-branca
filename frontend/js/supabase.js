@@ -425,21 +425,34 @@ window.lancarPontos = async function() {
   }
 };
 
-// ── Foto upload helpers ──────────────────────────────────────
-var _fotoFile = null; // file selected locally
+// ── Foto helpers — converte para base64 thumbnail (80x80) ────
+var _fotoBase64 = null;
 
 window.onFotoFileChange = function(input) {
-  _fotoFile = input.files[0] || null;
-  if (_fotoFile) {
-    var reader = new FileReader();
-    reader.onload = function(e) { _setFotoPreview(e.target.result); };
-    reader.readAsDataURL(_fotoFile);
-    document.getElementById('st-foto').value = '';
-  }
+  var file = input.files[0];
+  if (!file) return;
+  var img = new Image();
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      canvas.width = 80; canvas.height = 80;
+      var ctx = canvas.getContext('2d');
+      var size = Math.min(img.width, img.height);
+      var sx = (img.width - size) / 2;
+      var sy = (img.height - size) / 2;
+      ctx.drawImage(img, sx, sy, size, size, 0, 0, 80, 80);
+      _fotoBase64 = canvas.toDataURL('image/jpeg', 0.82);
+      _setFotoPreview(_fotoBase64);
+      document.getElementById('st-foto').value = '';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 };
 
 window.onFotoUrlChange = function(input) {
-  _fotoFile = null;
+  _fotoBase64 = null;
   _setFotoPreview(input.value.trim());
 };
 
@@ -453,21 +466,6 @@ function _setFotoPreview(src) {
   }
 }
 
-async function _uploadFotoStorage(file) {
-  var url = BACKEND_URL + '/api/upload-foto?name=' + encodeURIComponent(file.name);
-  var r = await fetch(url, {
-    method: 'POST',
-    headers: Object.assign(authHeaders(), {'Content-Type': file.type}),
-    body: file
-  });
-  if (!r.ok) {
-    var e = await r.json().catch(function(){ return {}; });
-    throw new Error(e.error || ('HTTP ' + r.status));
-  }
-  var d = await r.json();
-  return d.url;
-}
-
 // Override saveStartup
 window.saveStartup = async function() {
   const name  = document.getElementById('st-nome')?.value.trim();
@@ -477,17 +475,7 @@ window.saveStartup = async function() {
   const eid   = document.getElementById('st-eid')?.value;
   if(!name||!area){showToast('Preencha nome e área');return;}
 
-  let foto = document.getElementById('st-foto')?.value.trim()||'';
-
-  if (_fotoFile) {
-    try {
-      showToast('Enviando foto…');
-      foto = await _uploadFotoStorage(_fotoFile);
-    } catch(err) {
-      showToast('Erro no upload da foto: ' + err.message);
-      return;
-    }
-  }
+  let foto = _fotoBase64 || document.getElementById('st-foto')?.value.trim()||'';
 
   if(_sbReady){
     if(eid){
@@ -501,7 +489,7 @@ window.saveStartup = async function() {
       if(!r.ok){ showToast('Erro ao cadastrar startup'); return; }
       showToast('Startup cadastrada!');
     }
-    _fotoFile = null;
+    _fotoBase64 = null;
     _sbCache=null; closeForm('form-startup'); refreshAdmin();
   } else {
     showToast('Conexão ao Supabase indisponível. Não é possível salvar startup.');
