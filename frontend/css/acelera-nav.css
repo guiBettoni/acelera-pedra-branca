@@ -286,6 +286,10 @@ nav{
 .rinfo{flex:1;min-width:0}
 .rname{font-family:var(--head);font-size:14px;font-weight:700}
 .rmeta{font-size:11px;color:rgba(255,255,255,0.55);margin-top:1px}
+.rrow-stats{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:5px}
+.rstat{font-size:10px;color:rgba(255,255,255,0.5)}
+.rbadge{display:inline-flex;align-items:center;gap:2px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.7)}
+.rbadge.gold{background:rgba(245,200,66,.15);color:#F5C842}
 .rtrack{flex:1;min-width:60px;max-width:180px}
 .rbar-bg{height:5px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
 .rbar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green),var(--teal-mid));transition:width .7s ease}

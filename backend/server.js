@@ -411,10 +411,18 @@ app.post('/api/sheets/sync', requireAuth, async (req, res) => {
       // Recalcula total a partir de TODAS as pontuacoes (preserva bônus manuais)
       await recalcStartupPoints(startup.id);
 
+      const metaUpdate = {
+        aulas:             Math.max(0, parseInt(row.aulas) || 0),
+        mentorias:         Math.max(0, parseInt(row.mentoria) || 0),
+        canvas_feito:      parseBoolean(row.canvas_feito),
+        entrevistas:       parseBoolean(row.entrevistas),
+        mvp_funcional:     parseBoolean(row.mvp_funcional),
+        pessoas_testando:  parseBoolean(row.pessoas_testando),
+        clientes_pagantes: parseBoolean(row.clientes_pagantes),
+      };
       const estagioNum = parseInt(row.estagio_atual);
-      if ([1, 2, 3, 4].includes(estagioNum)) {
-        await supabase.from('startups').update({ estagio: estagioNum }).eq('id', startup.id);
-      }
+      if ([1, 2, 3, 4].includes(estagioNum)) metaUpdate.estagio = estagioNum;
+      await supabase.from('startups').update(metaUpdate).eq('id', startup.id);
 
       synced.push({ nome: startup.nome, pontos: total });
     } catch (e) {
