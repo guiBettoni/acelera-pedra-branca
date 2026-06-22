@@ -12,11 +12,12 @@ export default function Nav({ page, navigate }) {
   }
 
   function goSection(p, hash) {
-    navigate(p)
+    const needsPageChange = page !== p
+    navigate(p, false)
     setOpen(false)
     setTimeout(() => {
       document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' })
-    }, 80)
+    }, needsPageChange ? 80 : 0)
   }
 
   return (

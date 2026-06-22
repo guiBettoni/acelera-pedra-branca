@@ -14,7 +14,7 @@ export default function Podium({ top3 }) {
   const mvis  = top3.length >= 2 ? [MEDALS[1], MEDALS[0], MEDALS[2]].filter(Boolean) : MEDALS
 
   return (
-    <div id="podium-area">
+    <div className="podium" id="podium-area">
       {vis.map((s, i) => {
         const mi  = mvis[i]
         const lv  = getLevel(s.pts || 0)

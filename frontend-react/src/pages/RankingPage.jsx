@@ -55,9 +55,7 @@ export default function RankingPage({ navigate }) {
 
       {/* rk-body limita a largura máxima — max-width: 860px centrado */}
       <div className="rk-body">
-        <div className="podium" id="podium-area">
-          <Podium top3={top3} />
-        </div>
+        <Podium top3={top3} />
 
         <div className="race" id="race-area">
           {loading && (

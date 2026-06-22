@@ -15,10 +15,10 @@ export default function App() {
   const [page, setPage] = useState(getInitialPage)
   const { msg, visible, showToast } = useToast()
 
-  function navigate(p) {
+  function navigate(p, scrollTop = true) {
     setPage(p)
     window.location.hash = p
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (scrollTop) window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   useEffect(() => {
