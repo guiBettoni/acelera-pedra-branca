@@ -1,12 +1,34 @@
 import { useEffect, useRef, useMemo } from 'react'
 import useStartups from '../hooks/useStartups'
-import { getLevel, getInitials, RKPAL } from '../lib/utils'
+import { getLevel, RKPAL } from '../lib/utils'
+import { workshopsHtml } from '../data/workshopsHtml'
 
 const DEMODAY = new Date('2026-07-23')
 
 function daysUntil(date) {
   const diff = date - new Date()
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
+}
+
+function WorkshopsSection() {
+  const ref = useRef(null)
+
+  useEffect(() => {
+    // wire up toggleWs for expand/collapse on workshop cards
+    window.toggleWs = function(el) {
+      const isOpen = el.classList.contains('expanded')
+      ref.current?.querySelectorAll('.ws-card.expanded').forEach(c => c.classList.remove('expanded'))
+      if (!isOpen) el.classList.add('expanded')
+    }
+    return () => { delete window.toggleWs }
+  }, [])
+
+  return (
+    <div
+      ref={ref}
+      dangerouslySetInnerHTML={{ __html: workshopsHtml }}
+    />
+  )
 }
 
 export default function HomePage({ navigate }) {
@@ -157,22 +179,15 @@ export default function HomePage({ navigate }) {
         <div className="si">
           <div className="sec-tag">Startups</div>
           <h2 className="sec-h">As empresas da <em>5ª Edição</em></h2>
-          <div className="startups-chips" id="startups-chips">
+          <div className="chips" id="startups-chips">
             {loading && <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 14 }}>Carregando...</span>}
             {!loading && startups.map((s, i) => {
               const lv  = getLevel(s.pts || 0)
-              const ini = getInitials(s.name)
-              const col = RKPAL[i % RKPAL.length]
               return (
-                <div key={s.id} className="sc-chip" onClick={() => navigate('ranking')}>
-                  <div className="sc-av" style={{ background: col }}>
-                    <div className="sc-ini">{ini}</div>
-                    {s.foto && <img src={s.foto} className="sc-img" alt="" />}
-                  </div>
-                  <div className="sc-info">
-                    <div className="sc-name">{s.name}</div>
-                    <span className={`rlv ${lv.c}`}>{lv.n}</span>
-                  </div>
+                <div key={s.id} className="chip" onClick={() => navigate('ranking')} style={{ cursor: 'pointer' }}>
+                  <div className="chip-n">{s.name}</div>
+                  <div className="chip-a">{s.area}</div>
+                  <span className={`chip-s st${s.stage}`}>Est. {s.stage}</span>
                 </div>
               )
             })}
@@ -180,21 +195,8 @@ export default function HomePage({ navigate }) {
         </div>
       </section>
 
-      {/* ── WORKSHOPS ── */}
-      <section className="workshops-sec" id="workshops">
-        <div className="si">
-          <div className="sec-tag">Trilha de Workshops</div>
-          <h2 className="sec-h">Aprenda, construa e <em>acelere</em></h2>
-          <p className="sec-sub" style={{ marginBottom: '2rem' }}>
-            A trilha do Acelera Pedra Branca combina workshops práticos, mentorias especializadas e desafios de execução para levar sua startup do zero à tração.
-          </p>
-          <div className="workshops-cta" style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <button className="btn-p" onClick={() => navigate('ranking')}>
-              Ver ranking atual →
-            </button>
-          </div>
-        </div>
-      </section>
+      {/* ── WORKSHOPS (HTML original preservado) ── */}
+      <WorkshopsSection />
 
     </div>
   )
