@@ -185,7 +185,6 @@ window.renderRanking = async function() {
         }).join('');
   }
 
-  renderMap(ranked);
 };
 
 // Override refreshAdmin
@@ -629,73 +628,6 @@ async function saveRedistribuicao(id) {
   renderRanking();
 }
 
-function renderMap(ranked) {
-  var box = document.getElementById('expmap-box');
-  if (!box) return;
-
-  var maxPts = ranked.reduce(function(m,s){ return Math.max(m,s.pts||0); }, 0);
-  var goal = Math.max(300, Math.ceil(maxPts / 50) * 50);
-
-  function pct(pts) {
-    return (!pts||!goal) ? 0 : Math.min((pts/goal)*92, 92);
-  }
-
-  var lanesHtml = ranked.map(function(s, i) {
-    var pts = s.pts || 0;
-    var p = pct(pts);
-    var color = _RKPAL[i % _RKPAL.length];
-    var ini = s.name.trim().split(/\s+/).map(function(w){ return w[0]||''; }).join('').slice(0,2).toUpperCase();
-    var rankIco = i===0?'🥇':i===1?'🥈':i===2?'🥉':null;
-    var leadCls = i===0?' lead':'';
-    var avInner = s.foto
-      ? '<div class="rav-ini" style="background:'+color+'">'+ini+'</div><img src="'+safe(s.foto)+'" class="rav-img" alt="">'
-      : '<div class="rav-ini" style="background:'+color+'">'+ini+'</div>';
-    return '<div class="race-lane'+leadCls+'" data-sid="'+safe(s.id)+'">'
-      + '<div class="rl-info">'
-      +   '<div class="rl-rk">'+(rankIco?'<span>'+rankIco+'</span>':'<span class="rl-rn">'+(i+1)+'</span>')+'</div>'
-      +   '<div class="rl-nm" title="'+safe(s.name)+'">'+safe(s.name)+'</div>'
-      + '</div>'
-      + '<div class="rl-track">'
-      +   '<div class="rl-fin"></div>'
-      +   '<div class="rl-prog" data-w="'+p+'%">'
-      +     '<div class="rl-bar" style="background:linear-gradient(90deg,'+color+'88,'+color+')"></div>'
-      +     '<div class="rl-piece"><div class="rl-rav">'+avInner+'</div></div>'
-      +   '</div>'
-      + '</div>'
-      + '<div class="rl-pts">'+pts+'</div>'
-      + '</div>';
-  }).join('');
-
-  box.innerHTML = '<div class="race-wrap">'
-    + '<div class="race-hd">'
-    +   '<span class="race-hd-t">🏇 Corrida de Pontos</span>'
-    +   '<span class="race-hd-m">🏁 Meta: '+goal+' pts</span>'
-    + '</div>'
-    + '<div class="race-ls">'+lanesHtml+'</div>'
-    + '</div>';
-
-  // Animate pieces into position with stagger
-  setTimeout(function() {
-    box.querySelectorAll('.rl-prog').forEach(function(el, i) {
-      el.style.transitionDelay = (i * 0.055) + 's';
-      el.style.width = el.dataset.w;
-    });
-  }, 150);
-
-  // Click → highlight card in ranking
-  box.querySelectorAll('.race-lane').forEach(function(lane) {
-    lane.addEventListener('click', function() {
-      var sid = lane.dataset.sid;
-      var card = document.querySelector('.rrow[data-sid="'+sid+'"]');
-      if (card) {
-        document.querySelectorAll('.rrow').forEach(function(r){ r.classList.remove('rrow-highlight'); });
-        card.classList.add('rrow-highlight');
-        card.scrollIntoView({behavior:'smooth', block:'center'});
-        setTimeout(function(){ card.classList.remove('rrow-highlight'); }, 2500);
-      }
-    });
-  });
-}
 
 (async function() {
   try {
