@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import useAuth from '../hooks/useAuth'
-import useStartups, { l2l } from '../hooks/useStartups'
+import useStartups from '../hooks/useStartups'
 import { getLevel, CAT_CSS, uid } from '../lib/utils'
 import {
   apiCreateStartup, apiUpdateStartup, apiDeleteStartup,
@@ -10,14 +10,14 @@ import {
 const STAGE_NAMES = ['', 'Ideação', 'Operação', 'Tração', 'Escala']
 
 const DEF_ATIV = [
-  { id: 'A01', name: 'Workshop Presencial', cat: 'Engajamento', pts: 20, stages: '1,2,3,4', desc: '' },
-  { id: 'A02', name: 'Workshop Online', cat: 'Engajamento', pts: 10, stages: '1,2,3,4', desc: '' },
-  { id: 'A03', name: 'Mentoria Individual', cat: 'Desenvolvimento', pts: 15, stages: '1,2,3,4', desc: '' },
-  { id: 'A04', name: 'Entrega Canvas', cat: 'Desenvolvimento', pts: 30, stages: '1,2', desc: '' },
-  { id: 'A05', name: 'MVP Funcional', cat: 'Tração', pts: 50, stages: '2,3', desc: '' },
-  { id: 'A06', name: 'Pitch de Tração', cat: 'Tração', pts: 40, stages: '3,4', desc: '' },
-  { id: 'A07', name: 'Cliente Pagante', cat: 'Tração', pts: 60, stages: '3,4', desc: '' },
-  { id: 'A08', name: 'Bônus Destaque', cat: 'Bônus', pts: 25, stages: '1,2,3,4', desc: '' },
+  { id: 'A01', name: 'Workshop Presencial',  cat: 'Engajamento',    pts: 20, stages: '1,2,3,4' },
+  { id: 'A02', name: 'Workshop Online',      cat: 'Engajamento',    pts: 10, stages: '1,2,3,4' },
+  { id: 'A03', name: 'Mentoria Individual',  cat: 'Desenvolvimento', pts: 15, stages: '1,2,3,4' },
+  { id: 'A04', name: 'Entrega Canvas',       cat: 'Desenvolvimento', pts: 30, stages: '1,2' },
+  { id: 'A05', name: 'MVP Funcional',        cat: 'Tração',         pts: 50, stages: '2,3' },
+  { id: 'A06', name: 'Pitch de Tração',      cat: 'Tração',         pts: 40, stages: '3,4' },
+  { id: 'A07', name: 'Cliente Pagante',      cat: 'Tração',         pts: 60, stages: '3,4' },
+  { id: 'A08', name: 'Bônus Destaque',       cat: 'Bônus',          pts: 25, stages: '1,2,3,4' },
 ]
 
 // ── Login Gate ──────────────────────────────────────────────────────────────
@@ -25,7 +25,7 @@ const DEF_ATIV = [
 function LoginGate({ onLogin }) {
   const { login, loading, error } = useAuth()
   const [email, setEmail] = useState('')
-  const [pass, setPass]   = useState('')
+  const [pass,  setPass]  = useState('')
 
   async function submit(e) {
     e.preventDefault()
@@ -34,23 +34,23 @@ function LoginGate({ onLogin }) {
   }
 
   return (
-    <div id="admin-gate" style={{ display: 'flex', minHeight: '60vh', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="gate-box">
-        <div className="gate-logo">🔐</div>
-        <h2 className="gate-title">Painel Administrativo</h2>
-        <p className="gate-sub">Acesso restrito à equipe INAITEC.</p>
-        <form onSubmit={submit} className="gate-form">
+    <div className="admin-gate" id="admin-gate"
+      style={{ display: 'flex', minHeight: '70vh', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="gate-card">
+        <h3>Entrar no Painel Admin</h3>
+        <p>Autentique-se com seu e-mail corporativo INAITEC para acessar o painel administrativo.</p>
+        <form onSubmit={submit}>
           <input
-            className="fc-inp"
+            className="ai"
             type="email"
-            placeholder="E-mail"
+            placeholder="seu email aqui"
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
             autoComplete="email"
           />
           <input
-            className="fc-inp"
+            className="ai"
             type="password"
             placeholder="Senha"
             value={pass}
@@ -58,9 +58,9 @@ function LoginGate({ onLogin }) {
             required
             autoComplete="current-password"
           />
-          {error && <div className="gate-err">{error}</div>}
-          <button className="btn-p" type="submit" disabled={loading} style={{ width: '100%' }}>
-            {loading ? 'Entrando...' : 'Entrar →'}
+          {error && <div className="gate-err" style={{ display: 'block' }}>{error}</div>}
+          <button className="gate-btn" type="submit" disabled={loading}>
+            {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
       </div>
@@ -73,7 +73,6 @@ function LoginGate({ onLogin }) {
 export default function AdminPage({ showToast }) {
   const { isAdmin, logout } = useAuth()
   const [authed, setAuthed] = useState(isAdmin)
-
   if (!authed) return <LoginGate onLogin={() => setAuthed(true)} />
   return <Panel logout={() => { logout(); setAuthed(false) }} showToast={showToast} />
 }
@@ -92,29 +91,29 @@ function Panel({ logout, showToast }) {
   const totalPts = logs.reduce((s, l) => s + (l.pts || 0), 0)
 
   return (
-    <div id="admin-panel" className="page on">
-      <div className="ap-header">
-        <div className="ap-title">Painel Admin</div>
-        <button className="ab" onClick={logout}>Sair</button>
+    <div className="admin-panel" id="admin-panel" style={{ display: 'block' }}>
+      <div className="admin-top">
+        <h2>Painel Administrativo</h2>
+        <button className="logout-btn" onClick={logout}>Sair da sessão</button>
       </div>
 
-      {/* Stats */}
-      <div className="admin-stats">
-        <div className="as-card"><div className="as-n" id="as-s">{startups.length}</div><div className="as-l">Startups</div></div>
-        <div className="as-card"><div className="as-n" id="as-l">{logs.length}</div><div className="as-l">Lançamentos</div></div>
-        <div className="as-card"><div className="as-n" id="as-p">{totalPts}</div><div className="as-l">Pontos totais</div></div>
-        <div className="as-card"><div className="as-n" id="as-a">{atividades.length}</div><div className="as-l">Atividades</div></div>
+      <div className="astats">
+        <div className="astat"><div className="astat-l">Startups</div><div className="astat-v" id="as-s">{startups.length}</div></div>
+        <div className="astat"><div className="astat-l">Lançamentos</div><div className="astat-v g" id="as-l">{logs.length}</div></div>
+        <div className="astat"><div className="astat-l">Total de pontos</div><div className="astat-v au" id="as-p">{totalPts}</div></div>
+        <div className="astat"><div className="astat-l">Atividades</div><div className="astat-v" id="as-a">{atividades.length}</div></div>
       </div>
 
-      {/* Tabs */}
       <div className="atabs">
-        {['lancar','startups','atividades','historico','config'].map(t => (
-          <button
-            key={t}
-            className={`atab${tab === t ? ' on' : ''}`}
-            onClick={() => setTab(t)}
-          >
-            {t.charAt(0).toUpperCase() + t.slice(1)}
+        {[
+          { id: 'lancar',      label: 'Lançar Pontos' },
+          { id: 'startups',    label: 'Startups' },
+          { id: 'atividades',  label: 'Atividades' },
+          { id: 'historico',   label: 'Histórico' },
+          { id: 'config',      label: 'Configurações' },
+        ].map(t => (
+          <button key={t.id} className={`atab${tab === t.id ? ' on' : ''}`} onClick={() => setTab(t.id)}>
+            {t.label}
           </button>
         ))}
       </div>
@@ -132,18 +131,16 @@ function Panel({ logout, showToast }) {
 
 function TabLancar({ startups, atividades, onDone, showToast }) {
   const today = new Date().toISOString().split('T')[0]
-  const [sid,   setSid]   = useState('')
-  const [aid,   setAid]   = useState('')
-  const [pts,   setPts]   = useState('')
-  const [tipo,  setTipo]  = useState('add')
-  const [date,  setDate]  = useState(today)
-  const [obs,   setObs]   = useState('')
-  const [by,    setBy]    = useState('')
-  const [busy,  setBusy]  = useState(false)
+  const [sid,  setSid]  = useState('')
+  const [aid,  setAid]  = useState('')
+  const [pts,  setPts]  = useState('')
+  const [tipo, setTipo] = useState('add')
+  const [date, setDate] = useState(today)
+  const [obs,  setObs]  = useState('')
+  const [by,   setBy]   = useState('')
+  const [busy, setBusy] = useState(false)
 
-  useEffect(() => {
-    if (startups.length && !sid) setSid(startups[0].id)
-  }, [startups])
+  useEffect(() => { if (startups.length && !sid) setSid(startups[0].id) }, [startups])
 
   function onAidChange(e) {
     setAid(e.target.value)
@@ -156,78 +153,66 @@ function TabLancar({ startups, atividades, onDone, showToast }) {
     if (!sid || !aid || !pts || !date) { showToast('Preencha todos os campos obrigatórios.'); return }
     const ptsN = parseInt(pts)
     if (!ptsN || ptsN < 1) { showToast('Pontos inválidos.'); return }
-    const ativ    = atividades.find(a => a.id === aid)
+    const ativ = atividades.find(a => a.id === aid)
     setBusy(true)
     try {
       await apiLancarPontos({
-        startup_id: sid,
-        pontos: ptsN,
-        tipo,
+        startup_id: sid, pontos: ptsN, tipo,
         descricao: ativ?.name || 'Atividade',
-        categoria: ativ?.cat || 'Manual',
-        obs,
-        lancado_por: by,
-        criado_em: date,
+        categoria: ativ?.cat  || 'Manual',
+        obs, lancado_por: by, criado_em: date,
       })
       const startup = startups.find(s => s.id === sid)
-      showToast(tipo === 'rem'
-        ? `-${ptsN} pts removidos de ${startup?.name}!`
-        : `+${ptsN} pts lançados para ${startup?.name}!`)
-      setObs(''); setBy(''); setPts(''); setAid('')
-      setTipo('add'); setDate(today)
+      showToast(tipo === 'rem' ? `-${ptsN} pts removidos de ${startup?.name}!` : `+${ptsN} pts lançados para ${startup?.name}!`)
+      setObs(''); setBy(''); setPts(''); setAid(''); setTipo('add'); setDate(today)
       onDone()
-    } catch (e) {
-      showToast('Erro: ' + e.message)
-    } finally {
-      setBusy(false)
-    }
+    } catch (err) { showToast('Erro: ' + err.message) }
+    finally { setBusy(false) }
   }
 
   return (
-    <div id="asec-lancar" className="asec on">
-      <form className="admin-form" onSubmit={submit}>
-        <h3 className="af-title">Lançar Pontos</h3>
-        <div className="af-row">
-          <label className="af-label">Startup</label>
-          <select className="fc-inp" value={sid} onChange={e => setSid(e.target.value)}>
-            {startups.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-          </select>
-        </div>
-        <div className="af-row">
-          <label className="af-label">Atividade</label>
-          <select className="fc-inp" value={aid} onChange={onAidChange}>
-            <option value="">— selecione —</option>
-            {atividades.map(a => (
-              <option key={a.id} value={a.id}>{a.name} ({a.pts} pts)</option>
-            ))}
-          </select>
-        </div>
-        <div className="af-row af-row-2">
-          <div>
-            <label className="af-label">Tipo</label>
-            <select className="fc-inp" value={tipo} onChange={e => setTipo(e.target.value)}>
-              <option value="add">Adicionar</option>
-              <option value="rem">Remover</option>
+    <div className="asec on" id="asec-lancar">
+      <form className="fc" onSubmit={submit}>
+        <h4>Registrar pontuação</h4>
+        <div className="frow f2">
+          <div className="fg"><label className="fl">Startup</label>
+            <select className="fc-inp" value={sid} onChange={e => setSid(e.target.value)}>
+              {startups.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
-          <div>
-            <label className="af-label">Pontos</label>
-            <input className="fc-inp" type="number" min="1" value={pts} onChange={e => setPts(e.target.value)} />
+          <div className="fg"><label className="fl">Atividade</label>
+            <select className="fc-inp" value={aid} onChange={onAidChange}>
+              <option value="">— selecione —</option>
+              {atividades.map(a => <option key={a.id} value={a.id}>{a.name} ({a.pts} pts)</option>)}
+            </select>
           </div>
         </div>
-        <div className="af-row">
-          <label className="af-label">Data</label>
-          <input className="fc-inp" type="date" value={date} onChange={e => setDate(e.target.value)} />
+        <div className="frow f3">
+          <div className="fg"><label className="fl">Tipo</label>
+            <select className="fc-inp" value={tipo} onChange={e => setTipo(e.target.value)}>
+              <option value="add">+ Adicionar pontos</option>
+              <option value="rem">- Remover pontos</option>
+            </select>
+          </div>
+          <div className="fg"><label className="fl">Pontos</label>
+            <input className="fc-inp" type="number" min="1" value={pts} onChange={e => setPts(e.target.value)} placeholder="ex: 10" />
+          </div>
+          <div className="fg"><label className="fl">Data</label>
+            <input className="fc-inp" type="date" value={date} onChange={e => setDate(e.target.value)} />
+          </div>
         </div>
-        <div className="af-row">
-          <label className="af-label">Observação</label>
-          <input className="fc-inp" type="text" value={obs} onChange={e => setObs(e.target.value)} placeholder="Opcional" />
+        <div className="frow f2">
+          <div className="fg"><label className="fl">Registrado por</label>
+            <input className="fc-inp" type="text" value={by} onChange={e => setBy(e.target.value)} placeholder="Seu nome" />
+          </div>
+          <div className="fg"><label className="fl">Observação (opcional)</label>
+            <input className="fc-inp" type="text" value={obs} onChange={e => setObs(e.target.value)} placeholder="Contexto, evento, mentor..." />
+          </div>
         </div>
-        <div className="af-row">
-          <label className="af-label">Lançado por</label>
-          <input className="fc-inp" type="text" value={by} onChange={e => setBy(e.target.value)} placeholder="Seu nome" />
+        <div className="factions">
+          <button className="btn-s" type="submit" disabled={busy}>{busy ? 'Lançando...' : 'Lançar pontos'}</button>
+          <button className="btn-c" type="button" onClick={() => { setObs(''); setBy(''); setPts(''); setAid(''); setTipo('add'); setDate(today) }}>Limpar</button>
         </div>
-        <button className="btn-p" type="submit" disabled={busy}>{busy ? 'Lançando...' : 'Lançar pontos'}</button>
       </form>
     </div>
   )
@@ -245,22 +230,17 @@ function StartupForm({ initial, onSave, onCancel, showToast }) {
   const [busy,    setBusy]    = useState(false)
 
   function onFileChange(e) {
-    const file = e.target.files[0]
-    if (!file) return
-    const img    = new Image()
-    const reader = new FileReader()
+    const file = e.target.files[0]; if (!file) return
+    const img = new Image(), reader = new FileReader()
     reader.onload = ev => {
       img.onload = () => {
         const canvas = document.createElement('canvas')
         canvas.width = 80; canvas.height = 80
-        const ctx  = canvas.getContext('2d')
+        const ctx = canvas.getContext('2d')
         const size = Math.min(img.width, img.height)
-        const sx   = (img.width  - size) / 2
-        const sy   = (img.height - size) / 2
-        ctx.drawImage(img, sx, sy, size, size, 0, 0, 80, 80)
+        ctx.drawImage(img, (img.width-size)/2, (img.height-size)/2, size, size, 0, 0, 80, 80)
         const b64 = canvas.toDataURL('image/jpeg', 0.82)
-        setFotoB64(b64)
-        setFoto(b64)
+        setFotoB64(b64); setFoto(b64)
       }
       img.src = ev.target.result
     }
@@ -272,58 +252,51 @@ function StartupForm({ initial, onSave, onCancel, showToast }) {
     if (!nome.trim() || !area.trim()) { showToast('Nome e área são obrigatórios.'); return }
     setBusy(true)
     try {
-      const payload = { nome: nome.trim(), area: area.trim(), estagio: parseInt(estagio), email: email.trim(), foto_url: (fotoB64 || foto).trim() || null }
-      await onSave(payload)
-    } catch (err) {
-      showToast('Erro: ' + err.message)
-    } finally {
-      setBusy(false)
-    }
+      await onSave({ nome: nome.trim(), area: area.trim(), estagio: parseInt(estagio), email: email.trim(), foto_url: (fotoB64 || foto).trim() || null })
+    } catch (err) { showToast('Erro: ' + err.message) }
+    finally { setBusy(false) }
   }
 
   const previewSrc = fotoB64 || foto
 
   return (
-    <form className="admin-form" onSubmit={submit} style={{ marginTop: '1.5rem' }}>
-      <div className="af-row af-row-2">
-        <div>
-          <label className="af-label">Nome</label>
-          <input className="fc-inp" value={nome} onChange={e => setNome(e.target.value)} required />
+    <form className="fc" onSubmit={submit} style={{ marginBottom: '1rem' }}>
+      <h4>{initial ? 'Editar Startup' : 'Nova Startup'}</h4>
+      <div className="frow f2">
+        <div className="fg"><label className="fl">Nome</label>
+          <input className="fc-inp" value={nome} onChange={e => setNome(e.target.value)} placeholder="Nome da startup" required />
         </div>
-        <div>
-          <label className="af-label">Área</label>
-          <input className="fc-inp" value={area} onChange={e => setArea(e.target.value)} required />
+        <div className="fg"><label className="fl">Área</label>
+          <input className="fc-inp" value={area} onChange={e => setArea(e.target.value)} placeholder="ex: Fintech, Saúde..." required />
         </div>
       </div>
-      <div className="af-row af-row-2">
-        <div>
-          <label className="af-label">Estágio</label>
+      <div className="frow f2">
+        <div className="fg"><label className="fl">Estágio</label>
           <select className="fc-inp" value={estagio} onChange={e => setEstagio(e.target.value)}>
             {[1,2,3,4].map(n => <option key={n} value={n}>{n} – {STAGE_NAMES[n]}</option>)}
           </select>
         </div>
-        <div>
-          <label className="af-label">E-mail</label>
+        <div className="fg"><label className="fl">E-mail</label>
           <input className="fc-inp" type="email" value={email} onChange={e => setEmail(e.target.value)} />
         </div>
       </div>
-      <div className="af-row">
-        <label className="af-label">Logo / Foto</label>
+      <div className="fg" style={{ marginBottom: '0.875rem' }}>
+        <label className="fl">Logo / Foto</label>
         <div className="foto-upload-wrap">
           <div className="foto-preview" style={{ backgroundImage: previewSrc ? `url(${previewSrc})` : 'none' }}>
             {!previewSrc && <span className="foto-preview-ph">Sem foto</span>}
           </div>
           <div className="foto-upload-actions">
-            <label className="btn-upload" htmlFor={`foto-file-${initial?.id || 'new'}`}>📁 Escolher arquivo</label>
-            <input type="file" id={`foto-file-${initial?.id || 'new'}`} accept="image/*" style={{ display: 'none' }} onChange={onFileChange} />
+            <label className="btn-upload" htmlFor={`foto-file-${initial?.id||'new'}`}>📁 Escolher arquivo</label>
+            <input type="file" id={`foto-file-${initial?.id||'new'}`} accept="image/*" style={{ display:'none' }} onChange={onFileChange} />
             <span className="foto-or">ou</span>
             <input className="fc-inp foto-url-inp" type="url" value={fotoB64 ? '' : foto} onChange={e => { setFoto(e.target.value); setFotoB64(null) }} placeholder="Cole uma URL de imagem" />
           </div>
         </div>
       </div>
-      <div style={{ display: 'flex', gap: 8 }}>
-        <button className="btn-p" type="submit" disabled={busy}>{busy ? 'Salvando...' : 'Salvar'}</button>
-        <button className="ab" type="button" onClick={onCancel}>Cancelar</button>
+      <div className="factions">
+        <button className="btn-s" type="submit" disabled={busy}>{busy ? 'Salvando...' : 'Salvar'}</button>
+        <button className="btn-c" type="button" onClick={onCancel}>Cancelar</button>
       </div>
     </form>
   )
@@ -332,13 +305,11 @@ function StartupForm({ initial, onSave, onCancel, showToast }) {
 function TabStartups({ startups, logs, onDone, showToast }) {
   const [editing, setEditing] = useState(null)
   const [adding,  setAdding]  = useState(false)
-
   const ptsByS = {}
   logs.forEach(l => { ptsByS[l.sid] = (ptsByS[l.sid] || 0) + (l.pts || 0) })
 
   async function handleSave(id, payload) {
-    if (id) await apiUpdateStartup(id, payload)
-    else     await apiCreateStartup(payload)
+    if (id) await apiUpdateStartup(id, payload); else await apiCreateStartup(payload)
     showToast(id ? 'Startup atualizada!' : 'Startup cadastrada!')
     setEditing(null); setAdding(false); onDone()
   }
@@ -350,36 +321,24 @@ function TabStartups({ startups, logs, onDone, showToast }) {
   }
 
   return (
-    <div id="asec-startups" className="asec on">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h3 className="af-title" style={{ margin: 0 }}>Startups</h3>
-        <button className="btn-p" onClick={() => { setAdding(true); setEditing(null) }}>+ Nova startup</button>
-      </div>
-
-      {adding && (
-        <StartupForm onSave={p => handleSave(null, p)} onCancel={() => setAdding(false)} showToast={showToast} />
+    <div className="asec on" id="asec-startups">
+      {!adding && !editing && (
+        <button className="btn-add" onClick={() => setAdding(true)}>+ Nova startup</button>
       )}
-      {editing && (
-        <StartupForm initial={editing} onSave={p => handleSave(editing.id, p)} onCancel={() => setEditing(null)} showToast={showToast} />
-      )}
-
+      {adding  && <StartupForm onSave={p => handleSave(null, p)} onCancel={() => setAdding(false)} showToast={showToast} />}
+      {editing && <StartupForm initial={editing} onSave={p => handleSave(editing.id, p)} onCancel={() => setEditing(null)} showToast={showToast} />}
       <div className="tbl-wrap">
         <table className="atbl">
-          <thead><tr>
-            <th>Nome</th><th>Área</th><th>Estágio</th><th>Pts</th><th>Nível</th><th></th>
-          </tr></thead>
-          <tbody id="tbl-s">
-            {startups.length === 0 && (
-              <tr><td colSpan={6} className="empty" style={{ padding: '2rem' }}>Nenhuma startup cadastrada.</td></tr>
-            )}
+          <thead><tr><th>Nome</th><th>Área</th><th>Estágio</th><th>Pts</th><th>Nível</th><th></th></tr></thead>
+          <tbody>
+            {startups.length === 0 && <tr><td colSpan={6} className="empty" style={{ padding:'1.5rem' }}>Nenhuma startup cadastrada.</td></tr>}
             {startups.map(s => {
-              const p  = ptsByS[s.id] || 0
-              const lv = getLevel(p)
+              const p = ptsByS[s.id] || 0; const lv = getLevel(p)
               return (
                 <tr key={s.id}>
                   <td className="td-n">{s.name}</td>
-                  <td style={{ color: 'rgba(255,255,255,0.55)', fontSize: 12 }}>{s.area}</td>
-                  <td style={{ fontSize: 12 }}>Est. {s.stage} — {STAGE_NAMES[s.stage] || ''}</td>
+                  <td style={{ color:'rgba(255,255,255,0.55)', fontSize:12 }}>{s.area}</td>
+                  <td style={{ fontSize:12 }}>Est. {s.stage} — {STAGE_NAMES[s.stage]||''}</td>
                   <td className="td-pt">{p}</td>
                   <td><span className={`rlv ${lv.c}`}>{lv.n}</span></td>
                   <td>
@@ -403,41 +362,37 @@ function AtivForm({ initial, onSave, onCancel }) {
   const [cat,    setCat]    = useState(initial?.cat    || 'Engajamento')
   const [pts,    setPts]    = useState(String(initial?.pts || ''))
   const [stages, setStages] = useState(initial?.stages || '1,2,3,4')
-  const [desc,   setDesc]   = useState(initial?.desc   || '')
 
   function submit(e) {
     e.preventDefault()
     if (!name.trim() || !parseInt(pts)) return
-    onSave({ name: name.trim(), cat, pts: parseInt(pts), stages, desc })
+    onSave({ name: name.trim(), cat, pts: parseInt(pts), stages })
   }
 
   return (
-    <form className="admin-form" onSubmit={submit} style={{ marginTop: '1.5rem' }}>
-      <div className="af-row af-row-2">
-        <div>
-          <label className="af-label">Nome</label>
+    <form className="fc" onSubmit={submit} style={{ marginBottom: '1rem' }}>
+      <h4>{initial ? 'Editar Atividade' : 'Nova Atividade'}</h4>
+      <div className="frow f2">
+        <div className="fg"><label className="fl">Nome</label>
           <input className="fc-inp" value={name} onChange={e => setName(e.target.value)} required />
         </div>
-        <div>
-          <label className="af-label">Categoria</label>
+        <div className="fg"><label className="fl">Categoria</label>
           <select className="fc-inp" value={cat} onChange={e => setCat(e.target.value)}>
             {['Engajamento','Desenvolvimento','Tração','Bônus'].map(c => <option key={c}>{c}</option>)}
           </select>
         </div>
       </div>
-      <div className="af-row af-row-2">
-        <div>
-          <label className="af-label">Pontos</label>
+      <div className="frow f2">
+        <div className="fg"><label className="fl">Pontos</label>
           <input className="fc-inp" type="number" min="1" value={pts} onChange={e => setPts(e.target.value)} required />
         </div>
-        <div>
-          <label className="af-label">Estágios</label>
+        <div className="fg"><label className="fl">Estágios</label>
           <input className="fc-inp" value={stages} onChange={e => setStages(e.target.value)} placeholder="1,2,3,4" />
         </div>
       </div>
-      <div style={{ display: 'flex', gap: 8 }}>
-        <button className="btn-p" type="submit">Salvar</button>
-        <button className="ab" type="button" onClick={onCancel}>Cancelar</button>
+      <div className="factions">
+        <button className="btn-s" type="submit">Salvar</button>
+        <button className="btn-c" type="button" onClick={onCancel}>Cancelar</button>
       </div>
     </form>
   )
@@ -461,22 +416,19 @@ function TabAtividades({ atividades, setAtividades, showToast }) {
   }
 
   return (
-    <div id="asec-atividades" className="asec on">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h3 className="af-title" style={{ margin: 0 }}>Atividades</h3>
-        <button className="btn-p" onClick={() => { setAdding(true); setEditing(null) }}>+ Nova atividade</button>
-      </div>
+    <div className="asec on" id="asec-atividades">
+      {!adding && !editing && <button className="btn-add" onClick={() => setAdding(true)}>+ Nova atividade</button>}
       {adding  && <AtivForm onSave={d => handleSave(null, d)} onCancel={() => setAdding(false)} />}
       {editing && <AtivForm initial={editing} onSave={d => handleSave(editing.id, d)} onCancel={() => setEditing(null)} />}
       <div className="tbl-wrap">
         <table className="atbl">
           <thead><tr><th>Nome</th><th>Categoria</th><th>Estágios</th><th>Pts</th><th></th></tr></thead>
-          <tbody id="tbl-a">
+          <tbody>
             {atividades.map(a => (
               <tr key={a.id}>
                 <td className="td-n">{a.name}</td>
-                <td><span className={`rlv ${CAT_CSS[a.cat] || 'lv-exp'}`}>{a.cat}</span></td>
-                <td style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>{a.stages}</td>
+                <td><span className={`rlv ${CAT_CSS[a.cat]||'lv-exp'}`}>{a.cat}</span></td>
+                <td style={{ fontSize:12, color:'rgba(255,255,255,0.55)' }}>{a.stages}</td>
                 <td className="td-pt">{a.pts}</td>
                 <td>
                   <button className="ab" onClick={() => { setEditing(a); setAdding(false) }}>Editar</button>
@@ -495,7 +447,6 @@ function TabAtividades({ atividades, setAtividades, showToast }) {
 
 function TabHistorico({ logs, startups, onDone, showToast }) {
   const [filter, setFilter] = useState('')
-
   const filtered = filter ? logs.filter(l => l.sid === filter) : logs
 
   async function handleDelete(id) {
@@ -505,32 +456,32 @@ function TabHistorico({ logs, startups, onDone, showToast }) {
   }
 
   return (
-    <div id="asec-historico" className="asec on">
-      <h3 className="af-title">Histórico</h3>
-      <select className="fc-inp" value={filter} onChange={e => setFilter(e.target.value)} style={{ maxWidth: 260, marginBottom: '1rem' }}>
-        <option value="">Todas as startups</option>
-        {startups.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-      </select>
-      <div id="hist-list">
-        {filtered.length === 0 && <div className="empty">Nenhum lançamento encontrado.</div>}
-        {filtered.map(x => {
-          const d = x.date ? x.date.split('-').reverse().join('/') : '—'
-          const isAdj = x.cat === 'Ajuste'
-          return (
-            <div key={x.id} className="hrow">
-              <div className="hdate">{d}</div>
-              <div className="hcont">
-                <div className="hst">{x.sname || '—'}</div>
-                <div className="hact">{x.ativ || '—'}</div>
-                {x.obs && <div className="hnote">{x.obs}{x.by ? ` · por ${x.by}` : ''}</div>}
+    <div className="asec on" id="asec-historico">
+      <div className="fc">
+        <h4>Histórico de lançamentos</h4>
+        <select className="fc-inp" value={filter} onChange={e => setFilter(e.target.value)} style={{ maxWidth: 260, marginBottom: '1rem' }}>
+          <option value="">Todas as startups</option>
+          {startups.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+        </select>
+        <div id="hist-list">
+          {filtered.length === 0 && <div className="empty">Nenhum lançamento encontrado.</div>}
+          {filtered.map(x => {
+            const d = x.date ? x.date.split('-').reverse().join('/') : '—'
+            const isAdj = x.cat === 'Ajuste'
+            return (
+              <div key={x.id} className="hrow">
+                <div className="hdate">{d}</div>
+                <div className="hcont">
+                  <div className="hst">{x.sname || '—'}</div>
+                  <div className="hact">{x.ativ || '—'}</div>
+                  {x.obs && <div className="hnote">{x.obs}{x.by ? ` · por ${x.by}` : ''}</div>}
+                </div>
+                <div className={`hpts${isAdj ? ' hpts-ajuste' : ''}`}>{isAdj ? 'ajuste' : `+${x.pts}`}</div>
+                <button className="hdel" onClick={() => handleDelete(x.id)} title="Remover">✕</button>
               </div>
-              <div className={`hpts${isAdj ? ' hpts-ajuste' : ''}`}>
-                {isAdj ? 'ajuste' : `+${x.pts}`}
-              </div>
-              <button className="hdel" onClick={() => handleDelete(x.id)} title="Remover lançamento">✕</button>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
     </div>
   )
@@ -539,9 +490,7 @@ function TabHistorico({ logs, startups, onDone, showToast }) {
 // ── Tab: Config ──────────────────────────────────────────────────────────────
 
 function TabConfig({ showToast }) {
-  const [demoday, setDemoday] = useState(
-    () => localStorage.getItem('apb_demoday') || '2026-07-23'
-  )
+  const [demoday, setDemoday] = useState(() => localStorage.getItem('apb_demoday') || '2026-07-23')
 
   function save() {
     if (!demoday) { showToast('Informe a data do Demoday.'); return }
@@ -550,14 +499,16 @@ function TabConfig({ showToast }) {
   }
 
   return (
-    <div id="asec-config" className="asec on">
-      <h3 className="af-title">Configurações</h3>
-      <div className="admin-form">
-        <div className="af-row">
-          <label className="af-label">Data do Demoday</label>
-          <input className="fc-inp" type="date" value={demoday} onChange={e => setDemoday(e.target.value)} style={{ maxWidth: 220 }} />
+    <div className="asec on" id="asec-config">
+      <div className="fc">
+        <h4>Configurações</h4>
+        <div className="fg" style={{ maxWidth: 280 }}>
+          <label className="fl">Data do Demoday</label>
+          <input className="fc-inp" type="date" value={demoday} onChange={e => setDemoday(e.target.value)} />
         </div>
-        <button className="btn-p" onClick={save}>Salvar configurações</button>
+        <div className="factions">
+          <button className="btn-s" onClick={save}>Salvar configurações</button>
+        </div>
       </div>
     </div>
   )

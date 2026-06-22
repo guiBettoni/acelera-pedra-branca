@@ -4,10 +4,9 @@ import { RKPAL } from '../lib/utils'
 import Podium from '../components/ranking/Podium'
 import RankingCard from '../components/ranking/RankingCard'
 
-export default function RankingPage() {
+export default function RankingPage({ navigate }) {
   const { startups, logs, loading, lastUpdated, refresh } = useStartups({ autoRefresh: true })
 
-  // auto refresh on mount
   useEffect(() => { refresh() }, [refresh])
 
   const catBySid = useMemo(() => {
@@ -22,12 +21,10 @@ export default function RankingPage() {
   }, [logs])
 
   const maxPts = startups[0]?.pts || 0
-
   const startupsWithMax = useMemo(
     () => startups.map(s => ({ ...s, maxPts })),
     [startups, maxPts]
   )
-
   const top3 = startupsWithMax.slice(0, 3)
 
   return (
@@ -56,26 +53,31 @@ export default function RankingPage() {
         </div>
       </div>
 
-      <Podium top3={top3} />
+      {/* rk-body limita a largura máxima — max-width: 860px centrado */}
+      <div className="rk-body">
+        <div className="podium" id="podium-area">
+          <Podium top3={top3} />
+        </div>
 
-      <div id="race-area">
-        {loading && (
-          <div className="empty" style={{ padding: '2rem', textAlign: 'center' }}>
-            Carregando ranking...
-          </div>
-        )}
-        {!loading && startups.length === 0 && (
-          <div className="empty">Nenhuma startup cadastrada ainda.</div>
-        )}
-        {!loading && startupsWithMax.map((s, i) => (
-          <RankingCard
-            key={s.id}
-            startup={s}
-            index={i}
-            accentColor={RKPAL[i % RKPAL.length]}
-            catBySid={catBySid}
-          />
-        ))}
+        <div className="race" id="race-area">
+          {loading && (
+            <div className="empty" style={{ padding: '2rem', textAlign: 'center' }}>
+              Carregando ranking...
+            </div>
+          )}
+          {!loading && startups.length === 0 && (
+            <div className="empty">Nenhuma startup cadastrada ainda.</div>
+          )}
+          {!loading && startupsWithMax.map((s, i) => (
+            <RankingCard
+              key={s.id}
+              startup={s}
+              index={i}
+              accentColor={RKPAL[i % RKPAL.length]}
+              catBySid={catBySid}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )

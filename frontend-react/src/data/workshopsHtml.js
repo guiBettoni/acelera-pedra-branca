@@ -148,7 +148,7 @@
             </div>
           </div>
         </div>
-        <div class="ws-card today" onclick="toggleWs(this)" aria-label="Ver perfil do mentor" data-date="2026-05-28">
+        <div class="ws-card done" onclick="toggleWs(this)" aria-label="Ver perfil do mentor" data-date="2026-05-28">
           <div class="ws-main">
             <span class="ws-num">08</span>
             <span class="ws-date-col">28/05</span>
@@ -168,13 +168,13 @@
             </div>
           </div>
         </div>
-        <div class="ws-card" onclick="toggleWs(this)" aria-label="Ver perfil do mentor" data-date="2026-06-03">
+        <div class="ws-card done" onclick="toggleWs(this)" aria-label="Ver perfil do mentor" data-date="2026-06-03">
           <div class="ws-main">
             <span class="ws-num">09</span>
             <span class="ws-date-col">03/06</span>
             <span class="ws-title-col">Finanças para Empreendedores</span>
             <div class="ws-mentor-col"><img class="ws-mentor-thumb" src="data:image/jpeg;base64,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" alt="Fabiana Naya Silveira"><span class="ws-mentor-name">Fabiana Naya Silveira</span></div>
-            <span class="ws-badge now"><span class="ws-blink"></span>Hoje</span>
+            <span class="ws-badge past">Realizado</span>
             <div class="ws-expand-btn">›</div>
           </div>
           <div class="ws-bio-panel">
@@ -188,13 +188,13 @@
             </div>
           </div>
         </div>
-        <div class="ws-card" onclick="toggleWs(this)" aria-label="Ver perfil do mentor" data-date="2026-06-11">
+        <div class="ws-card done" onclick="toggleWs(this)" aria-label="Ver perfil do mentor" data-date="2026-06-11">
           <div class="ws-main">
             <span class="ws-num">10</span>
             <span class="ws-date-col">11/06</span>
             <span class="ws-title-col">Legislação para Empreendedores</span>
             <div class="ws-mentor-col"><img class="ws-mentor-thumb" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAcFBQYFBAcGBgYIBwcICxILCwoKCxYPEA0SGhYbGhkWGRgcICgiHB4mHhgZIzAkJiorLS4tGyIyNTEsNSgsLSz/2wBDAQcICAsJCxULCxUsHRkdLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCz/wAARCABkAFADASIAAhEBAxEB/8QAHAAAAQUBAQEAAAAAAAAAAAAAAgABAwQFBgcI/8QAOBAAAgEDAgQDBgMGBwAAAAAAAQIDAAQRBSEGEjFBE1FhBxQiMnGRI4HBQlJTobHRFRYzYnKCov/EABkBAAMBAQEAAAAAAAAAAAAAAAACAwUBBP/EAB0RAAMBAQADAQEAAAAAAAAAAAABAhESAyExE1H/2gAMAwEAAhEDEQA/APnSnpqegBqekBT4oAalitC00a/voy9tayTD/aKe50i8tAfebOeHHVmQ4pel80bms3DOxSoyuDihIphRqVKmoAVOKYUYoAQFaOi6a+q6olshC5BcknAAAyaoAV2Ps0sWvOJbkoqt4FlLKeYA+S53/wCVLbyWx4W0kd/wYmnHFtDJE0ij5M74FdheWlnNZPETEZOnLzhiPqK5K00iVddtbRbqUlOaWQGXYDGwHlvWj/l+R7kzCVJc8rSKYBzJtvhxuN6yKxvdNyVSnMPEuKNOGmcSXlui8qCQlR5A71jkV3HtB0+RbkajPcZaWUwRRlQCyKu7/TJxXEkVq+KupTMXzTzbRGRQ0ZFAaoSHFGKAUYoAIV1fs91mDReJ83LCOC7ha2Zz0QkgqT6ZUA/WuVFEflOemDS0uljGmuWmj6CttIzxNNNNGzK5DJGxH4eR2PKcg9a1zix8ee7uEWPl5URBjC+RPff0HWqnuN5NYaRLDd+6ztYRLMFPRlUAitiw4Lm1C157yZ2jbrI/cd8f3rKcNvlG2vKlPT9HzpxTrkmu6uZCFWGDMcSj93mJyfU/2rDNaev2ttZcQ6hb2UontI7h1hkXoycxxWaa1lPKxGJVOnrImoDUjVGa6KIUYoBV7SrL/EdUgtSSqO2XYfsoBlj9gaAHh0+WSNJXIjSQ4TPVvoK09M0+KOcvcjJVmCKe5XqT6Z2qZWF/rUDogS3j+NVHREySB9qm0qdZNcS6m/0Y38Rh5IuXI/8AI+9VxL2LunqOicbXFz7WY7G90+KTTlC25CR5aHChVlYjruATn97bpVz2ze0kW8cvC2jznxSOW+mQ/KP4QPmf2vTbzrzvhPittHn1zXHAe7uIwsIP8VmJH5Dr+VcnctLcTPLNIzySEszMd2J3JNJMJPSlW8woXEnMcb/Qdqgz2NXntuVRzfMego47ZApPVvPtTudJ6ZjUBq1dIFbYYqqam1gwhW9otu0Wk6hqD5QFPd4XIPzkgtg9jjv61hxRvNMkUY5pJGCKPMk4Arsdb033bhazlsHMlnDI8EpUbGQH4mPrn7AihNL6GN/CrHi30CGZfmnhEZPlgnP9KoLOIrORSceICv5bZ/kDUcV8G0lbQn4opGI+h3/rUBYSFFPTJJ+lU30IvptaFotzqRbwFQkDnPiSrGAOnViBWieFbuNpJ7q/0aDkUsEbUYmY+mFJrIklCWqqTu3xYx0HaqStJO/gwfOw3I7Dua6BH4vjzOcMVzV1ABHjkK+mKC3txFhQAQP51Yc8qH4D96ZAY18fxMVUNT3Tc0xqCoV9GR6n7M9FtYNBn1iZI5rm5YwxxyIjcig7Mp3ZWJBGdqs8QStNdTJbxJOjErJznw40GN+2wAB+1cJoGv3WmadLDaww/C/iSOSQ7joBkeX61au+JZLvQXtyoSW4nJcL2jUAgHzyxz/1FQ/J1W0ej9eZyTn57PwAzRyiUhyoKA4K9iMgGoY5PjGenerySEzRtnBG302IoVt4pE/EU58+hr1Z/DzaQT3Rdic5rc020900c3Eg/Gud9+yjoP1rLSztkmRmLMnUqe/pWisr3JBfoPhXboPKmlPfZxhohBz+tRXjiOMnO2KtBQqVi6rcBn8JenU01PECRQZuZix70FPTV5xwldkbKnBq1zF1UnYkdqVKuycYIJD4zVpSSuaVKqScYY/WrkHwlAO65+xpUqdCh3UjJA5HUCudmJMpyc0qVTsdEdPSpVM6f//Z" alt="Eduardo Jacob Murakami"><span class="ws-mentor-name">Eduardo Jacob Murakami</span></div>
-            <span class="ws-badge upcoming">Em breve</span>
+            <span class="ws-badge past">Realizado</span>
             <div class="ws-expand-btn">›</div>
           </div>
           <div class="ws-bio-panel">
@@ -208,13 +208,13 @@
             </div>
           </div>
         </div>
-        <div class="ws-card" onclick="toggleWs(this)" aria-label="Ver perfil do mentor" data-date="2026-06-18">
+        <div class="ws-card done" onclick="toggleWs(this)" aria-label="Ver perfil do mentor" data-date="2026-06-18">
           <div class="ws-main">
             <span class="ws-num">11</span>
             <span class="ws-date-col">18/06</span>
             <span class="ws-title-col">Cultura e Liderança</span>
             <div class="ws-mentor-col"><img class="ws-mentor-thumb" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAcFBQYFBAcGBgYIBwcICxILCwoKCxYPEA0SGhYbGhkWGRgcICgiHB4mHhgZIzAkJiorLS4tGyIyNTEsNSgsLSz/2wBDAQcICAsJCxULCxUsHRkdLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCz/wAARCABkAFADASIAAhEBAxEB/8QAHAAAAAcBAQAAAAAAAAAAAAAAAAIDBAUGBwgB/8QANhAAAgEDAwIDBQcDBQEAAAAAAQIDAAQRBRIhBjETQVEHFGFxkQgiMoGhwdEjUrEVJEJTcmL/xAAZAQACAwEAAAAAAAAAAAAAAAACAwEEBQD/xAAkEQACAgICAgEFAQAAAAAAAAAAAQIRAyESMQQyURMiM0Fxgf/aAAwDAQACEQMRAD8A5tow27DkndngeVSdo1q1yq3I2xnOSOMGk3WHwS21CQ+0cdx60HLdUFWrGsdussYbxAp8wRRvdB/2qaM23ACKF+VOLeymukBhZHcuEEe/75J9B6VDlW2SlfQ090P/AGLRfdW/uX61Mtp0Vov+4bc3bGcD8v5pvPaxMheAlSO6sc/SuUrJcKI73Z/VfrXnu8g9PrTt7aaO3jndCIpCQjZHOKSrlKyONCHgS+n60ZYpAeQ35GlsUaWGWFtssbxsRnDDBxXcjuI0oV7QpgABn1NXToQ2OnwX+qXih5FXwYh5qDy7D444/M1TAKnVDW9nFb5/EgLD1JNKyPVfI7Et38F90f2a3XU9m+s3c624uSWghXsF8qa9Q+zi40a1L2sizMq5IzjPw5rSem+oFurWGyh02dIreAFZSjIGAA8iKidS1nUNUk8I6ROkL8K4A27fUknP0FZ6y5ORqPFj4/05/mVkbB4wcEehpS1Tey5GQakepdPXTtau4EOUEgK854IzSNjAfDR+MVpctWZDi1Kj020f9goSx+IwMhZiBjLMTxTth34pJgPSgsKiHAr3bXqjNLJFnngD1NOFAtIRNdRoeATz8qkzdA6ikwAOJAwHwB4FG03Rr+eXxILK4lXafvpExUceuMU2Fu7MFAO7aTx65xSZq5FjG6jo6HtuqBcwIxhSINHuWHawJUjG4MAQflUZHr89zpklnEuVjG0ybcBPhk96r/SOqG30iOy1e0uJFC7oJ0BwR6EjtT3VvFk0a9a0haK3SFyzkEKBg+dZqx740bH1Y8OSZj2u33+pard3A/AXwmPNRwD+9LWSkWifKlND0R9b1W1023OZ7h8ZxkIMdz+9X6P2NdSxxs0MtlOO4QSlD+ox+tab6pGI2+VsoZFIuOamdb0LUen782WqWrW0+0OFYg5U9iCOCODUU60JJFRxoQMlt36Vs32e9KsbvqfVJ7q3t7mS2tFaJJkDlcvhmUHjI4+PNY7GBW6/ZvTGra7KVIPusShscj75/inCTfI0DRsikFSAVHl29PSub/aH0U2g+0SyuNMtzJBdSCfwlGeQ+XUD6tj4GujJFaGJpIyMDkr/AB6VB6tpNrrlwkN5GXjV1kUhirKw5BBHII9RS3sKLog9B023gu5EiiVImYkKBwPPivOuumxrnTktlBO0KnDSbQcso5Kj51Y0tDYawsKRmRHX8eeRxwT69jSiIkkL7yAGYJz/AOhmo1TC/aKj0p7KdM6WuzcWluDO0QQySOTg+Y/OrmIIbfcjgCRU3nHbFS3ct8TUNcxm41poSTtKLkfADP70XQHZhXtygc9Q2V+IyYHhMAcDuy84/U1kz3Dgke7OfQ5FdC+3GwiuekCyDDW80bggdhnB5+Rrn7YUUKW3Y86hoKLIlJjuU47Vvn2cp9x18BN77IDgHBxuftn/ABWARI8jYjRnP/yCf8Vs32fLi6ser723ks5zFc2bEjYVOUZTxnz5NGQ+jpNdrxYJOCMEMMVHrGVulJGMccfCpBZ4WjBLsgI7yDb/AJpjv3TjaDtPY4oWQg2o4juraby5U/5/mkbdQbaIEA5cNz86NrgD6YBuK5buO44pGCcAwwFgXyO1C2GiYj74pnDErX91PjJOIx8h3p3vWPc3cjOAO5ptEfDhyRzkk+tEAUf2n6c2o9J6jbrMId0R5bgDHPJ9OK5WMkyYKAsuMc12B1Qy3Fg8RdWjdSDv7EHgj4Vyv1RYLYXkYjjCRMu3C9sg4ouNkFrT7gCoBGo7KgCgfkKk9A1GXTeoLO5SeaDEgR3ibDBW4OPyNRW6rR0DoT651LHI0bNaWX9aZgM8j8K/Mn9AaWGzcbacQr4cwjupxwJI8MXHqfIUrEwnUsp+63fYMj69vpVQvbN9OmaVpLi3sZDloIiG3nP/ACxUlPrzrbqkLJ27Lzj+KieRQ7Cx45ZPU96q1yz0+2NrLMA8aiZuRkKSQOPMkggCnehXematbxzQSSNJsEm2TCsAcc4qidTarEluyyQiedxlf7lPcYPrntVX09uoLN7OYS+HcLJuSUP2J/4keY5xjsaRDJKT5VoszwwiuLezdJ5v6RRc4HIbzB9RURdamMFWP3/XOM1Dav1xFpsHu0sO6+CAyIn4Vb5nyqt3i6prdsjzze6KxzsgX72P/R7fSnyywh2xEME57SFerdYYabcIxKyldq54znisg6ls5Z9FZuD4B3j96uGv9J6kviXEOsmWQj+lDOpbnjgvnj6VnVzr+p2k01tcwIsikpJHIpyPhTsc4zX2sRlhLF7om5HIbg1v3s8tIbPo6xWBdvvEInkPmznuf2+VChQImQfqiQ2mmFosAscY8h37fSqg0zpMiK2AbhIvjggZoUKo5vY0/F9P9G7WKXkN1fTPI0yO6ryMALwKNa3s1n0q9/BhLvJAlxkqM44z2oUKsw9UVcm5uyqia4nu71pbiSR0bO5sEk4B54q3dMalcXuhW8sxUsycnFChVbKtFzF2Nr2+lN3FGwVhJcNE2R5YrJ+uT4usQzuB4ksP3zj8WGIBPxxQoU7xvZFfz/xM/9k=" alt="Vanessa Milis Vieira"><span class="ws-mentor-name">Vanessa Milis Vieira</span></div>
-            <span class="ws-badge upcoming">Em breve</span>
+            <span class="ws-badge past">Realizado</span>
             <div class="ws-expand-btn">›</div>
           </div>
           <div class="ws-bio-panel">
@@ -228,13 +228,13 @@
             </div>
           </div>
         </div>
-        <div class="ws-card" onclick="toggleWs(this)" aria-label="Ver perfil do mentor" data-date="2026-06-25">
+        <div class="ws-card next" onclick="toggleWs(this)" aria-label="Ver perfil do mentor" data-date="2026-06-25">
           <div class="ws-main">
             <span class="ws-num">12</span>
             <span class="ws-date-col">25/06</span>
             <span class="ws-title-col">Storytelling</span>
             <div class="ws-mentor-col"><img class="ws-mentor-thumb" src="data:image/jpeg;base64,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" alt="Yul Ian Francesconi Gutiérrez"><span class="ws-mentor-name">Yul Ian Francesconi Gutiérrez</span></div>
-            <span class="ws-badge upcoming">Em breve</span>
+            <span class="ws-badge next-badge">Próximo</span>
             <div class="ws-expand-btn">›</div>
           </div>
           <div class="ws-bio-panel">
@@ -271,3 +271,4 @@
       </div>
     </div>
   </section>`;
+
