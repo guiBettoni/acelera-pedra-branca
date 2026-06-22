@@ -44,7 +44,7 @@ export default function RankingPage({ navigate }) {
         <div className="rk-header-top">
           <div>
             <div className="rk-eyebrow">Acelera Pedra Branca · 5ª Edição</div>
-            <h2 className="rk-title">Ranking<br /><em>ao vivo</em></h2>
+            <h2 className="rk-title">Ranking <em>ao vivo</em></h2>
           </div>
           <div className="live">
             <span className="live-d" />
