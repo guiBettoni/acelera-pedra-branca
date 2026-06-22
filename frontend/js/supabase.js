@@ -157,23 +157,28 @@ window.renderRanking = async function() {
           const ini=s.name.trim().split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
           const avColor=_RKPAL[i%_RKPAL.length];
           const avHtml=`<div class="rav" style="flex-shrink:0"><div class="rav-ini" style="background:${avColor}">${ini}</div>${s.foto?`<img src="${safe(s.foto)}" class="rav-img" alt="">`:''}</div>`;
+          const rankLabel=i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span class="rpos-n">${i+1}</span>`;
           const badgesHtml=[
-            s.canvas_feito      ? '<span class="rbadge">🗺️ Canvas</span>'  : '',
-            s.entrevistas       ? '<span class="rbadge">🗣️ Entrevistas</span>' : '',
-            s.mvp_funcional     ? '<span class="rbadge">🚀 MVP</span>'     : '',
-            s.pessoas_testando  ? '<span class="rbadge">👥 Usuários</span>': '',
-            s.clientes_pagantes ? '<span class="rbadge gold">💰 Cliente</span>' : '',
+            s.canvas_feito      ? '<span class="rbadge">Canvas</span>'  : '',
+            s.entrevistas       ? '<span class="rbadge">Entrevistas</span>' : '',
+            s.mvp_funcional     ? '<span class="rbadge accent">MVP</span>'     : '',
+            s.clientes_pagantes ? '<span class="rbadge gold">Cliente Pagante</span>' : '',
           ].filter(Boolean).join('');
-          const statsHtml=`<div class="rrow-stats">${s.aulas>0?`<span class="rstat">📚 ${s.aulas} aulas</span>`:''}${s.mentorias>0?`<span class="rstat">🧑‍💼 ${s.mentorias} mentorias</span>`:''}${badgesHtml}</div>`;
-          return `<div class="rrow" data-sid="${safe(s.id)}" onclick="toggleRrow(this)">
+          const statsHtml=(s.aulas>0||s.mentorias>0||badgesHtml)
+            ?`<div class="rrow-stats">${s.aulas>0?`<span class="rstat">${s.aulas} aulas</span>`:''}${s.mentorias>0?`<span class="rstat">${s.mentorias} mentorias</span>`:''}${badgesHtml}</div>`
+            :'';
+          return `<div class="rrow" data-sid="${safe(s.id)}" style="--acc:${avColor}" onclick="toggleRrow(this)">
             <div class="rrow-main">
-              <div class="rpos">${i+1}</div>
+              <div class="rpos">${rankLabel}</div>
               ${avHtml}
-              <div class="rinfo"><div class="rname">${safe(s.name)}</div><div class="rmeta">Est. ${s.stage} · ${safe(s.area)}</div>${statsHtml}</div>
-              <div class="rtrack"><div class="rbar-bg"><div class="rbar" style="width:${bw}%"></div></div></div>
+              <div class="rinfo">
+                <div class="rname">${safe(s.name)}</div>
+                <div class="rmeta">${safe(s.area)}</div>
+                ${statsHtml}
+              </div>
+              <div class="rtrack"><div class="rbar-bg"><div class="rbar" style="width:${bw}%;background:${avColor};box-shadow:0 0 8px ${avColor}66"></div></div></div>
               <div class="rright">
                 <div class="rpts">${pts}</div>
-                <div class="rpts-l">pontos</div>
                 <div class="rlv ${lv.c}">${lv.n}</div>
               </div>
               <div class="rrow-chev">▾</div>
