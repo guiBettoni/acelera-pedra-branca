@@ -1,0 +1,292 @@
+/* ─── Apple Liquid Glass Material ───────────────────────────────────────────
+   Applies a translucent glass aesthetic inspired by iOS 26 / macOS 26.
+   Layered on top of acelera-nav.css — purely additive overrides.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* ── SVG liquid filter (injected via inline SVG in App.jsx) ── */
+
+/* ── Navbar: frosted glass bar ──────────────────────────────── */
+#main-nav {
+  background: rgba(8, 8, 18, 0.55) !important;
+  backdrop-filter: blur(32px) saturate(200%) brightness(1.05);
+  -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 4px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* ── Ranking cards: glass panels ────────────────────────────── */
+.rrow {
+  background: rgba(255, 255, 255, 0.042) !important;
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  border-left: 3px solid var(--acc, rgba(255,255,255,0.15)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 2px 16px rgba(0, 0, 0, 0.20);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s, border-radius 0.3s !important;
+  will-change: transform;
+}
+
+.rrow:hover,
+.rrow:focus-within {
+  background: rgba(255, 255, 255, 0.072) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10),
+    0 8px 32px rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+  border-radius: 14px 12px 13px 11px !important;
+}
+
+.rrow.expanded {
+  background: rgba(255, 255, 255, 0.06) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 12px 40px rgba(0, 0, 0, 0.36);
+  border-radius: 12px !important;
+}
+
+/* ── Podium shields: premium glass ─────────────────────────── */
+.pod-shield {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(24px) saturate(180%) brightness(1.08);
+  -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(1.08);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.20),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.18),
+    inset 2px 0 0 rgba(255, 255, 255, 0.06),
+    inset -2px 0 0 rgba(255, 255, 255, 0.04),
+    0 20px 60px rgba(0, 0, 0, 0.45),
+    0 8px 24px rgba(0, 0, 0, 0.30);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+}
+
+.pod-shield:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.18),
+    0 28px 72px rgba(0, 0, 0, 0.55),
+    0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* 1º lugar: prismatic rainbow border */
+.pod.p1 .pod-shield {
+  background: rgba(255, 248, 210, 0.06) !important;
+  border: 1px solid transparent !important;
+  background-clip: padding-box;
+  position: relative;
+}
+.pod.p1 .pod-shield::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,220,80,0.9),
+    rgba(255,160,80,0.7),
+    rgba(255,80,120,0.5),
+    rgba(120,80,255,0.6),
+    rgba(80,200,255,0.7),
+    rgba(80,255,180,0.6),
+    rgba(255,220,80,0.9)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  animation: prism-rotate 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes prism-rotate {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.pod.p1 .pod-shield::before {
+  background-size: 300% 300%;
+}
+
+/* ── Admin forms & gate ─────────────────────────────────────── */
+.gate-box {
+  background: rgba(14, 12, 30, 0.72) !important;
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 32px 80px rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  padding: 2.5rem;
+  min-width: 320px;
+  max-width: 400px;
+}
+
+.admin-form {
+  background: rgba(255, 255, 255, 0.028);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  margin-bottom: 1.5rem;
+}
+
+/* ── Buttons: glass pill style ──────────────────────────────── */
+.btn-p {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 4px 16px rgba(var(--orange-rgb, 255, 120, 30), 0.35);
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.btn-p:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 8px 24px rgba(255, 120, 30, 0.45);
+}
+.btn-p:active {
+  transform: translateY(0);
+}
+
+/* ── Ranking header glass band ──────────────────────────────── */
+.rk-header {
+  background: rgba(10, 8, 25, 0.3);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ── Live indicator pulse ───────────────────────────────────── */
+.live {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+/* ── Hero pill ──────────────────────────────────────────────── */
+.hero-pill {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* ── Pill cards (sobre section) ─────────────────────────────── */
+.pill-card {
+  background: rgba(255, 255, 255, 0.038) !important;
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 32px rgba(0, 0, 0, 0.20);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+}
+.pill-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 16px 40px rgba(0, 0, 0, 0.32);
+}
+
+/* ── Startup chips ──────────────────────────────────────────── */
+.sc-chip {
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+}
+.sc-chip:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+/* ── Cronograma track ───────────────────────────────────────── */
+.crono-h-track {
+  background: rgba(255, 255, 255, 0.025) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ── Input fields ───────────────────────────────────────────── */
+.fc-inp,
+select.fc-inp {
+  background: rgba(255, 255, 255, 0.055) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.20),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.fc-inp:focus,
+select.fc-inp:focus {
+  border-color: rgba(255, 130, 50, 0.6) !important;
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.20),
+    0 0 0 3px rgba(255, 130, 50, 0.15);
+  outline: none;
+}
+
+/* ── Toast notification ─────────────────────────────────────── */
+#toast {
+  background: rgba(20, 16, 40, 0.88) !important;
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Liquid wobble keyframe ──────────────────────────────────── */
+@keyframes liquid-wobble {
+  0%   { border-radius: 12px; }
+  25%  { border-radius: 14px 10px 13px 11px / 11px 13px 10px 14px; }
+  50%  { border-radius: 10px 14px 11px 13px / 13px 11px 14px 10px; }
+  75%  { border-radius: 13px 11px 12px 10px / 10px 12px 11px 13px; }
+  100% { border-radius: 12px; }
+}
+
+/* Scrollbar in ranking area */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.03);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.12);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.22);
+}
