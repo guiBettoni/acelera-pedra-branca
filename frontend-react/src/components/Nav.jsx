@@ -3,10 +3,12 @@ import logoSrc from '/logo.png'
 
 export default function Nav({ page, navigate }) {
   const [open, setOpen] = useState(false)
+  const [activeNav, setActiveNav] = useState(page)
 
   function go(p, e) {
     e?.preventDefault()
     navigate(p)
+    setActiveNav(p)
     setOpen(false)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -14,6 +16,7 @@ export default function Nav({ page, navigate }) {
   function goSection(p, hash) {
     const needsPageChange = page !== p
     navigate(p, false)
+    setActiveNav(hash)
     setOpen(false)
     setTimeout(() => {
       document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' })
@@ -31,22 +34,22 @@ export default function Nav({ page, navigate }) {
       </button>
 
       <div className={`nav-center${open ? ' open' : ''}`} id="nav-center">
-        <a className={`nav-btn${page === 'home' ? ' on' : ''}`} href="#home" onClick={e => go('home', e)}>
+        <a className={`nav-btn${activeNav === 'home' ? ' on' : ''}`} href="#home" onClick={e => go('home', e)}>
           Início
         </a>
-        <a className="nav-btn" href="#sobre" onClick={e => { e.preventDefault(); goSection('home', 'sobre') }}>
+        <a className={`nav-btn${activeNav === 'sobre' ? ' on' : ''}`} href="#sobre" onClick={e => { e.preventDefault(); goSection('home', 'sobre') }}>
           Programa
         </a>
-        <a className="nav-btn" href="#cronograma" onClick={e => { e.preventDefault(); goSection('home', 'cronograma') }}>
+        <a className={`nav-btn${activeNav === 'cronograma' ? ' on' : ''}`} href="#cronograma" onClick={e => { e.preventDefault(); goSection('home', 'cronograma') }}>
           Cronograma
         </a>
-        <a className="nav-btn" href="#workshops" onClick={e => { e.preventDefault(); goSection('home', 'workshops') }}>
+        <a className={`nav-btn${activeNav === 'workshops' ? ' on' : ''}`} href="#workshops" onClick={e => { e.preventDefault(); goSection('home', 'workshops') }}>
           Trilha
         </a>
-        <a className={`nav-btn${page === 'ranking' ? ' on' : ''}`} href="#ranking" onClick={e => go('ranking', e)}>
+        <a className={`nav-btn${activeNav === 'ranking' ? ' on' : ''}`} href="#ranking" onClick={e => go('ranking', e)}>
           Ranking
         </a>
-        <button className="nav-cta" onClick={() => { navigate('admin'); setOpen(false) }}>
+        <button className="nav-cta" onClick={() => { navigate('admin'); setActiveNav('admin'); setOpen(false) }}>
           Painel Admin →
         </button>
       </div>

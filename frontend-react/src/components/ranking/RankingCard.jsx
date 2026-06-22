@@ -39,7 +39,7 @@ export default function RankingCard({ startup, index, accentColor, catBySid }) {
         <div className="rpos">{rankLabel}</div>
 
         <div className="rav" style={{ flexShrink: 0 }}>
-          <div className="rav-ini" style={{ background: accentColor }}>{ini}</div>
+          <div className="rav-ini" style={{ background: 'rgba(255,255,255,0.10)' }}>{ini}</div>
           {s.foto && <img src={s.foto} className="rav-img" alt="" />}
         </div>
 
@@ -61,8 +61,7 @@ export default function RankingCard({ startup, index, accentColor, catBySid }) {
               className="rbar"
               style={{
                 width: `${bw}%`,
-                background: accentColor,
-                boxShadow: `0 0 8px ${accentColor}66`,
+                background: 'rgba(255,255,255,0.30)',
               }}
             />
           </div>
@@ -85,7 +84,7 @@ export default function RankingCard({ startup, index, accentColor, catBySid }) {
               <div key={c.k} className="rcat-item">
                 <div className="rcat-lbl">{c.k}</div>
                 <div className="rcat-bar-bg">
-                  <div className="rcat-bar" style={{ width: `${w}%`, background: c.color }} />
+                  <div className="rcat-bar" style={{ width: `${w}%`, background: 'rgba(255,255,255,0.28)' }} />
                 </div>
                 <div className="rcat-pts">{p || '—'}</div>
               </div>
