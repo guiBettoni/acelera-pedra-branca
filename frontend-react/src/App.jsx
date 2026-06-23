@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Nav from './components/Nav'
 import Toast, { useToast } from './components/Toast'
+import AccessibilityPanel from './components/AccessibilityPanel'
 import HomePage from './pages/HomePage'
 import RankingPage from './pages/RankingPage'
 import AdminPage from './pages/AdminPage'
@@ -19,6 +20,8 @@ export default function App() {
     setPage(p)
     window.location.hash = p
     if (scrollTop) window.scrollTo({ top: 0, behavior: 'smooth' })
+    // move o foco para o conteúdo principal ao navegar (leitores de tela)
+    setTimeout(() => document.getElementById('main-content')?.focus(), 80)
   }
 
   useEffect(() => {
@@ -39,6 +42,7 @@ export default function App() {
         {page === 'ranking' && <RankingPage />}
         {page === 'admin'   && <AdminPage showToast={showToast} />}
       </main>
+      <AccessibilityPanel />
       <Toast msg={msg} visible={visible} />
     </>
   )

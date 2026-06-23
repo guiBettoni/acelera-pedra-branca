@@ -43,6 +43,21 @@ export default function HomePage({ navigate }) {
   )
 
   useEffect(() => {
+    const bg = document.getElementById('parallax-bg')
+    if (!bg) return
+    let raf
+    function onScroll() {
+      if (raf) return
+      raf = requestAnimationFrame(() => {
+        bg.style.transform = `translateY(${window.scrollY * 0.35}px)`
+        raf = null
+      })
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => { window.removeEventListener('scroll', onScroll); if (raf) cancelAnimationFrame(raf) }
+  }, [])
+
+  useEffect(() => {
     const hero = heroRef.current
     const glow = glowRef.current
     const spot = spotRef.current
@@ -74,50 +89,50 @@ export default function HomePage({ navigate }) {
     <div id="page-home" className="page on">
 
       {/* ── HERO ── */}
-      <section className="hero" id="hero" ref={heroRef}>
-        <div className="parallax-bg" id="parallax-bg" />
-        <div className="parallax-overlay" />
-        <div className="hero-grid" id="hero-grid" />
-        <div className="hero-glow">
+      <section className="hero" id="hero" ref={heroRef} aria-label="Apresentação do Acelera Pedra Branca">
+        <div className="parallax-bg" id="parallax-bg" aria-hidden="true" />
+        <div className="parallax-overlay" aria-hidden="true" />
+        <div className="hero-grid" id="hero-grid" aria-hidden="true" />
+        <div className="hero-glow" aria-hidden="true">
           <div className="hero-glow-inner" ref={glowRef} id="hero-glow-inner" />
           <div className="hero-spotlight" ref={spotRef} id="hero-spotlight" />
         </div>
-        <div className="hero-pill"><span className="pill-dot" />5ª Edição · 2026</div>
+        <div className="hero-pill" aria-hidden="true"><span className="pill-dot" />5ª Edição · 2026</div>
         <h1>Acelera<span className="hi"> Pedra Branca</span></h1>
         <p className="hero-sub">
           Acompanhe em tempo real a evolução das startups que estão transformando Pedra Branca no hub de inovação do Sul do Brasil.
         </p>
         <div className="hero-btns">
-          <button className="btn-p" onClick={() => navigate('ranking')}>Ver Ranking →</button>
+          <button className="btn-p" onClick={() => navigate('ranking')}>Ver Ranking</button>
           <button className="btn-o" onClick={() => document.getElementById('sobre')?.scrollIntoView({ behavior: 'smooth' })}>
             Sobre o programa
           </button>
         </div>
-        <div className="hero-nums">
+        <dl className="hero-nums" aria-label="Números do programa">
           <div>
-            <div className="hnum-v">{loading ? '—' : startups.length || 15}</div>
-            <div className="hnum-l">Startups</div>
+            <dt className="hnum-l">Startups</dt>
+            <dd className="hnum-v">{loading ? '—' : startups.length || 15}</dd>
           </div>
           <div>
-            <div className="hnum-v">{daysUntil(DEMODAY)}</div>
-            <div className="hnum-l">Dias para o Demoday</div>
+            <dt className="hnum-l">Dias para o Demoday</dt>
+            <dd className="hnum-v">{daysUntil(DEMODAY)}</dd>
           </div>
           <div>
-            <div className="hnum-v">{loading ? '—' : totalPts}</div>
-            <div className="hnum-l">Pontos lançados</div>
+            <dt className="hnum-l">Pontos lançados</dt>
+            <dd className="hnum-v">{loading ? '—' : totalPts}</dd>
           </div>
           <div>
-            <div className="hnum-v">15</div>
-            <div className="hnum-l">Anos INAITEC</div>
+            <dt className="hnum-l">Anos INAITEC</dt>
+            <dd className="hnum-v">15</dd>
           </div>
-        </div>
+        </dl>
       </section>
 
       {/* ── SOBRE ── */}
-      <section className="sobre" id="sobre">
+      <section className="sobre" id="sobre" aria-labelledby="sobre-heading">
         <div className="si">
           <div className="sec-tag">Sobre a Gamificação</div>
-          <h2 className="sec-h">Competição com<br /><em>propósito e método</em></h2>
+          <h2 className="sec-h" id="sobre-heading">Competição com<br /><em>propósito e método</em></h2>
           <p className="sec-sub">
             O Acelera Pedra Branca transforma a jornada de aceleração em uma <strong>corrida de pontos</strong> — cada workshop concluído, mentoria registrada e entrega realizada vale pontos que movem sua startup no ranking em tempo real. A gamificação não é um detalhe: é o motor que mantém o engajamento, premia a consistência e torna o aprendizado mais divertido.
           </p>
@@ -147,44 +162,57 @@ export default function HomePage({ navigate }) {
       </section>
 
       {/* ── CRONOGRAMA ── */}
-      <section className="crono-sec" id="cronograma">
+      <section className="crono-sec" id="cronograma" aria-labelledby="crono-heading">
         <div className="si">
-          <div className="sec-tag">Cronograma</div>
-          <h2 className="sec-h">Etapas da <em>5ª Edição</em></h2>
+          <div className="sec-tag" aria-hidden="true">Cronograma</div>
+          <h2 className="sec-h" id="crono-heading">Etapas da <em>5ª Edição</em></h2>
           <div className="crono-h-track">
-            <div className="crono-h-inner" id="cronoInner">
+            <ol className="crono-h-inner" id="cronoInner" aria-label="Etapas do programa">
               {[
                 { title: 'Inscrições', done: true },
                 { title: 'Pré-Seleção', done: true },
                 { title: 'Bootcamp', sub: 'Kickoff · City Lab', done: true },
                 { title: 'Aceleração', sub: 'Trilha + Mentorias', active: true },
                 { title: 'Demo Day', date: '23 · 07 · 2026', finish: true },
-              ].map((step, i) => (
-                <div key={i} className={`crono-h-item${step.done ? ' done' : ''}${step.active ? ' active' : ''}${step.finish ? ' finish' : ''}`}>
-                  <div className="crono-h-dot" />
-                  <div className="crono-h-body">
-                    <div className="crono-h-title">{step.title}</div>
-                    {step.sub  && <div className="crono-h-sub">{step.sub}</div>}
-                    {step.date && <div className="crono-h-date">{step.date}</div>}
-                  </div>
-                </div>
-              ))}
-            </div>
+              ].map((step, i) => {
+                const state = step.active ? 'Em andamento' : step.done ? 'Concluído' : step.finish ? 'Evento final' : 'Pendente'
+                return (
+                  <li key={i} className={`crono-h-item${step.done ? ' done' : ''}${step.active ? ' active' : ''}${step.finish ? ' finish' : ''}`}
+                    aria-label={`${step.title}${step.sub ? ` — ${step.sub}` : ''}${step.date ? ` — ${step.date}` : ''}: ${state}`}>
+                    <div className="crono-h-dot" aria-hidden="true" />
+                    <div className="crono-h-body">
+                      <div className="crono-h-title">{step.title}</div>
+                      {step.sub  && <div className="crono-h-sub">{step.sub}</div>}
+                      {step.date && <div className="crono-h-date">{step.date}</div>}
+                    </div>
+                  </li>
+                )
+              })}
+            </ol>
           </div>
         </div>
       </section>
 
       {/* ── STARTUPS CHIPS ── */}
-      <section className="startups-sec" id="startups">
+      <section className="startups-sec" id="startups" aria-labelledby="startups-heading">
         <div className="si">
-          <div className="sec-tag">Startups</div>
-          <h2 className="sec-h">As empresas da <em>5ª Edição</em></h2>
-          <div className="chips" id="startups-chips">
-            {loading && <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 14 }}>Carregando...</span>}
-            {!loading && startups.map((s, i) => {
-              const lv  = getLevel(s.pts || 0)
+          <div className="sec-tag" aria-hidden="true">Startups</div>
+          <h2 className="sec-h" id="startups-heading">As empresas da <em>5ª Edição</em></h2>
+          <div className="chips" id="startups-chips" role="list" aria-label="Startups participantes">
+            {loading && <span role="status" style={{ color: 'rgba(255,255,255,0.4)', fontSize: 14 }}>Carregando...</span>}
+            {!loading && startups.map((s) => {
+              const lv = getLevel(s.pts || 0)
               return (
-                <div key={s.id} className="chip" onClick={() => navigate('ranking')} style={{ cursor: 'pointer' }}>
+                <div
+                  key={s.id}
+                  className="chip"
+                  onClick={() => navigate('ranking')}
+                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('ranking') } }}
+                  role="listitem button"
+                  tabIndex={0}
+                  aria-label={`${s.name}, ${s.area}, estágio ${s.stage}, nível ${lv.n} — ver no ranking`}
+                  style={{ cursor: 'pointer' }}
+                >
                   <div className="chip-n">{s.name}</div>
                   <div className="chip-a">{s.area}</div>
                   <span className={`chip-s st${s.stage}`}>Est. {s.stage}</span>
