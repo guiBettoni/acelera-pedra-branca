@@ -69,8 +69,8 @@
   --lv-eli:#C4B5FD;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:#0D2E38;color:var(--text);font-family:var(--body);font-size:15px;line-height:1.6;min-height:100vh}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:#0D2E38;color:var(--text);font-family:var(--body);font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
 button{font-family:var(--body)}
 input,select,textarea{font-family:var(--body)}
 
@@ -677,22 +677,43 @@ nav.nav-scrolled{
 /* ── 768px: tablet + large mobile ── */
 @media(max-width:768px){
 
-  /* NAV */
-  nav{top:12px;width:calc(100% - 1.5rem);border-radius:14px;padding:0 1rem;flex-wrap:wrap;height:auto;min-height:56px;align-items:flex-start;overflow:hidden}
-  .nav-logo{height:56px;display:flex;align-items:center}
-  .nav-hamburger{display:flex;margin-top:10px}
+  /* NAV — pill continua arredondado, expande ao abrir menu */
+  nav{top:10px;width:calc(100% - 1.25rem);border-radius:18px;padding:0 1rem;flex-wrap:wrap;height:auto;min-height:52px;align-items:flex-start}
+  nav.nav-scrolled{border-radius:0;top:0;width:100%;border-left:none;border-right:none}
+  .nav-logo{height:52px;display:flex;align-items:center}
+  .nav-hamburger{display:flex;margin-top:8px}
   .nav-center{display:none;flex-direction:column;width:100%;gap:2px;padding:6px 0 10px}
   .nav-center.open{display:flex}
   .nav-btn{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;font-size:14px}
   .nav-cta{width:100%;text-align:left;padding:10px 18px;border-radius:8px;font-size:14px;margin-top:4px}
 
-  /* HERO */
-  .hero{padding:3rem 1.25rem 3rem;min-height:auto}
+  /* HERO — preenche tela toda incluindo barra de navegador mobile */
+  .hero{padding:5rem 1.25rem calc(2rem + 160px);min-height:100svh}
   .hero h1{font-size:clamp(38px,11vw,64px);letter-spacing:-.04em}
   .hero-sub{font-size:14px;max-width:100%}
   .hero-btns{flex-direction:column;align-items:stretch}
   .btn-p,.btn-o{text-align:center;padding:14px 20px}
-  .hero-nums{gap:1.5rem;padding-top:1.75rem;margin-top:2.5rem}
+  /* hero-nums preso ao fundo do hero no mobile */
+  .hero-nums{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    padding-top:1rem;
+    position:absolute;
+    bottom:1.5rem;
+    left:1.25rem;
+    right:1.25rem;
+    border-top:1px solid rgba(255,255,255,0.08);
+    margin:0;
+  }
+  .hero-nums > div{
+    border-left:none !important;
+    padding:0;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.09);
+    border-radius:14px;
+    padding:1rem;
+  }
   .hnum-v{font-size:28px}
 
   /* SECTIONS */
@@ -772,9 +793,10 @@ nav.nav-scrolled{
 
   /* Ranking */
   .rk-back{padding:1rem 1rem .25rem}
-  .rk-header{padding:.5rem 1rem 1.25rem}
-  .rk-body{padding:1rem 1rem 2rem}
-  .rk-title{font-size:clamp(32px,8vw,48px)}
+  .rk-header{padding:.5rem 1rem 1rem}
+  .rk-body{padding:.75rem 1rem 2rem}
+  .rk-title{font-size:clamp(22px,6vw,30px)}
+  #page-ranking{padding-top:64px}
   .rk-stats{grid-template-columns:repeat(3,1fr);gap:6px}
   .rk-stat{padding:.625rem .5rem}
   .rk-stat-v{font-size:17px}
@@ -812,9 +834,10 @@ nav.nav-scrolled{
 @media(max-width:480px){
 
   /* Hero tighten */
+  .hero{padding:4.5rem 1rem calc(1.5rem + 175px)}
   .hero h1{font-size:clamp(34px,13vw,52px)}
-  .hero-nums{gap:1rem}
-  .hnum-v{font-size:24px}
+  .hero-nums{bottom:1rem;left:1rem;right:1rem;gap:6px}
+  .hnum-v{font-size:20px}
   .hnum-l{font-size:9px}
 
   /* Areas */
@@ -849,7 +872,9 @@ nav.nav-scrolled{
 
 /* ── 380px: tiny phones ── */
 @media(max-width:380px){
+  .hero{padding:4rem .875rem calc(1.25rem + 160px)}
   .hero h1{font-size:32px}
+  .hero-nums{bottom:.75rem;left:.875rem;right:.875rem;gap:5px}
   .sec-h{font-size:22px}
   .podium{gap:3px}
   .pod{padding:.75rem .3rem}
@@ -1168,7 +1193,7 @@ button.nav-logo:active {
 .back-to-top {
   /* Posição */
   position: fixed;
-  bottom: 5rem;       /* Acima do toast (1.5rem + ~2rem de altura) */
+  bottom: 5.5rem;     /* Acima do painel de acessibilidade */
   right: 1.75rem;
   z-index: 998;       /* Abaixo do cursor (9999) e do toast (999) */
 
@@ -1473,11 +1498,11 @@ body{font-size:max(14px, 1rem)}
 .a11y-wrap{
   position:fixed;
   bottom:1.5rem;
-  left:1.5rem;
+  right:1.75rem;
   z-index:9000;
   display:flex;
   flex-direction:column;
-  align-items:flex-start;
+  align-items:flex-end;
   gap:8px;
 }
 
@@ -1566,5 +1591,6 @@ body{font-size:max(14px, 1rem)}
 }
 
 @media(max-width:480px){
-  .a11y-wrap{bottom:1rem;left:1rem}
+  .a11y-wrap{bottom:1rem;right:1rem}
+  .a11y-panel{min-width:190px}
 }
