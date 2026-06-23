@@ -30,17 +30,7 @@ export default function RankingPage({ navigate }) {
   return (
     <div id="page-ranking" className="page on" style={{ position: 'relative' }}>
 
-      {/* decorative clouds */}
-      <div className="rk-clouds" aria-hidden="true">
-        <div className="rk-cloud lg" style={{ top: '3%', left: '-2%', animation: 'cloud-drift-a 8s ease-in-out infinite' }} />
-        <div className="rk-cloud" style={{ top: '6%', right: '3%', animation: 'cloud-drift-b 11s ease-in-out infinite 1.5s' }} />
-        <div className="rk-cloud sm" style={{ top: '1.5%', left: '30%', animation: 'cloud-drift-c 9s ease-in-out infinite 2.5s' }} />
-        <div className="rk-cloud sm" style={{ top: '11%', right: '20%', animation: 'cloud-drift-a 12s ease-in-out infinite 3.5s' }} />
-        <div className="rk-cloud lg" style={{ bottom: '6%', right: '-1%', animation: 'cloud-drift-b 10s ease-in-out infinite 2s', opacity: 0.35 }} />
-        <div className="rk-cloud" style={{ bottom: '16%', left: '1%', animation: 'cloud-drift-c 13s ease-in-out infinite 4s', opacity: 0.3 }} />
-      </div>
-
-      <div className="rk-header">
+<div className="rk-header">
         <div className="rk-header-top">
           <div>
             <div className="rk-eyebrow">Acelera Pedra Branca · 5ª Edição</div>

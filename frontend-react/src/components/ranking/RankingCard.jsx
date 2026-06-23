@@ -30,9 +30,8 @@ export default function RankingCard({ startup, index, accentColor, catBySid }) {
 
   return (
     <div
-      className={`rrow${expanded ? ' expanded' : ''}`}
+      className={`rrow${index === 0 ? ' rrow--first' : ''}${expanded ? ' expanded' : ''}`}
       data-sid={s.id}
-      style={{ '--acc': accentColor }}
       onClick={() => setExpanded(e => !e)}
     >
       <div className="rrow-main">

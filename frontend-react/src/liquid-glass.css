@@ -16,39 +16,42 @@
     0 4px 32px rgba(0, 0, 0, 0.45);
 }
 
-/* ── Ranking cards: glass panels ────────────────────────────── */
+/* ── Ranking cards: rows dentro de superfície única ───────────── */
 .rrow {
-  background: rgba(255, 255, 255, 0.042) !important;
-  backdrop-filter: blur(14px) saturate(160%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.07) !important;
-  border-left: 3px solid var(--acc, rgba(255,255,255,0.15)) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.10),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-    0 2px 16px rgba(0, 0, 0, 0.20);
-  transition: background 0.2s, box-shadow 0.2s, transform 0.2s, border-radius 0.3s !important;
-  will-change: transform;
+  background: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+  box-shadow: none !important;
+  transition: background 0.18s !important;
+  will-change: auto;
+}
+
+.rrow:last-child {
+  border-bottom: none !important;
 }
 
 .rrow:hover,
 .rrow:focus-within {
-  background: rgba(255, 255, 255, 0.072) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.10),
-    0 8px 32px rgba(0, 0, 0, 0.32),
-    0 0 0 1px rgba(255, 255, 255, 0.06);
-  transform: translateY(-1px);
-  border-radius: 14px 12px 13px 11px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  box-shadow: none !important;
+  transform: none;
+  border-radius: 0 !important;
+}
+
+.rrow.rrow--first {
+  background: rgba(250, 132, 0, 0.05) !important;
+}
+
+.rrow.rrow--first:hover {
+  background: rgba(250, 132, 0, 0.08) !important;
 }
 
 .rrow.expanded {
-  background: rgba(255, 255, 255, 0.06) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 12px 40px rgba(0, 0, 0, 0.36);
-  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
 }
 
 /* ── Podium shields: premium glass ─────────────────────────── */
@@ -76,43 +79,12 @@
     0 12px 32px rgba(0, 0, 0, 0.35);
 }
 
-/* 1º lugar: prismatic rainbow border */
+/* 1º lugar: destaque por composição — fundo levemente alaranjado, sem glow */
 .pod.p1 .pod-shield {
-  background: rgba(255, 248, 210, 0.06) !important;
-  border: 1px solid transparent !important;
-  background-clip: padding-box;
+  background: rgba(250, 132, 0, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background-clip: unset;
   position: relative;
-}
-.pod.p1 .pod-shield::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    135deg,
-    rgba(255,220,80,0.9),
-    rgba(255,160,80,0.7),
-    rgba(255,80,120,0.5),
-    rgba(120,80,255,0.6),
-    rgba(80,200,255,0.7),
-    rgba(80,255,180,0.6),
-    rgba(255,220,80,0.9)
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: destination-out;
-  mask-composite: exclude;
-  animation: prism-rotate 4s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes prism-rotate {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-.pod.p1 .pod-shield::before {
-  background-size: 300% 300%;
 }
 
 /* ── Admin forms & gate ─────────────────────────────────────── */

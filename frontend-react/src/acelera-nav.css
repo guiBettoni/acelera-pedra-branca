@@ -280,9 +280,13 @@ nav{
 .pod-lbl{font-size:10px;color:rgba(255,255,255,0.55)}
 .pod-lv{display:inline-block;margin-top:6px;font-size:10px;font-weight:500;padding:2px 8px;border-radius:99px}
 
-.race{display:flex;flex-direction:column;gap:4px}
-.rrow{display:flex;flex-direction:column;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-left:3px solid rgba(255,255,255,0.12);transition:background .18s,border-color .18s;cursor:pointer}
-.rrow:hover{background:rgba(255,255,255,0.055);border-color:rgba(255,255,255,0.10);border-left-color:rgba(255,255,255,0.25)}
+.race{display:flex;flex-direction:column;gap:0;background:rgba(255,255,255,0.022);border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden}
+.rrow{display:flex;flex-direction:column;border-radius:0;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.07);transition:background .18s;cursor:pointer}
+.rrow:last-child{border-bottom:none}
+.rrow:hover{background:rgba(255,255,255,0.04)}
+.rrow--first{background:rgba(250,132,0,0.05)}
+.rrow--first:hover{background:rgba(250,132,0,0.08)}
+.rrow--first .rpts{color:var(--orange)}
 .rrow-main{display:grid;grid-template-columns:36px 36px 1fr 160px 64px 16px;align-items:center;gap:12px;padding:13px 16px 13px 14px}
 .rpos{font-family:var(--head);font-weight:800;font-size:18px;text-align:center;line-height:1}
 .rpos-n{font-size:13px;font-weight:700;color:rgba(255,255,255,0.3)}
@@ -1247,9 +1251,9 @@ button.nav-logo:active {
   transition:transform .22s ease;
 }
 .pod-shield:hover{transform:translateY(-5px)}
-.p1 .pod-shield{background:linear-gradient(160deg,#0F3C4C 0%,#1A5468 55%,#0E2E3C 100%);border:2px solid rgba(245,200,66,0.42);box-shadow:0 0 28px rgba(245,200,66,0.14),0 8px 24px rgba(0,0,0,0.42);min-height:268px;padding:22px 18px 32px}
-.p2 .pod-shield{background:linear-gradient(160deg,#0A3040 0%,#124A5A 55%,#0A2230 100%);border:2px solid rgba(0,192,139,0.35);box-shadow:0 0 18px rgba(0,192,139,0.10),0 6px 20px rgba(0,0,0,0.38);min-height:190px}
-.p3 .pod-shield{background:linear-gradient(160deg,#0A2838 0%,#123848 55%,#0A2030 100%);border:2px solid rgba(250,132,0,0.35);box-shadow:0 0 18px rgba(250,132,0,0.10),0 6px 20px rgba(0,0,0,0.38);min-height:190px}
+.p1 .pod-shield{background:rgba(250,132,0,0.06);border:1px solid rgba(255,255,255,0.12);box-shadow:0 16px 48px rgba(0,0,0,0.50);min-height:268px;padding:22px 18px 32px}
+.p2 .pod-shield{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);box-shadow:0 8px 24px rgba(0,0,0,0.36);min-height:190px}
+.p3 .pod-shield{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);box-shadow:0 8px 24px rgba(0,0,0,0.36);min-height:190px}
 .pod-ico{font-size:22px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5))}
 .pod-av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:system-ui;letter-spacing:-.01em}
 .p1 .pod-av{width:70px;height:70px;font-size:22px;background:linear-gradient(135deg,#F5C842,#FA8400);color:#0D2E38;border:3px solid rgba(255,255,255,0.32);box-shadow:0 4px 18px rgba(245,200,66,0.32)}
@@ -1261,12 +1265,12 @@ button.nav-logo:active {
 .pod-ptsn{font-size:26px;font-weight:900;line-height:1}
 .p2 .pod-ptsn,.p3 .pod-ptsn{font-size:21px}
 .p1 .pod-ptsn{color:#F5C842}
-.p2 .pod-ptsn{color:#00C08B}
+.p2 .pod-ptsn{color:var(--silver)}
 .p3 .pod-ptsn{color:#FA8400}
 .pod-ptsl{font-size:10px;font-weight:600;color:rgba(255,255,255,0.42)}
 .pod-lvb{display:inline-flex;align-items:center;padding:2px 10px;border-radius:99px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
 .p1 .pod-lvb{background:rgba(245,200,66,0.12);color:#F5C842;border:1px solid rgba(245,200,66,0.22)}
-.p2 .pod-lvb{background:rgba(0,192,139,0.10);color:#00C08B;border:1px solid rgba(0,192,139,0.16)}
+.p2 .pod-lvb{background:rgba(176,200,204,0.10);color:var(--silver);border:1px solid rgba(176,200,204,0.20)}
 .p3 .pod-lvb{background:rgba(250,132,0,0.10);color:#FA8400;border:1px solid rgba(250,132,0,0.16)}
 .pod-pedestal{width:58%;margin-top:-1px;border-radius:0 0 6px 6px}
 .p1 .pod-pedestal{height:12px;background:linear-gradient(180deg,rgba(245,200,66,0.22),transparent)}
