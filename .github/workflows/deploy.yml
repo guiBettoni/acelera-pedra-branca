@@ -20,13 +20,27 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/configure-pages@v4
-
-      - uses: actions/upload-pages-artifact@v3
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
         with:
-          path: frontend
+          node-node-version: 22 # Versão estável do Node
 
-      - id: deployment
+      - name: Instalar Dependências e Compilar
+        run: |
+          npm ci
+          npm run build
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload do Artefato
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./frontend/dist
+
+      - name: Deploy para GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
