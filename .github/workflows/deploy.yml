@@ -26,10 +26,11 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-node-version: 22 # Versão estável do Node
+          node-version: 22 # Corrigido aqui (era node-node-version)
 
       - name: Instalar Dependências e Compilar
         run: |
+          cd frontend-react
           npm ci
           npm run build
 
