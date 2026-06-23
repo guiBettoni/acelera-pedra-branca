@@ -687,34 +687,31 @@ nav.nav-scrolled{
   .nav-btn{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:8px;font-size:14px}
   .nav-cta{width:100%;text-align:left;padding:10px 18px;border-radius:8px;font-size:14px;margin-top:4px}
 
-  /* HERO — preenche tela toda incluindo barra de navegador mobile */
-  .hero{padding:5rem 1.25rem calc(2rem + 160px);min-height:100svh}
-  .hero h1{font-size:clamp(38px,11vw,64px);letter-spacing:-.04em}
-  .hero-sub{font-size:14px;max-width:100%}
-  .hero-btns{flex-direction:column;align-items:stretch}
+  /* HERO — fluxo normal, compactado para caber em telas pequenas */
+  .hero{padding:5rem 1.25rem 2rem;min-height:100svh;justify-content:flex-start}
+  .hero h1{font-size:clamp(38px,11vw,64px);letter-spacing:-.04em;margin-bottom:.75rem}
+  .hero-pill{margin-bottom:1rem}
+  .hero-sub{font-size:14px;max-width:100%;margin-bottom:1.5rem}
+  .hero-btns{flex-direction:column;align-items:stretch;margin-bottom:0}
   .btn-p,.btn-o{text-align:center;padding:14px 20px}
-  /* hero-nums preso ao fundo do hero no mobile */
+  /* hero-nums em grade 2×2 — fluxo normal abaixo dos botões */
   .hero-nums{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:8px;
-    padding-top:1rem;
-    position:absolute;
-    bottom:1.5rem;
-    left:1.25rem;
-    right:1.25rem;
+    padding-top:.875rem;
+    margin-top:1.25rem;
+    position:relative;
     border-top:1px solid rgba(255,255,255,0.08);
-    margin:0;
   }
   .hero-nums > div{
     border-left:none !important;
-    padding:0;
     background:rgba(255,255,255,0.05);
     border:1px solid rgba(255,255,255,0.09);
     border-radius:14px;
-    padding:1rem;
+    padding:.875rem;
   }
-  .hnum-v{font-size:28px}
+  .hnum-v{font-size:26px}
 
   /* SECTIONS */
   .sobre,.startups-sec,.niveis-sec,.areas-sec,.crono-sec,.workshops-sec,.temas-sec{padding:3.5rem 1.25rem}
@@ -834,9 +831,9 @@ nav.nav-scrolled{
 @media(max-width:480px){
 
   /* Hero tighten */
-  .hero{padding:4.5rem 1rem calc(1.5rem + 175px)}
+  .hero{padding:4.5rem 1rem 1.5rem}
   .hero h1{font-size:clamp(34px,13vw,52px)}
-  .hero-nums{bottom:1rem;left:1rem;right:1rem;gap:6px}
+  .hero-nums{gap:6px;margin-top:1rem}
   .hnum-v{font-size:20px}
   .hnum-l{font-size:9px}
 
@@ -872,9 +869,9 @@ nav.nav-scrolled{
 
 /* ── 380px: tiny phones ── */
 @media(max-width:380px){
-  .hero{padding:4rem .875rem calc(1.25rem + 160px)}
+  .hero{padding:4rem .875rem 1.25rem}
   .hero h1{font-size:32px}
-  .hero-nums{bottom:.75rem;left:.875rem;right:.875rem;gap:5px}
+  .hero-nums{gap:5px;margin-top:.875rem}
   .sec-h{font-size:22px}
   .podium{gap:3px}
   .pod{padding:.75rem .3rem}
