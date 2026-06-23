@@ -39,7 +39,7 @@ jobs:
       - name: Upload do Artefato
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./frontend/dist
+          path: ./frontend-react/dist
 
       - name: Deploy para GitHub Pages
         id: deployment
