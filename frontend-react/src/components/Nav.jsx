@@ -1,9 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import logoSrc from '/logo.png'
 
 export default function Nav({ page, navigate }) {
   const [open, setOpen] = useState(false)
   const [activeNav, setActiveNav] = useState(page)
+
+  useEffect(() => {
+    function onScroll() {
+      const nav = document.getElementById('main-nav')
+      if (nav) nav.classList.toggle('nav-scrolled', window.scrollY > 40)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   function go(p, e) {
     e?.preventDefault()

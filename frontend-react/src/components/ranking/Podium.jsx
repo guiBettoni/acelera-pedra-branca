@@ -27,8 +27,10 @@ export default function Podium({ top3 }) {
             <div className="pod-shield">
               <div className="pod-ico">{mi.m}</div>
               <div className="pod-av-wrap">
-                <div className="rav-ini">{ini}</div>
-                {s.foto && <img src={s.foto} className="rav-img" alt="" />}
+                <div className="rav">
+                  <div className="rav-ini">{ini}</div>
+                  {s.foto && <img src={s.foto} className="rav-img" alt={s.name} />}
+                </div>
               </div>
               <div className="pod-nm">{s.name}</div>
               <div className="pod-area-s">{s.area}</div>
