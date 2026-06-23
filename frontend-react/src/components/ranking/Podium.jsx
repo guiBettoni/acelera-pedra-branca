@@ -14,15 +14,16 @@ export default function Podium({ top3 }) {
   const mvis  = top3.length >= 2 ? [MEDALS[1], MEDALS[0], MEDALS[2]].filter(Boolean) : MEDALS
 
   return (
-    <div className="podium" id="podium-area">
+    <div className="podium" id="podium-area" role="list" aria-label="Pódio — top 3 startups">
       {vis.map((s, i) => {
         const mi  = mvis[i]
         const lv  = getLevel(s.pts || 0)
         const ini = getInitials(s.name)
         const rn  = mi.cls === 'p1' ? '1' : mi.cls === 'p2' ? '2' : '3'
+        const posLabel = mi.cls === 'p1' ? '1º lugar' : mi.cls === 'p2' ? '2º lugar' : '3º lugar'
 
         return (
-          <div key={s.id} className={`pod ${mi.cls}`}>
+          <div key={s.id} className={`pod ${mi.cls}`} role="listitem" aria-label={`${posLabel}: ${s.name}, ${s.pts || 0} pontos, nível ${getLevel(s.pts || 0).n}`}>
             <div className="pod-rank-num">{rn}</div>
             <div className="pod-shield">
               <div className="pod-ico">{mi.m}</div>

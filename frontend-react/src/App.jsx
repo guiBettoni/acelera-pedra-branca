@@ -32,8 +32,9 @@ export default function App() {
 
   return (
     <>
+      <a href="#main-content" className="skip-link">Ir para o conteúdo principal</a>
       <Nav page={page} navigate={navigate} />
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         {page === 'home'    && <HomePage navigate={navigate} />}
         {page === 'ranking' && <RankingPage />}
         {page === 'admin'   && <AdminPage showToast={showToast} />}

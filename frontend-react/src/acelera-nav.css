@@ -1406,3 +1406,49 @@ button.nav-logo:active {
 .btn-upload:hover{background:rgba(255,255,255,0.15)}
 .foto-or{font-size:11px;color:rgba(255,255,255,0.3)}
 .foto-url-inp{flex:1;min-width:0;font-size:12px}
+
+/* ══════════════════════════════════════════════
+   ACESSIBILIDADE
+══════════════════════════════════════════════ */
+
+/* Skip link — visível só ao receber foco por teclado */
+.skip-link{
+  position:fixed;top:-100px;left:50%;transform:translateX(-50%);
+  z-index:9999;padding:10px 20px;border-radius:0 0 12px 12px;
+  background:var(--orange);color:#000;font-weight:700;font-size:14px;
+  text-decoration:none;transition:top .2s ease;white-space:nowrap;
+}
+.skip-link:focus{top:0}
+
+/* Foco no conteúdo principal (após skip link) */
+#main-content:focus{outline:none}
+
+/* Alvos de toque mínimos — WCAG 2.5.8 / Apple HIG 44pt */
+button,
+a,
+[role="button"]{min-height:44px;min-width:44px}
+.nav-btn{min-height:40px}
+.rrow{min-height:56px}
+
+/* Texto: tamanho mínimo legível em zoom 200% */
+body{font-size:max(14px, 1rem)}
+.rmeta,.rstat,.rmeta,.pod-area-s{font-size:max(11px,.75rem)}
+
+/* Reduzir movimento para quem preferir */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  .parallax-bg{transform:none !important}
+  .live-d{animation:none !important}
+}
+
+/* Alto contraste — reforçar bordas e texto */
+@media (forced-colors: active){
+  .rrow{border:1px solid ButtonText}
+  .nav-btn.on{outline:2px solid Highlight}
+  .pod-shield{border:2px solid ButtonText}
+}

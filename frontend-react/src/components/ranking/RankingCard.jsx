@@ -28,11 +28,20 @@ export default function RankingCard({ startup, index, accentColor, catBySid }) {
 
   const hasStats = s.aulas > 0 || s.mentorias > 0 || badges.length > 0
 
+  function onKeyDown(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpanded(v => !v) }
+  }
+
   return (
     <div
       className={`rrow${index === 0 ? ' rrow--first' : ''}${expanded ? ' expanded' : ''}`}
       data-sid={s.id}
       onClick={() => setExpanded(e => !e)}
+      onKeyDown={onKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-expanded={expanded}
+      aria-label={`${index + 1}º lugar: ${s.name}, ${pts} pontos, nível ${lv.n}. ${expanded ? 'Recolher detalhes' : 'Expandir detalhes'}`}
     >
       <div className="rrow-main">
         <div className="rpos">{rankLabel}</div>

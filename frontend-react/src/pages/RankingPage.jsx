@@ -33,11 +33,16 @@ export default function RankingPage({ navigate }) {
 <div className="rk-header">
         <div className="rk-header-top">
           <div>
-            <div className="rk-eyebrow">Acelera Pedra Branca · 5ª Edição</div>
+            <div className="rk-eyebrow" aria-hidden="true">Acelera Pedra Branca · 5ª Edição</div>
             <h2 className="rk-title">Ranking <em>ao vivo</em></h2>
           </div>
-          <div className="live">
-            <span className="live-d" />
+          <div
+            className="live"
+            role="status"
+            aria-live="polite"
+            aria-label={lastUpdated ? `Ranking atualizado às ${lastUpdated.toLocaleTimeString('pt-BR')}` : 'Conectando ao ranking...'}
+          >
+            <span className="live-d" aria-hidden="true" />
             {lastUpdated ? 'Atualizado' : 'Conectando...'}
           </div>
         </div>
@@ -47,14 +52,21 @@ export default function RankingPage({ navigate }) {
       <div className="rk-body">
         <Podium top3={top3} />
 
-        <div className="race" id="race-area">
+        <div
+          className="race"
+          id="race-area"
+          role="list"
+          aria-label="Ranking completo de startups"
+          aria-live="polite"
+          aria-busy={loading}
+        >
           {loading && (
-            <div className="empty" style={{ padding: '2rem', textAlign: 'center' }}>
+            <div className="empty" role="status" style={{ padding: '2rem', textAlign: 'center' }}>
               Carregando ranking...
             </div>
           )}
           {!loading && startups.length === 0 && (
-            <div className="empty">Nenhuma startup cadastrada ainda.</div>
+            <div className="empty" role="status">Nenhuma startup cadastrada ainda.</div>
           )}
           {!loading && startupsWithMax.map((s, i) => (
             <RankingCard
