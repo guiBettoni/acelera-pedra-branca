@@ -238,6 +238,197 @@ select.fc-inp:focus {
     0 16px 48px rgba(0, 0, 0, 0.5);
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   LIQUID GLASS — Extensão completa do site
+   Aplica o mesmo material glass a todos os elementos restantes.
+   Receita uniforme: blur + specular top + depth bottom + outer shadow.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Hero: metric cards ──────────────────────────────────────── */
+.hero-nums {
+  gap: 12px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.07) !important;
+  padding-top: 2rem !important;
+}
+.hero-nums > div {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  padding: 1.25rem 2rem !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10),
+    0 4px 20px rgba(0, 0, 0, 0.20);
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hero-nums > div:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 12px 36px rgba(0, 0, 0, 0.28);
+}
+/* remove divisória por borda — glass cards dispensam separadores */
+.hero-nums > div + div {
+  border-left: none !important;
+}
+
+/* ── Hero: botão outline → glass ────────────────────────────── */
+.btn-o {
+  background: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: var(--text) !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.16);
+  transition: transform 150ms ease, box-shadow 150ms ease,
+              background 150ms ease !important;
+}
+.btn-o:hover {
+  background: rgba(255, 255, 255, 0.10) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  color: var(--text) !important;
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10),
+    0 8px 28px rgba(0, 0, 0, 0.22);
+}
+
+/* ── Startup chips (.chip) → glass ──────────────────────────── */
+.chip {
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.10),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.14);
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 200ms ease,
+              background 200ms ease !important;
+}
+.chip:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  border-left-color: rgba(255, 255, 255, 0.14) !important;
+  transform: translateY(-3px) !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08),
+    0 12px 28px rgba(0, 0, 0, 0.22) !important;
+}
+
+/* ── Level cards (.lv-card) → glass ─────────────────────────── */
+.lv-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.16);
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 200ms ease !important;
+}
+.lv-card:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+  border-color: rgba(255, 255, 255, 0.13) !important;
+  transform: translateY(-4px) !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10),
+    0 16px 40px rgba(0, 0, 0, 0.26) !important;
+}
+
+/* ── Workshop cards (.ws-card) → glass ──────────────────────── */
+.ws-card {
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.14);
+}
+.ws-card:hover,
+.ws-card:focus-within {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10),
+    0 10px 28px rgba(0, 0, 0, 0.22) !important;
+}
+.ws-card.today {
+  border-color: rgba(250, 132, 0, 0.25) !important;
+  background: rgba(250, 132, 0, 0.04) !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.10),
+    0 4px 16px rgba(250, 132, 0, 0.08) !important;
+}
+
+/* ── Admin stats (.astat) → glass ───────────────────────────── */
+.astat {
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.10),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* ── Race container → glass surface ─────────────────────────── */
+.race {
+  background: rgba(255, 255, 255, 0.025) !important;
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 32px rgba(0, 0, 0, 0.20);
+}
+
+/* ── Pódio p2/p3: neutralizar bordas coloridas ───────────────── */
+.pod.p2 .pod-shield {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.14),
+    0 8px 28px rgba(0, 0, 0, 0.32) !important;
+}
+.pod.p3 .pod-shield {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.14),
+    0 8px 28px rgba(0, 0, 0, 0.32) !important;
+}
+
+/* ── Timeline dots → glass depth ────────────────────────────── */
+.crono-h-dot {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10),
+    0 4px 12px rgba(0, 0, 0, 0.24) !important;
+}
+
 /* ── Liquid wobble keyframe ──────────────────────────────────── */
 @keyframes liquid-wobble {
   0%   { border-radius: 12px; }
