@@ -303,12 +303,12 @@ nav{
 .pod-lbl{font-size:10px;color:rgba(255,255,255,0.55)}
 .pod-lv{display:inline-block;margin-top:6px;font-size:10px;font-weight:500;padding:2px 8px;border-radius:99px}
 
-.race{display:flex;flex-direction:column;gap:var(--sp-1);background:transparent;border:none;border-radius:0;overflow:visible}
-.rrow{display:flex;flex-direction:column;border-radius:var(--radius);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-left:3px solid rgba(255,255,255,0.12);transition:all var(--dur-fast) var(--ease-smooth);cursor:pointer}
-.rrow:last-child{border-bottom:1px solid rgba(255,255,255,0.08)}
-.rrow:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.12);border-left-color:rgba(255,255,255,0.25)}
-.rrow--first{background:rgba(250,132,0,0.08)}
-.rrow--first:hover{background:rgba(250,132,0,0.12)}
+.race{display:flex;flex-direction:column;gap:0;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden}
+.rrow{display:flex;flex-direction:column;border-radius:0;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.07);transition:background var(--dur-fast) var(--ease-smooth);cursor:pointer}
+.rrow:last-child{border-bottom:none}
+.rrow:hover{background:rgba(255,255,255,0.04)}
+.rrow--first{background:rgba(250,132,0,0.05);--rbar-fill:rgba(250,132,0,0.45)}
+.rrow--first:hover{background:rgba(250,132,0,0.08)}
 .rrow--first .rpts{color:var(--orange)}
 .rrow-main{display:grid;grid-template-columns:40px 40px 1fr 1fr 80px 24px;align-items:center;gap:var(--sp-4);padding:var(--sp-4)}
 .rpos{font-family:var(--head);font-weight:800;font-size:18px;text-align:center;line-height:1}
@@ -322,7 +322,7 @@ nav{
 .rbadge.accent{background:rgba(0,192,139,.12);color:var(--green)}
 .rbadge.gold{background:rgba(245,200,66,.12);color:#F5C842}
 .rtrack{flex:1;min-width:80px;max-width:200px}
-.rbar-bg{height:6px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.rbar-bg{height:4px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
 .rbar{height:100%;border-radius:99px;transition:width .8s cubic-bezier(.25,.8,.25,1)}
 .rright{text-align:right;flex-shrink:0;min-width:58px}
 .rpts{font-family:var(--head);font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1}

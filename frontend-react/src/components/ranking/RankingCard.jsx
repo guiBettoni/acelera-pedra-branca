@@ -60,7 +60,7 @@ export default function RankingCard({ startup, index, accentColor, catBySid }) {
               className="rbar"
               style={{
                 width: `${bw}%`,
-                background: 'rgba(255,255,255,0.30)',
+                background: 'var(--rbar-fill, rgba(255,255,255,0.25))',
               }}
             />
           </div>
