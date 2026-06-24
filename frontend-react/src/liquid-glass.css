@@ -505,7 +505,7 @@ select.fc-inp:focus {
 
 /* ── Variáveis HIG ────────────────────────────────────────────── */
 :root {
-  --hig-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Space Grotesk', sans-serif;
+  --hig-font: 'Satoshi','General Sans','Plus Jakarta Sans',Arial,sans-serif;
   --hig-r-card:    18px;
   --hig-r-control: 10px;
   --hig-r-pill:    99px;
