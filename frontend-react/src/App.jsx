@@ -28,13 +28,11 @@ export default function App() {
   useEffect(() => {
     function onHashChange() {
       const h = window.location.hash.replace('#', '')
-      if (['home', 'ranking', 'admin'].includes(h)) setPage(h)
+      if (['home', 'ranking', 'admin', 'mentorias'].includes(h)) setPage(h)
     }
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [])
-
-
 
   return (
     <>
