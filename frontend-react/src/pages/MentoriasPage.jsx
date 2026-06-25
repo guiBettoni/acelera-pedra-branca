@@ -1,5 +1,6 @@
 import useMentores from '../hooks/useMentores'
 import { getInitials } from '../lib/utils'
+import { MENTOR_PHOTOS } from '../data/mentorPhotos'
 
 function Initials({ nome }) {
   return <span className="mentor-ini">{getInitials(nome) || '?'}</span>
@@ -9,11 +10,15 @@ const TAG_LABEL = { aberta: 'Agenda aberta', fechada: 'Fechada', em_breve: 'Em b
 
 function MentorCard({ m }) {
   const inactive = m.status !== 'aberta'
+  const photo = m.photoUrl || MENTOR_PHOTOS[m.id] || null
   return (
     <div className={`ment-card${inactive ? ' ment-card--soon' : ''}`}>
       <div className="ment-card-top">
         <div className={`ment-avatar${inactive ? ' ment-avatar--dim' : ''}`}>
-          <Initials nome={m.nome} />
+          {photo
+            ? <img src={photo} alt={m.nome} className="ment-avatar-img" />
+            : <Initials nome={m.nome} />
+          }
         </div>
         <div className="ment-info">
           <span className={`ment-tag${inactive ? ' ment-tag--soon' : ''}`}>
