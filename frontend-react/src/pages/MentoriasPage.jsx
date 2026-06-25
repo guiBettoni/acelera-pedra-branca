@@ -43,8 +43,9 @@ function MentorCard({ m }) {
 
 export default function MentoriasPage() {
   const { mentores } = useMentores()
-  const disponiveis    = mentores.filter(m => m.status === 'aberta')
-  const indisponiveis  = mentores.filter(m => m.status !== 'aberta')
+  const disponiveis = mentores.filter(m => m.status === 'aberta')
+  const emBreve     = mentores.filter(m => m.status === 'em_breve')
+  const fechadas    = mentores.filter(m => m.status === 'fechada')
 
   return (
     <div id="page-mentorias">
@@ -74,12 +75,23 @@ export default function MentoriasPage() {
         </div>
       </div>
 
-      {indisponiveis.length > 0 && (
+      {emBreve.length > 0 && (
         <div className="ment-section ment-section--dim">
           <div className="si">
-            <p className="sec-tag" style={{ marginBottom: '1.5rem' }}>Outros mentores</p>
+            <p className="sec-tag" style={{ marginBottom: '1.5rem' }}>Em breve</p>
             <div className="ment-grid">
-              {indisponiveis.map(m => <MentorCard key={m.id} m={m} />)}
+              {emBreve.map(m => <MentorCard key={m.id} m={m} />)}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {fechadas.length > 0 && (
+        <div className="ment-section ment-section--dim">
+          <div className="si">
+            <p className="sec-tag" style={{ marginBottom: '1.5rem' }}>Agenda encerrada</p>
+            <div className="ment-grid">
+              {fechadas.map(m => <MentorCard key={m.id} m={m} />)}
             </div>
           </div>
         </div>
