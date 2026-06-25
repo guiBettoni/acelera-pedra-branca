@@ -501,17 +501,25 @@ function TabMentorias({ showToast }) {
   const [editing, setEditing] = useState(null)
   const [adding,  setAdding]  = useState(false)
 
-  function handleSave(id, data) {
-    if (id) updateMentor(id, data)
-    else    addMentor(data)
-    showToast(id ? 'Mentor atualizado!' : 'Mentor cadastrado!')
-    setEditing(null); setAdding(false)
+  async function handleSave(id, data) {
+    try {
+      if (id) await updateMentor(id, data)
+      else    await addMentor(data)
+      showToast(id ? 'Mentor atualizado!' : 'Mentor cadastrado!')
+      setEditing(null); setAdding(false)
+    } catch (err) {
+      showToast('Erro ao salvar: ' + (err?.message || 'verifique o servidor'))
+    }
   }
 
-  function handleDelete(id, nome) {
+  async function handleDelete(id, nome) {
     if (!window.confirm(`Remover mentor "${nome}"?`)) return
-    deleteMentor(id)
-    showToast('Mentor removido.')
+    try {
+      await deleteMentor(id)
+      showToast('Mentor removido.')
+    } catch (err) {
+      showToast('Erro ao remover: ' + (err?.message || 'verifique o servidor'))
+    }
   }
 
   const dispCount = mentores.filter(m => m.status === 'aberta').length
@@ -555,7 +563,13 @@ function TabMentorias({ showToast }) {
                 <td>
                   <select
                     value={m.status ?? 'aberta'}
-                    onChange={e => setMentorStatus(m.id, e.target.value)}
+                    onChange={async e => {
+                      try {
+                        await setMentorStatus(m.id, e.target.value)
+                      } catch (err) {
+                        showToast('Erro ao salvar: ' + (err?.message || 'verifique o servidor'))
+                      }
+                    }}
                     style={{
                       fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 99,
                       border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer',

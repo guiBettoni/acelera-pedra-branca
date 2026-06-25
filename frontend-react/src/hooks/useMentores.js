@@ -32,14 +32,16 @@ function writeCache(data) {
 }
 
 export default function useMentores() {
-  const [mentores, setMentores] = useState(readCache)
+  const [mentores, setMentores] = useState(DEFAULT_MENTORES)
 
   const load = useCallback(async () => {
     try {
       const data = await fetchMentores()
       setMentores(data)
       writeCache(data)
-    } catch {}
+    } catch {
+      // API indisponível: mantém DEFAULT_MENTORES (todos os browsers veem o mesmo)
+    }
   }, [])
 
   useEffect(() => { load() }, [load])
@@ -62,8 +64,16 @@ export default function useMentores() {
   async function setMentorStatus(id, status) {
     const m = mentores.find(x => x.id === id)
     if (!m) return
-    await apiUpdateMentor(id, { ...m, status })
-    await load()
+    // Otimista: atualiza UI imediatamente
+    setMentores(prev => prev.map(x => x.id === id ? { ...x, status } : x))
+    try {
+      await apiUpdateMentor(id, { ...m, status })
+      await load()
+    } catch (err) {
+      // Rollback se o servidor falhar
+      setMentores(prev => prev.map(x => x.id === id ? { ...x, status: m.status } : x))
+      throw err
+    }
   }
 
   return { mentores, addMentor, updateMentor, deleteMentor, setMentorStatus }
