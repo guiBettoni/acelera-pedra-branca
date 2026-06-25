@@ -226,6 +226,22 @@ export default function HomePage({ navigate }) {
       {/* ── WORKSHOPS (HTML original preservado) ── */}
       <WorkshopsSection />
 
+      {/* ── CTA MENTORIAS ── */}
+      <section className="mentoria-cta" aria-label="Agendar mentoria">
+        <div className="si mentoria-cta-inner">
+          <p className="sec-tag">Mentorias</p>
+          <h2 className="mentoria-cta-h">
+            Aprenda com quem<br /><em>já construiu</em>
+          </h2>
+          <p className="mentoria-cta-sub">
+            Sessões one-on-one com os especialistas da trilha. Quando uma agenda abre, você escolhe e confirma.
+          </p>
+          <button className="btn-p mentoria-cta-btn" onClick={() => navigate('mentorias')}>
+            Agendar mentoria →
+          </button>
+        </div>
+      </section>
+
     </div>
   )
 }
