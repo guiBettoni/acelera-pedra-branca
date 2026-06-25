@@ -63,6 +63,9 @@ export default function Nav({ page, navigate }) {
         <a className={`nav-btn${activeNav === 'ranking' ? ' on' : ''}`} href="#ranking" onClick={e => go('ranking', e)} aria-current={activeNav === 'ranking' ? 'page' : undefined} role="menuitem">
           Ranking
         </a>
+        <a className={`nav-btn${activeNav === 'mentorias' ? ' on' : ''}`} href="#mentorias" onClick={e => go('mentorias', e)} aria-current={activeNav === 'mentorias' ? 'page' : undefined} role="menuitem">
+          Mentorias
+        </a>
         <button className="nav-cta" onClick={() => { navigate('admin'); setActiveNav('admin'); setOpen(false) }} role="menuitem">
           Painel Admin →
         </button>

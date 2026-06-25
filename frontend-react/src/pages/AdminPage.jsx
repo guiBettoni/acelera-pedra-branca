@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import useAuth from '../hooks/useAuth'
 import useStartups from '../hooks/useStartups'
+import useMentores from '../hooks/useMentores'
 import { getLevel, CAT_CSS, uid } from '../lib/utils'
 import {
   apiCreateStartup, apiUpdateStartup, apiDeleteStartup,
@@ -109,6 +110,7 @@ function Panel({ logout, showToast }) {
           { id: 'lancar',      label: 'Lançar Pontos' },
           { id: 'startups',    label: 'Startups' },
           { id: 'atividades',  label: 'Atividades' },
+          { id: 'mentorias',   label: 'Mentorias' },
           { id: 'historico',   label: 'Histórico' },
           { id: 'config',      label: 'Configurações' },
         ].map(t => (
@@ -121,6 +123,7 @@ function Panel({ logout, showToast }) {
       {tab === 'lancar'      && <TabLancar startups={startups} atividades={atividades} onDone={refresh} showToast={showToast} />}
       {tab === 'startups'   && <TabStartups startups={startups} logs={logs} onDone={refresh} showToast={showToast} />}
       {tab === 'atividades' && <TabAtividades atividades={atividades} setAtividades={setAtividades} showToast={showToast} />}
+      {tab === 'mentorias'  && <TabMentorias showToast={showToast} />}
       {tab === 'historico'  && <TabHistorico logs={logs} startups={startups} onDone={refresh} showToast={showToast} />}
       {tab === 'config'     && <TabConfig showToast={showToast} />}
     </div>
@@ -433,6 +436,139 @@ function TabAtividades({ atividades, setAtividades, showToast }) {
                 <td>
                   <button className="ab" onClick={() => { setEditing(a); setAdding(false) }}>Editar</button>
                   <button className="ab del" onClick={() => handleDelete(a.id)}>Excluir</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+// ── Tab: Mentorias ───────────────────────────────────────────────────────────
+
+function MentorForm({ initial, onSave, onCancel }) {
+  const [nome,         setNome]         = useState(initial?.nome         || '')
+  const [especialidade,setEspecialidade] = useState(initial?.especialidade || '')
+  const [bio,          setBio]          = useState(initial?.bio          || '')
+  const [calendarUrl,  setCalendarUrl]  = useState(initial?.calendarUrl  || '')
+  const [disponivel,   setDisponivel]   = useState(initial?.disponivel   ?? true)
+
+  function submit(e) {
+    e.preventDefault()
+    if (!nome.trim()) return
+    onSave({ nome: nome.trim(), especialidade: especialidade.trim(), bio: bio.trim(), calendarUrl: calendarUrl.trim(), disponivel })
+  }
+
+  return (
+    <form className="fc" onSubmit={submit} style={{ marginBottom: '1rem' }}>
+      <h4>{initial ? 'Editar Mentor' : 'Novo Mentor'}</h4>
+      <div className="frow f2">
+        <div className="fg">
+          <label className="fl">Nome *</label>
+          <input className="fc-inp" value={nome} onChange={e => setNome(e.target.value)} required placeholder="Nome do mentor" />
+        </div>
+        <div className="fg">
+          <label className="fl">Especialidade</label>
+          <input className="fc-inp" value={especialidade} onChange={e => setEspecialidade(e.target.value)} placeholder="ex: Marketing & Growth" />
+        </div>
+      </div>
+      <div className="fg">
+        <label className="fl">Link do Google Calendar *</label>
+        <input className="fc-inp" value={calendarUrl} onChange={e => setCalendarUrl(e.target.value)} placeholder="https://calendar.app.google/..." required />
+      </div>
+      <div className="fg">
+        <label className="fl">Bio curta</label>
+        <input className="fc-inp" value={bio} onChange={e => setBio(e.target.value)} placeholder="Opcional — aparece no card" />
+      </div>
+      <div className="fg" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <input type="checkbox" id="ment-disp" checked={disponivel} onChange={e => setDisponivel(e.target.checked)} />
+        <label htmlFor="ment-disp" className="fl" style={{ margin: 0, cursor: 'pointer' }}>
+          Agenda aberta (visível na página)
+        </label>
+      </div>
+      <div className="factions">
+        <button className="btn-s" type="submit">Salvar</button>
+        <button className="btn-c" type="button" onClick={onCancel}>Cancelar</button>
+      </div>
+    </form>
+  )
+}
+
+function TabMentorias({ showToast }) {
+  const { mentores, addMentor, updateMentor, deleteMentor, toggleDisponivel } = useMentores()
+  const [editing, setEditing] = useState(null)
+  const [adding,  setAdding]  = useState(false)
+
+  function handleSave(id, data) {
+    if (id) updateMentor(id, data)
+    else    addMentor(data)
+    showToast(id ? 'Mentor atualizado!' : 'Mentor cadastrado!')
+    setEditing(null); setAdding(false)
+  }
+
+  function handleDelete(id, nome) {
+    if (!window.confirm(`Remover mentor "${nome}"?`)) return
+    deleteMentor(id)
+    showToast('Mentor removido.')
+  }
+
+  const dispCount = mentores.filter(m => m.disponivel).length
+
+  return (
+    <div className="asec on" id="asec-mentorias">
+      <div className="fc" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+        <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>
+          {mentores.length} mentor{mentores.length !== 1 ? 'es' : ''} cadastrado{mentores.length !== 1 ? 's' : ''} · {dispCount} com agenda aberta
+        </span>
+        {!adding && !editing && (
+          <button className="btn-add" onClick={() => setAdding(true)}>+ Novo mentor</button>
+        )}
+      </div>
+
+      {adding  && <MentorForm onSave={d => handleSave(null, d)} onCancel={() => setAdding(false)} />}
+      {editing && <MentorForm initial={editing} onSave={d => handleSave(editing.id, d)} onCancel={() => setEditing(null)} />}
+
+      <div className="tbl-wrap">
+        <table className="atbl">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Especialidade</th>
+              <th>Link Calendar</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {mentores.map(m => (
+              <tr key={m.id}>
+                <td className="td-n">{m.nome}</td>
+                <td>{m.especialidade || <span style={{ opacity: .4 }}>—</span>}</td>
+                <td style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {m.calendarUrl
+                    ? <a href={m.calendarUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--orange)', fontSize: 12 }}>Ver link ↗</a>
+                    : <span style={{ opacity: .4 }}>—</span>
+                  }
+                </td>
+                <td>
+                  <button
+                    onClick={() => toggleDisponivel(m.id)}
+                    style={{
+                      fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 99,
+                      border: 'none', cursor: 'pointer',
+                      background: m.disponivel ? 'rgba(34,197,94,0.18)' : 'rgba(255,255,255,0.08)',
+                      color: m.disponivel ? '#4ade80' : 'rgba(255,255,255,0.4)',
+                    }}
+                    title={m.disponivel ? 'Clique para fechar agenda' : 'Clique para abrir agenda'}
+                  >
+                    {m.disponivel ? 'Aberta' : 'Fechada'}
+                  </button>
+                </td>
+                <td>
+                  <button className="ab" onClick={() => { setEditing(m); setAdding(false) }}>✎</button>
+                  <button className="ab del" onClick={() => handleDelete(m.id, m.nome)}>✕</button>
                 </td>
               </tr>
             ))}

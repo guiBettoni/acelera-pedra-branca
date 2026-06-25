@@ -5,10 +5,11 @@ import AccessibilityPanel from './components/AccessibilityPanel'
 import HomePage from './pages/HomePage'
 import RankingPage from './pages/RankingPage'
 import AdminPage from './pages/AdminPage'
+import MentoriasPage from './pages/MentoriasPage'
 
 function getInitialPage() {
   const h = window.location.hash.replace('#', '')
-  if (['home', 'ranking', 'admin'].includes(h)) return h
+  if (['home', 'ranking', 'admin', 'mentorias'].includes(h)) return h
   return 'home'
 }
 
@@ -33,14 +34,17 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [])
 
+
+
   return (
     <>
       <a href="#main-content" className="skip-link">Ir para o conteúdo principal</a>
       <Nav page={page} navigate={navigate} />
       <main id="main-content" tabIndex={-1}>
-        {page === 'home'    && <HomePage navigate={navigate} />}
-        {page === 'ranking' && <RankingPage />}
-        {page === 'admin'   && <AdminPage showToast={showToast} />}
+        {page === 'home'      && <HomePage navigate={navigate} />}
+        {page === 'ranking'   && <RankingPage />}
+        {page === 'admin'     && <AdminPage showToast={showToast} />}
+        {page === 'mentorias' && <MentoriasPage />}
       </main>
       <AccessibilityPanel />
       <Toast msg={msg} visible={visible} />
