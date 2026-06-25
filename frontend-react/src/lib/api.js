@@ -137,3 +137,43 @@ export async function apiDeleteAtividade(id) {
   if (r.status === 401) throw Object.assign(new Error('Unauthorized'), { status: 401 })
   if (!r.ok) throw new Error('Delete atividade failed')
 }
+
+// ── Mentores ──────────────────────────────────────────────────────────────────
+
+export async function fetchMentores() {
+  const r = await fetch(`${BACKEND_URL}/api/mentores`)
+  if (!r.ok) throw new Error('Mentores fetch failed')
+  return r.json()
+}
+
+export async function apiCreateMentor(payload) {
+  const r = await fetch(`${BACKEND_URL}/api/mentores`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  })
+  const data = await r.json()
+  if (!r.ok) throw new Error(data.error || 'Create mentor failed')
+  return data
+}
+
+export async function apiUpdateMentor(id, payload) {
+  const r = await fetch(`${BACKEND_URL}/api/mentores/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  })
+  if (r.status === 401) throw Object.assign(new Error('Unauthorized'), { status: 401 })
+  const data = await r.json()
+  if (!r.ok) throw new Error(data.error || 'Update mentor failed')
+  return data
+}
+
+export async function apiDeleteMentor(id) {
+  const r = await fetch(`${BACKEND_URL}/api/mentores/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  })
+  if (r.status === 401) throw Object.assign(new Error('Unauthorized'), { status: 401 })
+  if (!r.ok) throw new Error('Delete mentor failed')
+}

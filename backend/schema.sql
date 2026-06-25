@@ -56,6 +56,20 @@ create policy "admin_delete_pontuacoes" on public.pontuacoes for delete using (
   auth.role() = 'authenticated' AND auth.email() = 'guilherme@inaitec.com.br'
 );
 
+create table if not exists public.mentores (
+  id text primary key,
+  nome text not null,
+  especialidade text not null default '',
+  bio text not null default '',
+  calendar_url text not null default '',
+  status text not null default 'aberta' check (status in ('aberta','fechada','em_breve')),
+  criado_em timestamptz not null default now()
+);
+
+alter table public.mentores enable row level security;
+grant select on public.mentores to anon, authenticated;
+create policy "public_select_mentores" on public.mentores for select using (true);
+
 insert into public.startups (id,nome,area,nivel,pontos) values
 ('00000001-0000-0000-0000-000000000001','Oktopus','ISP / Monitoramento','Explorador',0),
 ('00000001-0000-0000-0000-000000000002','Smartcitytec','GovTech / Smart Cities','Explorador',0),

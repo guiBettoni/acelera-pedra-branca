@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import useAuth from '../hooks/useAuth'
 import useStartups from '../hooks/useStartups'
-import useMentores from '../hooks/useMentores'
+import useMentores, { STATUS_OPTIONS } from '../hooks/useMentores'
 import { getLevel, CAT_CSS, uid } from '../lib/utils'
 import {
   apiCreateStartup, apiUpdateStartup, apiDeleteStartup,
@@ -453,12 +453,12 @@ function MentorForm({ initial, onSave, onCancel }) {
   const [especialidade,setEspecialidade] = useState(initial?.especialidade || '')
   const [bio,          setBio]          = useState(initial?.bio          || '')
   const [calendarUrl,  setCalendarUrl]  = useState(initial?.calendarUrl  || '')
-  const [disponivel,   setDisponivel]   = useState(initial?.disponivel   ?? true)
+  const [status,       setStatus]       = useState(initial?.status ?? 'aberta')
 
   function submit(e) {
     e.preventDefault()
     if (!nome.trim()) return
-    onSave({ nome: nome.trim(), especialidade: especialidade.trim(), bio: bio.trim(), calendarUrl: calendarUrl.trim(), disponivel })
+    onSave({ nome: nome.trim(), especialidade: especialidade.trim(), bio: bio.trim(), calendarUrl: calendarUrl.trim(), status })
   }
 
   return (
@@ -475,18 +475,18 @@ function MentorForm({ initial, onSave, onCancel }) {
         </div>
       </div>
       <div className="fg">
-        <label className="fl">Link do Google Calendar *</label>
-        <input className="fc-inp" value={calendarUrl} onChange={e => setCalendarUrl(e.target.value)} placeholder="https://calendar.app.google/..." required />
+        <label className="fl">Link do Google Calendar</label>
+        <input className="fc-inp" value={calendarUrl} onChange={e => setCalendarUrl(e.target.value)} placeholder="https://calendar.app.google/..." />
       </div>
       <div className="fg">
         <label className="fl">Bio curta</label>
         <input className="fc-inp" value={bio} onChange={e => setBio(e.target.value)} placeholder="Opcional — aparece no card" />
       </div>
-      <div className="fg" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <input type="checkbox" id="ment-disp" checked={disponivel} onChange={e => setDisponivel(e.target.checked)} />
-        <label htmlFor="ment-disp" className="fl" style={{ margin: 0, cursor: 'pointer' }}>
-          Agenda aberta (visível na página)
-        </label>
+      <div className="fg">
+        <label className="fl">Status da agenda</label>
+        <select className="fc-inp" value={status} onChange={e => setStatus(e.target.value)}>
+          {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
       </div>
       <div className="factions">
         <button className="btn-s" type="submit">Salvar</button>
@@ -497,7 +497,7 @@ function MentorForm({ initial, onSave, onCancel }) {
 }
 
 function TabMentorias({ showToast }) {
-  const { mentores, addMentor, updateMentor, deleteMentor, toggleDisponivel } = useMentores()
+  const { mentores, addMentor, updateMentor, deleteMentor, setMentorStatus } = useMentores()
   const [editing, setEditing] = useState(null)
   const [adding,  setAdding]  = useState(false)
 
@@ -514,7 +514,7 @@ function TabMentorias({ showToast }) {
     showToast('Mentor removido.')
   }
 
-  const dispCount = mentores.filter(m => m.disponivel).length
+  const dispCount = mentores.filter(m => m.status === 'aberta').length
 
   return (
     <div className="asec on" id="asec-mentorias">
@@ -553,18 +553,26 @@ function TabMentorias({ showToast }) {
                   }
                 </td>
                 <td>
-                  <button
-                    onClick={() => toggleDisponivel(m.id)}
+                  <select
+                    value={m.status ?? 'aberta'}
+                    onChange={e => setMentorStatus(m.id, e.target.value)}
                     style={{
-                      fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 99,
-                      border: 'none', cursor: 'pointer',
-                      background: m.disponivel ? 'rgba(34,197,94,0.18)' : 'rgba(255,255,255,0.08)',
-                      color: m.disponivel ? '#4ade80' : 'rgba(255,255,255,0.4)',
+                      fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 99,
+                      border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer',
+                      background: m.status === 'aberta'
+                        ? 'rgba(34,197,94,0.18)'
+                        : m.status === 'em_breve'
+                          ? 'rgba(74,158,224,0.18)'
+                          : 'rgba(255,255,255,0.08)',
+                      color: m.status === 'aberta'
+                        ? '#4ade80'
+                        : m.status === 'em_breve'
+                          ? '#60b4f0'
+                          : 'rgba(255,255,255,0.4)',
                     }}
-                    title={m.disponivel ? 'Clique para fechar agenda' : 'Clique para abrir agenda'}
                   >
-                    {m.disponivel ? 'Aberta' : 'Fechada'}
-                  </button>
+                    {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                  </select>
                 </td>
                 <td>
                   <button className="ab" onClick={() => { setEditing(m); setAdding(false) }}>✎</button>

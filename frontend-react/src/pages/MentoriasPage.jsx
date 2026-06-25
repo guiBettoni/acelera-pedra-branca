@@ -5,16 +5,19 @@ function Initials({ nome }) {
   return <span className="mentor-ini">{getInitials(nome) || '?'}</span>
 }
 
-function MentorCard({ m, soon }) {
+const TAG_LABEL = { aberta: 'Agenda aberta', fechada: 'Fechada', em_breve: 'Em breve' }
+
+function MentorCard({ m }) {
+  const inactive = m.status !== 'aberta'
   return (
-    <div className={`ment-card${soon ? ' ment-card--soon' : ''}`}>
+    <div className={`ment-card${inactive ? ' ment-card--soon' : ''}`}>
       <div className="ment-card-top">
-        <div className={`ment-avatar${soon ? ' ment-avatar--dim' : ''}`}>
+        <div className={`ment-avatar${inactive ? ' ment-avatar--dim' : ''}`}>
           <Initials nome={m.nome} />
         </div>
         <div className="ment-info">
-          <span className={`ment-tag${soon ? ' ment-tag--soon' : ''}`}>
-            {soon ? 'Em breve' : 'Agenda aberta'}
+          <span className={`ment-tag${inactive ? ' ment-tag--soon' : ''}`}>
+            {TAG_LABEL[m.status] ?? 'Em breve'}
           </span>
           <h2 className="ment-nome">{m.nome}</h2>
           {m.especialidade && <p className="ment-esp">{m.especialidade}</p>}
@@ -23,7 +26,7 @@ function MentorCard({ m, soon }) {
 
       {m.bio && <p className="ment-bio">{m.bio}</p>}
 
-      {!soon && m.calendarUrl && (
+      {m.status === 'aberta' && m.calendarUrl && (
         <a
           className="ment-btn"
           href={m.calendarUrl}
@@ -40,8 +43,8 @@ function MentorCard({ m, soon }) {
 
 export default function MentoriasPage() {
   const { mentores } = useMentores()
-  const disponiveis = mentores.filter(m => m.disponivel)
-  const brevemente  = mentores.filter(m => !m.disponivel)
+  const disponiveis    = mentores.filter(m => m.status === 'aberta')
+  const indisponiveis  = mentores.filter(m => m.status !== 'aberta')
 
   return (
     <div id="page-mentorias">
@@ -71,12 +74,12 @@ export default function MentoriasPage() {
         </div>
       </div>
 
-      {brevemente.length > 0 && (
+      {indisponiveis.length > 0 && (
         <div className="ment-section ment-section--dim">
           <div className="si">
-            <p className="sec-tag" style={{ marginBottom: '1.5rem' }}>Em breve</p>
+            <p className="sec-tag" style={{ marginBottom: '1.5rem' }}>Outros mentores</p>
             <div className="ment-grid">
-              {brevemente.map(m => <MentorCard key={m.id} m={m} soon={true} />)}
+              {indisponiveis.map(m => <MentorCard key={m.id} m={m} />)}
             </div>
           </div>
         </div>

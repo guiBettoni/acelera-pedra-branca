@@ -454,5 +454,60 @@ app.post('/api/upload-foto', requireAuth,
   }
 );
 
+// ── Mentores ──────────────────────────────────────────────────────────────────
+
+const DEFAULT_MENTORES_SEED = [
+  { id: 'M01', nome: 'Eduardo Jacob Murakami', especialidade: 'Direito Empresarial', bio: '', calendar_url: 'https://calendar.app.google/cSCNg8FsNE8PFe4a8', status: 'aberta' },
+  { id: 'M02', nome: 'Fabiana Naya Silveira',  especialidade: 'Finanças',            bio: '', calendar_url: 'https://calendar.app.google/dR7NYD4PsuUkLgH56', status: 'aberta' },
+  { id: 'M03', nome: 'Vanessa Milis Vieira',   especialidade: 'Cultura & Liderança', bio: '', calendar_url: 'https://calendar.app.google/KgMTRzzygEqHfcuG6', status: 'aberta' },
+  { id: 'M04', nome: 'Vinícius', especialidade: 'Engenharia de Software', bio: '13 anos de experiência em desenvolvimento web e mobile. Atua remotamente para empresas do exterior com foco em arquitetura, Node.js, Flutter e IA aplicada.', calendar_url: 'https://calendar.app.google/8RRSeburHUVKM1ZB8', status: 'aberta' },
+];
+
+function toMentor(row) {
+  return { id: row.id, nome: row.nome, especialidade: row.especialidade, bio: row.bio, calendarUrl: row.calendar_url, status: row.status };
+}
+
+app.get('/api/mentores', async (req, res) => {
+  const { data, error } = await supabase.from('mentores').select('*').order('criado_em');
+  if (error) return res.status(500).json({ error: error.message });
+  if (data.length === 0) {
+    const { data: seeded, error: seedErr } = await supabase.from('mentores').insert(DEFAULT_MENTORES_SEED).select();
+    if (seedErr) return res.status(500).json({ error: seedErr.message });
+    return res.json(seeded.map(toMentor));
+  }
+  res.json(data.map(toMentor));
+});
+
+app.post('/api/mentores', requireAuth, async (req, res) => {
+  const { nome, especialidade, bio, calendarUrl, status } = req.body;
+  if (!nome?.trim()) return res.status(400).json({ error: 'Nome obrigatório' });
+  const id = 'M' + Date.now().toString(36).slice(-4).toUpperCase();
+  const { data, error } = await supabase.from('mentores').insert({
+    id, nome: nome.trim(), especialidade: (especialidade || '').trim(),
+    bio: (bio || '').trim(), calendar_url: (calendarUrl || '').trim(),
+    status: status || 'aberta',
+  }).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.status(201).json(toMentor(data));
+});
+
+app.put('/api/mentores/:id', requireAuth, async (req, res) => {
+  const { nome, especialidade, bio, calendarUrl, status } = req.body;
+  if (!nome?.trim()) return res.status(400).json({ error: 'Nome obrigatório' });
+  const { data, error } = await supabase.from('mentores').update({
+    nome: nome.trim(), especialidade: (especialidade || '').trim(),
+    bio: (bio || '').trim(), calendar_url: (calendarUrl || '').trim(),
+    status: status || 'aberta',
+  }).eq('id', req.params.id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(toMentor(data));
+});
+
+app.delete('/api/mentores/:id', requireAuth, async (req, res) => {
+  const { error } = await supabase.from('mentores').delete().eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ ok: true });
+});
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log('Backend listening on', port));
