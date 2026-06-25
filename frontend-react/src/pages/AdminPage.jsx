@@ -454,12 +454,34 @@ function MentorForm({ initial, onSave, onCancel }) {
   const [bio,          setBio]          = useState(initial?.bio          || '')
   const [calendarUrl,  setCalendarUrl]  = useState(initial?.calendarUrl  || '')
   const [status,       setStatus]       = useState(initial?.status ?? 'aberta')
+  const [foto,         setFoto]         = useState(initial?.photoUrl     || '')
+  const [fotoB64,      setFotoB64]      = useState(null)
+
+  function onFileChange(e) {
+    const file = e.target.files[0]; if (!file) return
+    const img = new Image(), reader = new FileReader()
+    reader.onload = ev => {
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        canvas.width = 120; canvas.height = 120
+        const ctx = canvas.getContext('2d')
+        const size = Math.min(img.width, img.height)
+        ctx.drawImage(img, (img.width-size)/2, (img.height-size)/2, size, size, 0, 0, 120, 120)
+        const b64 = canvas.toDataURL('image/jpeg', 0.85)
+        setFotoB64(b64); setFoto(b64)
+      }
+      img.src = ev.target.result
+    }
+    reader.readAsDataURL(file)
+  }
 
   function submit(e) {
     e.preventDefault()
     if (!nome.trim()) return
-    onSave({ nome: nome.trim(), especialidade: especialidade.trim(), bio: bio.trim(), calendarUrl: calendarUrl.trim(), status })
+    onSave({ nome: nome.trim(), especialidade: especialidade.trim(), bio: bio.trim(), calendarUrl: calendarUrl.trim(), status, photoUrl: (fotoB64 || foto).trim() || '' })
   }
+
+  const previewSrc = fotoB64 || foto
 
   return (
     <form className="fc" onSubmit={submit} style={{ marginBottom: '1rem' }}>
@@ -481,6 +503,20 @@ function MentorForm({ initial, onSave, onCancel }) {
       <div className="fg">
         <label className="fl">Bio curta</label>
         <input className="fc-inp" value={bio} onChange={e => setBio(e.target.value)} placeholder="Opcional — aparece no card" />
+      </div>
+      <div className="fg" style={{ marginBottom: '0.875rem' }}>
+        <label className="fl">Foto</label>
+        <div className="foto-upload-wrap">
+          <div className="foto-preview" style={{ backgroundImage: previewSrc ? `url(${previewSrc})` : 'none', borderRadius: '50%' }}>
+            {!previewSrc && <span className="foto-preview-ph">Sem foto</span>}
+          </div>
+          <div className="foto-upload-actions">
+            <label className="btn-upload" htmlFor={`mentor-foto-${initial?.id||'new'}`}>📁 Escolher arquivo</label>
+            <input type="file" id={`mentor-foto-${initial?.id||'new'}`} accept="image/*" style={{ display:'none' }} onChange={onFileChange} />
+            <span className="foto-or">ou</span>
+            <input className="fc-inp foto-url-inp" type="url" value={fotoB64 ? '' : foto} onChange={e => { setFoto(e.target.value); setFotoB64(null) }} placeholder="Cole uma URL de imagem" />
+          </div>
+        </div>
       </div>
       <div className="fg">
         <label className="fl">Status da agenda</label>
