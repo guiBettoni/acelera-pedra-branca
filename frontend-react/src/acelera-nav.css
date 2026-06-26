@@ -708,9 +708,6 @@ nav.nav-scrolled{
   .area-t{font-size:13px}
   .area-d{font-size:11px}
 
-  /* Footer */
-  .site-footer{padding:2.5rem 1.25rem 2rem}
-
   /* Admin */
   .astats{grid-template-columns:1fr 1fr}
   .astat-v{font-size:20px}
@@ -1686,14 +1683,14 @@ body{font-size:max(14px, 1rem)}
   gap:3rem;
   padding:3.5rem 2rem 3rem;
 }
-@media(max-width:768px){
+@media(max-width:860px){
   .footer-main{grid-template-columns:1fr;gap:2rem;padding:2.5rem 1.25rem 2rem}
 }
 .footer-brand{
-  display:flex;flex-direction:column;gap:.875rem;
+  display:flex;flex-direction:column;gap:.875rem;align-items:flex-start;
 }
 .footer-logo{
-  height:42px;width:auto;display:block;
+  height:40px;width:auto;max-width:180px;display:block;
 }
 .footer-desc{
   font-size:.835rem;color:rgba(255,255,255,.55);line-height:1.6;
@@ -1714,8 +1711,11 @@ body{font-size:max(14px, 1rem)}
 .footer-cols{
   display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;
 }
-@media(max-width:480px){
-  .footer-cols{grid-template-columns:repeat(2,1fr);gap:1.25rem}
+@media(max-width:860px){
+  .footer-cols{grid-template-columns:repeat(3,1fr);gap:1.5rem}
+}
+@media(max-width:420px){
+  .footer-cols{grid-template-columns:repeat(2,1fr);gap:1rem}
 }
 .footer-col-title{
   font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
