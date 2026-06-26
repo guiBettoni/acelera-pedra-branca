@@ -87,3 +87,21 @@ insert into public.startups (id,nome,area,nivel,pontos) values
 ('00000001-0000-0000-0000-000000000014','Baos Innovation','IA Generativa','Explorador',0),
 ('00000001-0000-0000-0000-000000000015','Délia','Fintech / Mulheres MEI','Explorador',0)
 on conflict (id) do nothing;
+
+create table if not exists public.workshops (
+  id text primary key,
+  num integer not null default 0,
+  data_workshop date not null,
+  date_display text not null default '',
+  tema text not null default '',
+  nome_mentor text not null default '',
+  role_mentor text not null default '',
+  bio_mentor text not null default '',
+  photo_url text not null default '',
+  ordem integer not null default 0,
+  criado_em timestamptz default now()
+);
+alter table public.workshops enable row level security;
+create policy "public read workshops" on public.workshops for select using (true);
+grant select on public.workshops to anon, authenticated;
+grant all on public.workshops to postgres, service_role;

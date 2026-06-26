@@ -26,7 +26,7 @@ if (!corsOrigin) {
 }
 app.use(cors(corsOrigin ? { origin: corsOrigin } : {}));
 
-app.use(express.json({ limit: '200kb' }));
+app.use(express.json({ limit: '4mb' }));
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 // Login: máximo 10 tentativas por IP em 15 minutos
@@ -517,6 +517,74 @@ app.delete('/api/mentores/:id', requireAuth, async (req, res) => {
   if (error) return res.status(500).json({ error: error.message });
   res.json({ ok: true });
 });
+
+// ── Workshops ─────────────────────────────────────────────────────────────────
+function toWorkshop(row) {
+  return {
+    id: row.id,
+    num: row.num,
+    dataWorkshop: row.data_workshop,
+    dateDisplay: row.date_display,
+    tema: row.tema,
+    nomeMentor: row.nome_mentor,
+    roleMentor: row.role_mentor,
+    bioMentor: row.bio_mentor,
+    photoUrl: row.photo_url,
+    ordem: row.ordem,
+  }
+}
+
+app.get('/api/workshops', async (req, res) => {
+  const { data, error } = await supabase.from('workshops').select('id,num,data_workshop,date_display,tema,nome_mentor,role_mentor,bio_mentor,photo_url,ordem').order('ordem')
+  if (error) return res.status(500).json({ error: error.message })
+  res.json(data.map(toWorkshop))
+})
+
+app.post('/api/workshops', requireAuth, async (req, res) => {
+  const { id, num, dataWorkshop, dateDisplay, tema, nomeMentor, roleMentor, bioMentor, photoUrl, ordem } = req.body
+  if (!nomeMentor?.trim()) return res.status(400).json({ error: 'Nome do mentor obrigatório' })
+  const wsId = id?.trim() || ('WS' + Date.now().toString(36).slice(-4).toUpperCase())
+  const { data, error } = await supabase.from('workshops').insert({
+    id: wsId, num: num || 0,
+    data_workshop: dataWorkshop || new Date().toISOString().slice(0,10),
+    date_display: (dateDisplay || '').trim(),
+    tema: (tema || '').trim(),
+    nome_mentor: nomeMentor.trim(),
+    role_mentor: (roleMentor || '').trim(),
+    bio_mentor: (bioMentor || '').trim(),
+    photo_url: (photoUrl || '').trim(),
+    ordem: ordem || 0,
+  }).select().single()
+  if (error) return res.status(500).json({ error: error.message })
+  res.status(201).json(toWorkshop(data))
+})
+
+app.put('/api/workshops/:id', requireAuth, async (req, res) => {
+  const { num, dataWorkshop, dateDisplay, tema, nomeMentor, roleMentor, bioMentor, photoUrl, ordem } = req.body
+  if (!nomeMentor?.trim()) return res.status(400).json({ error: 'Nome do mentor obrigatório' })
+  const { data, error } = await supabase.from('workshops').update({
+    num: num || 0,
+    data_workshop: dataWorkshop || new Date().toISOString().slice(0,10),
+    date_display: (dateDisplay || '').trim(),
+    tema: (tema || '').trim(),
+    nome_mentor: nomeMentor.trim(),
+    role_mentor: (roleMentor || '').trim(),
+    bio_mentor: (bioMentor || '').trim(),
+    photo_url: (photoUrl || '').trim(),
+    ordem: ordem || 0,
+  }).eq('id', req.params.id).select().single()
+  if (error) return res.status(500).json({ error: error.message })
+  if (!data) return res.status(404).json({ error: 'Workshop não encontrado' })
+  res.json(toWorkshop(data))
+})
+
+app.delete('/api/workshops/:id', requireAuth, async (req, res) => {
+  const { error } = await supabase.from('workshops').delete().eq('id', req.params.id)
+  if (error) return res.status(500).json({ error: error.message })
+  res.json({ ok: true })
+})
+
+app.get('/api/ping', (_req, res) => res.json({ ok: true }));
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log('Backend listening on', port));

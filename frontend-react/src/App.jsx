@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { BACKEND_URL } from './lib/utils'
 import Nav from './components/Nav'
 import Toast, { useToast } from './components/Toast'
 import AccessibilityPanel from './components/AccessibilityPanel'
@@ -16,6 +17,9 @@ function getInitialPage() {
 export default function App() {
   const [page, setPage] = useState(getInitialPage)
   const { msg, visible, showToast } = useToast()
+
+  // Acorda o backend Render silenciosamente no carregamento
+  useEffect(() => { fetch(`${BACKEND_URL}/api/ping`).catch(() => {}) }, [])
 
   function navigate(p, scrollTop = true) {
     setPage(p)

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useMemo } from 'react'
 import useStartups from '../hooks/useStartups'
 import { getLevel, RKPAL } from '../lib/utils'
-import { workshopsHtml } from '../data/workshopsHtml'
+import WorkshopsSection from '../components/WorkshopsSection'
 
 const DEMODAY = new Date('2026-07-23')
 
@@ -10,26 +10,6 @@ function daysUntil(date) {
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
 }
 
-function WorkshopsSection() {
-  const ref = useRef(null)
-
-  useEffect(() => {
-    // wire up toggleWs for expand/collapse on workshop cards
-    window.toggleWs = function(el) {
-      const isOpen = el.classList.contains('expanded')
-      ref.current?.querySelectorAll('.ws-card.expanded').forEach(c => c.classList.remove('expanded'))
-      if (!isOpen) el.classList.add('expanded')
-    }
-    return () => { delete window.toggleWs }
-  }, [])
-
-  return (
-    <div
-      ref={ref}
-      dangerouslySetInnerHTML={{ __html: workshopsHtml }}
-    />
-  )
-}
 
 export default function HomePage({ navigate }) {
   const heroRef = useRef(null)

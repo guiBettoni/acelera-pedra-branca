@@ -141,9 +141,21 @@ export async function apiDeleteAtividade(id) {
 // ── Mentores ──────────────────────────────────────────────────────────────────
 
 export async function fetchMentores() {
-  const r = await fetch(`${BACKEND_URL}/api/mentores`)
+  const r = await fetch(
+    `${SUPABASE_URL}/rest/v1/mentores?select=id,nome,especialidade,bio,calendar_url,status,photo_url&order=criado_em`,
+    { headers: sbHeaders }
+  )
   if (!r.ok) throw new Error('Mentores fetch failed')
-  return r.json()
+  const rows = await r.json()
+  return rows.map(row => ({
+    id: row.id,
+    nome: row.nome,
+    especialidade: row.especialidade,
+    bio: row.bio,
+    calendarUrl: row.calendar_url,
+    status: row.status,
+    photoUrl: row.photo_url || '',
+  }))
 }
 
 export async function apiCreateMentor(payload) {
@@ -176,4 +188,59 @@ export async function apiDeleteMentor(id) {
   })
   if (r.status === 401) throw Object.assign(new Error('Unauthorized'), { status: 401 })
   if (!r.ok) throw new Error('Delete mentor failed')
+}
+
+// ── Workshops ──────────────────────────────────────────────────────────────────
+
+export async function fetchWorkshops() {
+  const r = await fetch(
+    `${SUPABASE_URL}/rest/v1/workshops?select=id,num,data_workshop,date_display,tema,nome_mentor,role_mentor,bio_mentor,photo_url,ordem&order=ordem`,
+    { headers: sbHeaders }
+  )
+  if (!r.ok) throw new Error('Workshops fetch failed')
+  const rows = await r.json()
+  return rows.map(row => ({
+    id: row.id,
+    num: row.num,
+    dataWorkshop: row.data_workshop,
+    dateDisplay: row.date_display,
+    tema: row.tema,
+    nomeMentor: row.nome_mentor,
+    roleMentor: row.role_mentor,
+    bioMentor: row.bio_mentor,
+    photoUrl: row.photo_url || '',
+    ordem: row.ordem,
+  }))
+}
+
+export async function apiCreateWorkshop(payload) {
+  const r = await fetch(`${BACKEND_URL}/api/workshops`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  })
+  const data = await r.json()
+  if (!r.ok) throw new Error(data.error || 'Create workshop failed')
+  return data
+}
+
+export async function apiUpdateWorkshop(id, payload) {
+  const r = await fetch(`${BACKEND_URL}/api/workshops/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  })
+  if (r.status === 401) throw Object.assign(new Error('Unauthorized'), { status: 401 })
+  const data = await r.json()
+  if (!r.ok) throw new Error(data.error || 'Update workshop failed')
+  return data
+}
+
+export async function apiDeleteWorkshop(id) {
+  const r = await fetch(`${BACKEND_URL}/api/workshops/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  })
+  if (r.status === 401) throw Object.assign(new Error('Unauthorized'), { status: 401 })
+  if (!r.ok) throw new Error('Delete workshop failed')
 }

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import useAuth from '../hooks/useAuth'
 import useStartups from '../hooks/useStartups'
 import useMentores, { STATUS_OPTIONS } from '../hooks/useMentores'
+import useWorkshops from '../hooks/useWorkshops'
 import { getLevel, CAT_CSS, uid } from '../lib/utils'
 import {
   apiCreateStartup, apiUpdateStartup, apiDeleteStartup,
@@ -111,6 +112,7 @@ function Panel({ logout, showToast }) {
           { id: 'startups',    label: 'Startups' },
           { id: 'atividades',  label: 'Atividades' },
           { id: 'mentorias',   label: 'Mentorias' },
+          { id: 'workshops',   label: 'Workshops' },
           { id: 'historico',   label: 'Histórico' },
           { id: 'config',      label: 'Configurações' },
         ].map(t => (
@@ -124,6 +126,7 @@ function Panel({ logout, showToast }) {
       {tab === 'startups'   && <TabStartups startups={startups} logs={logs} onDone={refresh} showToast={showToast} />}
       {tab === 'atividades' && <TabAtividades atividades={atividades} setAtividades={setAtividades} showToast={showToast} />}
       {tab === 'mentorias'  && <TabMentorias showToast={showToast} />}
+      {tab === 'workshops'  && <TabWorkshops showToast={showToast} />}
       {tab === 'historico'  && <TabHistorico logs={logs} startups={startups} onDone={refresh} showToast={showToast} />}
       {tab === 'config'     && <TabConfig showToast={showToast} />}
     </div>
@@ -627,6 +630,182 @@ function TabMentorias({ showToast }) {
                 <td>
                   <button className="ab" onClick={() => { setEditing(m); setAdding(false) }}>✎</button>
                   <button className="ab del" onClick={() => handleDelete(m.id, m.nome)}>✕</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+// ── Tab: Workshops ───────────────────────────────────────────────────────────
+
+function WorkshopForm({ initial, onSave, onCancel }) {
+  const [num,      setNum]      = useState(String(initial?.num      || ''))
+  const [data,     setData]     = useState(initial?.dataWorkshop    || '')
+  const [tema,     setTema]     = useState(initial?.tema            || '')
+  const [nome,     setNome]     = useState(initial?.nomeMentor      || '')
+  const [role,     setRole]     = useState(initial?.roleMentor      || '')
+  const [bio,      setBio]      = useState(initial?.bioMentor       || '')
+  const [foto,     setFoto]     = useState(initial?.photoUrl        || '')
+  const [fotoB64,  setFotoB64]  = useState(null)
+
+  function deriveDateDisplay(dateStr) {
+    if (!dateStr) return ''
+    const parts = dateStr.split('-')
+    if (parts.length !== 3) return ''
+    return parts[2] + '/' + parts[1]
+  }
+
+  function onFileChange(e) {
+    const file = e.target.files[0]; if (!file) return
+    const img = new Image(), reader = new FileReader()
+    reader.onload = ev => {
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        canvas.width = 120; canvas.height = 120
+        const ctx = canvas.getContext('2d')
+        const size = Math.min(img.width, img.height)
+        ctx.drawImage(img, (img.width-size)/2, (img.height-size)/2, size, size, 0, 0, 120, 120)
+        const b64 = canvas.toDataURL('image/jpeg', 0.85)
+        setFotoB64(b64); setFoto(b64)
+      }
+      img.src = ev.target.result
+    }
+    reader.readAsDataURL(file)
+  }
+
+  function submit(e) {
+    e.preventDefault()
+    if (!nome.trim()) return
+    onSave({
+      num: parseInt(num) || 0,
+      dataWorkshop: data,
+      dateDisplay: deriveDateDisplay(data),
+      tema: tema.trim(),
+      nomeMentor: nome.trim(),
+      roleMentor: role.trim(),
+      bioMentor: bio.trim(),
+      photoUrl: (fotoB64 || foto).trim() || '',
+      ordem: parseInt(num) || 0,
+    })
+  }
+
+  const previewSrc = fotoB64 || foto
+
+  return (
+    <form className="fc" onSubmit={submit} style={{ marginBottom: '1rem' }}>
+      <h4>{initial ? 'Editar Workshop' : 'Novo Workshop'}</h4>
+      <div className="frow f2">
+        <div className="fg"><label className="fl">Número (#)</label>
+          <input className="fc-inp" type="number" min="1" value={num} onChange={e => setNum(e.target.value)} placeholder="ex: 1" />
+        </div>
+        <div className="fg"><label className="fl">Data</label>
+          <input className="fc-inp" type="date" value={data} onChange={e => setData(e.target.value)} required />
+        </div>
+      </div>
+      <div className="fg"><label className="fl">Tema</label>
+        <input className="fc-inp" value={tema} onChange={e => setTema(e.target.value)} placeholder="Título do workshop" required />
+      </div>
+      <div className="frow f2">
+        <div className="fg"><label className="fl">Nome do mentor *</label>
+          <input className="fc-inp" value={nome} onChange={e => setNome(e.target.value)} required placeholder="Nome completo" />
+        </div>
+        <div className="fg"><label className="fl">Especialidade (role)</label>
+          <input className="fc-inp" value={role} onChange={e => setRole(e.target.value)} placeholder="ex: Design & Estratégia" />
+        </div>
+      </div>
+      <div className="fg"><label className="fl">Mini-bio</label>
+        <textarea className="fc-inp" value={bio} onChange={e => setBio(e.target.value)} rows={3} placeholder="Breve descrição do mentor" style={{ resize: 'vertical' }} />
+      </div>
+      <div className="fg" style={{ marginBottom: '0.875rem' }}>
+        <label className="fl">Foto</label>
+        <div className="foto-upload-wrap">
+          <div className="foto-preview" style={{ backgroundImage: previewSrc ? `url(${previewSrc})` : 'none', borderRadius: '50%' }}>
+            {!previewSrc && <span className="foto-preview-ph">Sem foto</span>}
+          </div>
+          <div className="foto-upload-actions">
+            <label className="btn-upload" htmlFor={`ws-foto-${initial?.id||'new'}`}>📁 Escolher arquivo</label>
+            <input type="file" id={`ws-foto-${initial?.id||'new'}`} accept="image/*" style={{ display:'none' }} onChange={onFileChange} />
+            <span className="foto-or">ou</span>
+            <input className="fc-inp foto-url-inp" type="url" value={fotoB64 ? '' : foto} onChange={e => { setFoto(e.target.value); setFotoB64(null) }} placeholder="Cole uma URL de imagem" />
+          </div>
+        </div>
+      </div>
+      <div className="factions">
+        <button className="btn-s" type="submit">Salvar</button>
+        <button className="btn-c" type="button" onClick={onCancel}>Cancelar</button>
+      </div>
+    </form>
+  )
+}
+
+function TabWorkshops({ showToast }) {
+  const { workshops, addWorkshop, updateWorkshop, deleteWorkshop } = useWorkshops()
+  const [editing, setEditing] = useState(null)
+  const [adding,  setAdding]  = useState(false)
+
+  async function handleSave(id, data) {
+    try {
+      if (id) await updateWorkshop(id, data)
+      else    await addWorkshop(data)
+      showToast(id ? 'Workshop atualizado!' : 'Workshop cadastrado!')
+      setEditing(null); setAdding(false)
+    } catch (err) {
+      showToast('Erro ao salvar: ' + (err?.message || 'verifique o servidor'))
+    }
+  }
+
+  async function handleDelete(id, tema) {
+    if (!window.confirm(`Remover workshop "${tema}"?`)) return
+    try {
+      await deleteWorkshop(id)
+      showToast('Workshop removido.')
+    } catch (err) {
+      showToast('Erro ao remover: ' + (err?.message || 'verifique o servidor'))
+    }
+  }
+
+  return (
+    <div className="asec on" id="asec-workshops">
+      <div className="fc" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+        <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>
+          {workshops.length} workshop{workshops.length !== 1 ? 's' : ''} cadastrado{workshops.length !== 1 ? 's' : ''}
+        </span>
+        {!adding && !editing && (
+          <button className="btn-add" onClick={() => setAdding(true)}>+ Novo workshop</button>
+        )}
+      </div>
+
+      {adding  && <WorkshopForm onSave={d => handleSave(null, d)} onCancel={() => setAdding(false)} />}
+      {editing && <WorkshopForm initial={editing} onSave={d => handleSave(editing.id, d)} onCancel={() => setEditing(null)} />}
+
+      <div className="tbl-wrap">
+        <table className="atbl">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Data</th>
+              <th>Tema</th>
+              <th>Mentor</th>
+              <th>Especialidade</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {workshops.length === 0 && <tr><td colSpan={6} className="empty" style={{ padding:'1.5rem' }}>Nenhum workshop cadastrado.</td></tr>}
+            {workshops.map(w => (
+              <tr key={w.id}>
+                <td style={{ color:'rgba(255,255,255,0.55)', fontSize:12 }}>{String(w.num).padStart(2,'0')}</td>
+                <td style={{ fontSize:12 }}>{w.dateDisplay || w.dataWorkshop}</td>
+                <td className="td-n">{w.tema}</td>
+                <td>{w.nomeMentor}</td>
+                <td style={{ color:'rgba(255,255,255,0.55)', fontSize:12 }}>{w.roleMentor || <span style={{ opacity:.4 }}>—</span>}</td>
+                <td>
+                  <button className="ab" onClick={() => { setEditing(w); setAdding(false) }}>✎</button>
+                  <button className="ab del" onClick={() => handleDelete(w.id, w.tema)}>✕</button>
                 </td>
               </tr>
             ))}
