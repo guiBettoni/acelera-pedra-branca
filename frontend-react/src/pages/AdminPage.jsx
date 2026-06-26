@@ -4,6 +4,7 @@ import useStartups from '../hooks/useStartups'
 import useMentores, { STATUS_OPTIONS } from '../hooks/useMentores'
 import useWorkshops from '../hooks/useWorkshops'
 import { getLevel, CAT_CSS, uid } from '../lib/utils'
+import PhotoCropModal from '../components/PhotoCropModal'
 import {
   apiCreateStartup, apiUpdateStartup, apiDeleteStartup,
   apiLancarPontos, apiDeleteLog,
@@ -233,23 +234,13 @@ function StartupForm({ initial, onSave, onCancel, showToast }) {
   const [email,   setEmail]   = useState(initial?.email || '')
   const [foto,    setFoto]    = useState(initial?.foto  || '')
   const [fotoB64, setFotoB64] = useState(null)
+  const [cropSrc, setCropSrc] = useState(null)
   const [busy,    setBusy]    = useState(false)
 
   function onFileChange(e) {
     const file = e.target.files[0]; if (!file) return
-    const img = new Image(), reader = new FileReader()
-    reader.onload = ev => {
-      img.onload = () => {
-        const canvas = document.createElement('canvas')
-        canvas.width = 80; canvas.height = 80
-        const ctx = canvas.getContext('2d')
-        const size = Math.min(img.width, img.height)
-        ctx.drawImage(img, (img.width-size)/2, (img.height-size)/2, size, size, 0, 0, 80, 80)
-        const b64 = canvas.toDataURL('image/jpeg', 0.82)
-        setFotoB64(b64); setFoto(b64)
-      }
-      img.src = ev.target.result
-    }
+    const reader = new FileReader()
+    reader.onload = ev => setCropSrc(ev.target.result)
     reader.readAsDataURL(file)
   }
 
@@ -304,6 +295,13 @@ function StartupForm({ initial, onSave, onCancel, showToast }) {
         <button className="btn-s" type="submit" disabled={busy}>{busy ? 'Salvando...' : 'Salvar'}</button>
         <button className="btn-c" type="button" onClick={onCancel}>Cancelar</button>
       </div>
+      {cropSrc && (
+        <PhotoCropModal
+          src={cropSrc}
+          onConfirm={b64 => { setFotoB64(b64); setFoto(b64); setCropSrc(null) }}
+          onCancel={() => setCropSrc(null)}
+        />
+      )}
     </form>
   )
 }
@@ -459,22 +457,12 @@ function MentorForm({ initial, onSave, onCancel }) {
   const [status,       setStatus]       = useState(initial?.status ?? 'aberta')
   const [foto,         setFoto]         = useState(initial?.photoUrl     || '')
   const [fotoB64,      setFotoB64]      = useState(null)
+  const [cropSrc,      setCropSrc]      = useState(null)
 
   function onFileChange(e) {
     const file = e.target.files[0]; if (!file) return
-    const img = new Image(), reader = new FileReader()
-    reader.onload = ev => {
-      img.onload = () => {
-        const canvas = document.createElement('canvas')
-        canvas.width = 120; canvas.height = 120
-        const ctx = canvas.getContext('2d')
-        const size = Math.min(img.width, img.height)
-        ctx.drawImage(img, (img.width-size)/2, (img.height-size)/2, size, size, 0, 0, 120, 120)
-        const b64 = canvas.toDataURL('image/jpeg', 0.85)
-        setFotoB64(b64); setFoto(b64)
-      }
-      img.src = ev.target.result
-    }
+    const reader = new FileReader()
+    reader.onload = ev => setCropSrc(ev.target.result)
     reader.readAsDataURL(file)
   }
 
@@ -531,6 +519,13 @@ function MentorForm({ initial, onSave, onCancel }) {
         <button className="btn-s" type="submit">Salvar</button>
         <button className="btn-c" type="button" onClick={onCancel}>Cancelar</button>
       </div>
+      {cropSrc && (
+        <PhotoCropModal
+          src={cropSrc}
+          onConfirm={b64 => { setFotoB64(b64); setFoto(b64); setCropSrc(null) }}
+          onCancel={() => setCropSrc(null)}
+        />
+      )}
     </form>
   )
 }
@@ -651,6 +646,7 @@ function WorkshopForm({ initial, onSave, onCancel }) {
   const [bio,      setBio]      = useState(initial?.bioMentor       || '')
   const [foto,     setFoto]     = useState(initial?.photoUrl        || '')
   const [fotoB64,  setFotoB64]  = useState(null)
+  const [cropSrc,  setCropSrc]  = useState(null)
 
   function deriveDateDisplay(dateStr) {
     if (!dateStr) return ''
@@ -661,19 +657,8 @@ function WorkshopForm({ initial, onSave, onCancel }) {
 
   function onFileChange(e) {
     const file = e.target.files[0]; if (!file) return
-    const img = new Image(), reader = new FileReader()
-    reader.onload = ev => {
-      img.onload = () => {
-        const canvas = document.createElement('canvas')
-        canvas.width = 120; canvas.height = 120
-        const ctx = canvas.getContext('2d')
-        const size = Math.min(img.width, img.height)
-        ctx.drawImage(img, (img.width-size)/2, (img.height-size)/2, size, size, 0, 0, 120, 120)
-        const b64 = canvas.toDataURL('image/jpeg', 0.85)
-        setFotoB64(b64); setFoto(b64)
-      }
-      img.src = ev.target.result
-    }
+    const reader = new FileReader()
+    reader.onload = ev => setCropSrc(ev.target.result)
     reader.readAsDataURL(file)
   }
 
@@ -738,6 +723,13 @@ function WorkshopForm({ initial, onSave, onCancel }) {
         <button className="btn-s" type="submit">Salvar</button>
         <button className="btn-c" type="button" onClick={onCancel}>Cancelar</button>
       </div>
+      {cropSrc && (
+        <PhotoCropModal
+          src={cropSrc}
+          onConfirm={b64 => { setFotoB64(b64); setFoto(b64); setCropSrc(null) }}
+          onCancel={() => setCropSrc(null)}
+        />
+      )}
     </form>
   )
 }

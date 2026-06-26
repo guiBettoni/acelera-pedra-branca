@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BACKEND_URL } from './lib/utils'
 import Nav from './components/Nav'
+import Footer from './components/Footer'
 import Toast, { useToast } from './components/Toast'
 import AccessibilityPanel from './components/AccessibilityPanel'
 import HomePage from './pages/HomePage'
@@ -48,6 +49,7 @@ export default function App() {
         {page === 'admin'     && <AdminPage showToast={showToast} />}
         {page === 'mentorias' && <MentoriasPage />}
       </main>
+      <Footer navigate={navigate} />
       <AccessibilityPanel />
       <Toast msg={msg} visible={visible} />
     </>
