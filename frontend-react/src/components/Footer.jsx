@@ -1,16 +1,12 @@
+import logoSrc from '/logo.png'
+
 export default function Footer({ navigate }) {
   return (
     <footer className="site-footer" aria-label="Rodapé">
       <div className="footer-main si">
         {/* ── Marca ── */}
         <div className="footer-brand">
-          <div className="footer-logo">
-            <span className="footer-logo-icon" aria-hidden="true">⚡</span>
-            <div>
-              <div className="footer-logo-title">Acelera</div>
-              <div className="footer-logo-sub">Pedra Branca</div>
-            </div>
-          </div>
+          <img src={logoSrc} alt="Acelera Pedra Branca" className="footer-logo" />
           <p className="footer-desc">
             Programa de aceleração de startups do ecossistema Pedra Branca.<br />
             Hub de Inovação e Tecnologia — INAITEC
