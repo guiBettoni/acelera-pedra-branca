@@ -43,7 +43,7 @@ export default function Footer({ navigate }) {
         </div>
 
         {/* ── Colunas ── */}
-        <nav className="footer-cols" aria-label="Links do rodapé">
+        <div className="footer-cols" aria-label="Links do rodapé" role="navigation">
           <div className="footer-col">
             <h3 className="footer-col-title">PROGRAMA</h3>
             <ul className="footer-col-list">
@@ -73,7 +73,7 @@ export default function Footer({ navigate }) {
               <li><a href="mailto:contato@inaitec.com.br" className="footer-link">Contato</a></li>
             </ul>
           </div>
-        </nav>
+        </div>
       </div>
 
       {/* ── Barra inferior ── */}

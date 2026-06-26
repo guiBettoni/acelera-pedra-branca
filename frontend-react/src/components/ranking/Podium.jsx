@@ -19,12 +19,10 @@ export default function Podium({ top3 }) {
         const mi  = mvis[i]
         const lv  = getLevel(s.pts || 0)
         const ini = getInitials(s.name)
-        const rn  = mi.cls === 'p1' ? '1' : mi.cls === 'p2' ? '2' : '3'
         const posLabel = mi.cls === 'p1' ? '1º lugar' : mi.cls === 'p2' ? '2º lugar' : '3º lugar'
 
         return (
           <div key={s.id} className={`pod ${mi.cls}`} role="listitem" aria-label={`${posLabel}: ${s.name}, ${s.pts || 0} pontos, nível ${getLevel(s.pts || 0).n}`}>
-            <div className="pod-rank-num">{rn}</div>
             <div className="pod-shield">
               <div className="pod-ico">{mi.m}</div>
               <div className="pod-av-wrap">
