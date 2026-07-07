@@ -4,37 +4,43 @@ import { RKPAL } from '../lib/utils'
 import Podium from '../components/ranking/Podium'
 import RankingCard from '../components/ranking/RankingCard'
 
-export default function RankingPage({ navigate }) {
-  const { startups, logs, loading, lastUpdated, refresh } = useStartups({ autoRefresh: true })
+const PERSONAS = [
+  { match: 'delia', src: '/personas/delia.png' },
+  { match: 'pdv fluxo', src: '/personas/janser.png' },
+  { match: 'izitag', src: '/personas/izitag.png' },
+]
+
+function normalizeName(name) {
+  return (name || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+}
+
+function personaFor(startup) {
+  const normalized = normalizeName(startup.name)
+  return PERSONAS.find((persona) => normalized.includes(persona.match))?.src
+}
+
+export default function RankingPage() {
+  const { startups, loading, lastUpdated, refresh } = useStartups({ autoRefresh: true })
 
   useEffect(() => { refresh() }, [refresh])
 
-  const catBySid = useMemo(() => {
-    const map = {}
-    logs.forEach(l => {
-      const sid = l.sid
-      const cat = l.cat || 'Manual'
-      if (!map[sid]) map[sid] = {}
-      map[sid][cat] = (map[sid][cat] || 0) + (l.pts || 0)
-    })
-    return map
-  }, [logs])
-
   const maxPts = startups[0]?.pts || 0
   const startupsWithMax = useMemo(
-    () => startups.map(s => ({ ...s, maxPts })),
+    () => startups.map((startup) => ({ ...startup, maxPts, persona: personaFor(startup) })),
     [startups, maxPts]
   )
   const top3 = startupsWithMax.slice(0, 3)
 
   return (
-    <div id="page-ranking" className="page on" style={{ position: 'relative' }}>
-
-<div className="rk-header">
+    <div id="page-ranking" className="page on rk3d-page" style={{ position: 'relative' }}>
+      <div className="rk-header rk3d-header">
         <div className="rk-header-top">
           <div>
             <div className="rk-eyebrow" aria-hidden="true">Acelera Pedra Branca · 5ª Edição</div>
-            <h2 className="rk-title">Ranking <em>ao vivo</em></h2>
+            <h1 className="rk-title">Ranking <em>ao vivo</em></h1>
           </div>
           <div
             className="live"
@@ -48,12 +54,16 @@ export default function RankingPage({ navigate }) {
         </div>
       </div>
 
-      {/* rk-body limita a largura máxima — max-width: 860px centrado */}
-      <div className="rk-body">
+      <div className="rk-body rk3d-body">
         <Podium top3={top3} />
 
+        <div className="rk3d-list-head">
+          <div>Classificação completa</div>
+          <span>{loading ? '...' : `${startups.length} startups`}</span>
+        </div>
+
         <div
-          className="race"
+          className="race rk3d-list"
           id="race-area"
           role="list"
           aria-label="Ranking completo de startups"
@@ -68,13 +78,12 @@ export default function RankingPage({ navigate }) {
           {!loading && startups.length === 0 && (
             <div className="empty" role="status">Nenhuma startup cadastrada ainda.</div>
           )}
-          {!loading && startupsWithMax.map((s, i) => (
+          {!loading && startupsWithMax.map((startup, index) => (
             <RankingCard
-              key={s.id}
-              startup={s}
-              index={i}
-              accentColor={RKPAL[i % RKPAL.length]}
-              catBySid={catBySid}
+              key={startup.id}
+              startup={startup}
+              index={index}
+              accentColor={RKPAL[index % RKPAL.length]}
             />
           ))}
         </div>
