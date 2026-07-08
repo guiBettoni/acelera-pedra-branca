@@ -11,7 +11,13 @@ var ADMIN_TOKEN = '7f41248d5918daf19119630f99d87dddbbf22653f9c3df68682da33050e41
 var SHEET_NAME = 'Página1';
 
 // ── Trigger automático ao editar ─────────────────────────────
-function onEdit(e) {
+// NÃO use o nome "onEdit" aqui: esse nome é um "trigger simples" do
+// Google e roda com permissão limitada, sem poder chamar UrlFetchApp
+// (dá erro de permissão sozinho). Esta função é ligada como um
+// "trigger instalável" (menu Triggers ⏰ no editor do Apps Script),
+// que roda com permissão completa. O nome bate com o acionador que
+// já existe na planilha — não precisa reconfigurar nada.
+function onEditSync(e) {
   var sheet = e.source.getActiveSheet();
   if (sheet.getName() !== SHEET_NAME) return;
 

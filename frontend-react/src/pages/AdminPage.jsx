@@ -3,7 +3,7 @@ import useAuth from '../hooks/useAuth'
 import useStartups from '../hooks/useStartups'
 import useMentores, { STATUS_OPTIONS } from '../hooks/useMentores'
 import useWorkshops from '../hooks/useWorkshops'
-import { getLevel, CAT_CSS, uid } from '../lib/utils'
+import { getLevel, CAT_CSS, uid, scoreBreakdown } from '../lib/utils'
 import PhotoCropModal from '../components/PhotoCropModal'
 import {
   apiCreateStartup, apiUpdateStartup, apiDeleteStartup,
@@ -338,12 +338,23 @@ function TabStartups({ startups, logs, onDone, showToast }) {
             {startups.length === 0 && <tr><td colSpan={6} className="empty" style={{ padding:'1.5rem' }}>Nenhuma startup cadastrada.</td></tr>}
             {startups.map(s => {
               const p = ptsByS[s.id] || 0; const lv = getLevel(p)
+              const adjGroup = scoreBreakdown({ ...s, pts: p }).find(g => g.key === 'Ajustes')
               return (
                 <tr key={s.id}>
                   <td className="td-n">{s.name}</td>
                   <td style={{ color:'rgba(255,255,255,0.55)', fontSize:12 }}>{s.area}</td>
                   <td style={{ fontSize:12 }}>Est. {s.stage} — {STAGE_NAMES[s.stage]||''}</td>
-                  <td className="td-pt">{p}</td>
+                  <td className="td-pt">
+                    {p}
+                    {adjGroup && (
+                      <span
+                        title={`${p} pts não bate com a planilha por ${adjGroup.subtotal > 0 ? '+' : ''}${adjGroup.subtotal} pts — confira o Histórico.`}
+                        style={{ marginLeft: 6, cursor: 'help', color: '#F5C842', fontSize: 12 }}
+                      >
+                        ⚠️
+                      </span>
+                    )}
+                  </td>
                   <td><span className={`rlv ${lv.c}`}>{lv.n}</span></td>
                   <td>
                     <button className="ab" onClick={() => { setEditing(s); setAdding(false) }}>Editar</button>
