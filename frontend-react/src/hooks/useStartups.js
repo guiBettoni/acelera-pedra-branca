@@ -17,6 +17,7 @@ function s2l(s) {
     mvp_funcional: s.mvp_funcional || false,
     pessoas_testando: s.pessoas_testando || false,
     clientes_pagantes: s.clientes_pagantes || false,
+    faltasMentoria: s.faltas_mentoria || 0,
   }
 }
 

@@ -46,6 +46,63 @@ export const CAT_DEFS = [
   { k: 'Bônus',          color: '#F5C842' },
 ]
 
+export const SCORE_WEIGHTS = {
+  aula: 10, mentoria: 5, canvas: 15, entrevistas: 15, mvp: 30, testando: 30, pagantes: 40,
+}
+
+export function scoreBreakdown(startup) {
+  const aulas = startup.aulas || 0
+  const mentorias = startup.mentorias || 0
+  const faltas = startup.faltasMentoria || 0
+  const w = SCORE_WEIGHTS
+
+  const penalidade = faltas * -5
+  const engSub = aulas * w.aula + mentorias * w.mentoria + penalidade
+  const devSub = (startup.canvas_feito ? w.canvas : 0) + (startup.entrevistas ? w.entrevistas : 0) + (startup.mvp_funcional ? w.mvp : 0)
+  const traSub = (startup.pessoas_testando ? w.testando : 0) + (startup.clientes_pagantes ? w.pagantes : 0)
+
+  const engItems = [
+    { type: 'count', label: 'Aulas assistidas', qty: aulas, unit: ' aulas', per: w.aula, pts: aulas * w.aula },
+    { type: 'count', label: 'Horas de mentoria', qty: mentorias, unit: 'h', per: w.mentoria, pts: mentorias * w.mentoria },
+  ]
+  if (faltas > 0) {
+    engItems.push({ type: 'adj', label: `Faltas em mentoria (${faltas}×)`, pts: penalidade })
+  }
+
+  const groups = [
+    {
+      key: 'Engajamento', color: CAT_DEFS[0].color, subtotal: engSub,
+      items: engItems,
+    },
+    {
+      key: 'Desenvolvimento', color: CAT_DEFS[1].color, subtotal: devSub,
+      items: [
+        { type: 'bool', label: 'Canvas feito', ok: !!startup.canvas_feito, val: w.canvas },
+        { type: 'bool', label: 'Entrevistas realizadas', ok: !!startup.entrevistas, val: w.entrevistas },
+        { type: 'bool', label: 'MVP funcional', ok: !!startup.mvp_funcional, val: w.mvp },
+      ],
+    },
+    {
+      key: 'Tração', color: CAT_DEFS[2].color, subtotal: traSub,
+      items: [
+        { type: 'bool', label: 'Pessoas testando', ok: !!startup.pessoas_testando, val: w.testando },
+        { type: 'bool', label: 'Clientes pagantes', ok: !!startup.clientes_pagantes, val: w.pagantes },
+      ],
+    },
+  ]
+
+  const formulaTotal = engSub + devSub + traSub
+  const adj = (startup.pts || 0) - formulaTotal
+  if (adj !== 0) {
+    groups.push({
+      key: 'Ajustes', color: CAT_DEFS[3].color, subtotal: adj,
+      items: [{ type: 'adj', label: adj > 0 ? 'Bônus extra' : 'Desconto aplicado', pts: adj }],
+    })
+  }
+
+  return groups
+}
+
 export const CAT_CSS = {
   Engajamento:    'lv-exp',
   Desenvolvimento:'lv-con',

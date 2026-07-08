@@ -712,12 +712,182 @@ select.fc-inp:focus {
 }
 
 .rk3d-row.rrow {
+  display: block;
+  cursor: default;
+}
+
+.rk3d-row-summary {
   display: grid;
-  grid-template-columns: 44px 44px minmax(0, 1fr) minmax(90px, 150px) 74px;
+  grid-template-columns: 44px 44px minmax(0, 1fr) minmax(90px, 150px) 74px 22px;
   align-items: center;
   gap: 14px;
   padding: 14px 18px;
-  cursor: default;
+  width: 100%;
+  background: transparent;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rk3d-chev {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, .4);
+  transition: transform .3s ease;
+}
+
+.rk3d-row.expanded .rk3d-chev {
+  transform: rotate(180deg);
+}
+
+.rk3d-detail {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height .42s cubic-bezier(.4, 0, .2, 1), opacity .3s ease;
+}
+
+.rk3d-row.expanded .rk3d-detail {
+  max-height: 760px;
+  opacity: 1;
+}
+
+.rk3d-detail-inner {
+  padding: 2px 18px 20px;
+}
+
+.rk3d-detail-box {
+  background: rgba(0, 0, 0, .24);
+  border: 1px solid rgba(255, 255, 255, .06);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+
+.rk3d-detail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .4);
+}
+
+.rk3d-detail-head span:last-child {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, .3);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.rk3d-cat {
+  margin-bottom: 14px;
+}
+
+.rk3d-cat:last-child {
+  margin-bottom: 0;
+}
+
+.rk3d-cat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, .07);
+}
+
+.rk3d-cat-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.rk3d-cat-name {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.rk3d-cat-sub {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.rk3d-item {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.rk3d-item-box {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.rk3d-item-box.count {
+  background: linear-gradient(135deg, #FA8400, #FF9B26);
+  box-shadow: 0 3px 8px rgba(250, 132, 0, .35);
+}
+
+.rk3d-item-box.yes {
+  background: linear-gradient(135deg, #00C08B, #00A578);
+  box-shadow: 0 3px 8px rgba(0, 192, 139, .3);
+  font-size: 14px;
+}
+
+.rk3d-item-box.no {
+  border: 1.5px solid rgba(255, 255, 255, .16);
+  background: rgba(255, 255, 255, .02);
+}
+
+.rk3d-item-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.rk3d-item-label.muted {
+  color: rgba(255, 255, 255, .42);
+}
+
+.rk3d-item-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, .4);
+  margin-top: 1px;
+}
+
+.rk3d-item-pts {
+  font-size: 13px;
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.rk3d-item-ptssub {
+  font-size: 10px;
+  color: rgba(255, 255, 255, .3);
+  margin-top: 1px;
+  text-align: right;
 }
 
 .rk3d-rank {
@@ -820,8 +990,8 @@ select.fc-inp:focus {
     padding-top: 6px;
   }
 
-  .rk3d-row.rrow {
-    grid-template-columns: 32px 38px minmax(0, 1fr) 62px;
+  .rk3d-row-summary {
+    grid-template-columns: 32px 38px minmax(0, 1fr) 62px 18px;
     gap: 10px;
     padding: 12px;
   }
