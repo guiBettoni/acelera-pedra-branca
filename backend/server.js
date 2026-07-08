@@ -75,10 +75,10 @@ function getLevel(pts) {
   return pts >= 800 ? 'Elite' : pts >= 500 ? 'Destaque' : pts >= 250 ? 'Acelerado' : pts >= 100 ? 'Construtor' : 'Explorador';
 }
 
-// Utilitário de reparo: recalcula pontos a partir do histórico (só entradas positivas)
+// Utilitário de reparo: recalcula pontos a partir do histórico (soma tudo, incl. remoções negativas)
 async function recalcStartupPoints(startupId) {
   const { data } = await supabase.from('pontuacoes').select('pontos').eq('startup_id', startupId);
-  const total = (data || []).reduce((sum, p) => sum + (p.pontos > 0 ? p.pontos : 0), 0);
+  const total = Math.max(0, (data || []).reduce((sum, p) => sum + (p.pontos || 0), 0));
   await supabase.from('startups').update({ pontos: total, nivel: getLevel(total) }).eq('id', startupId);
 }
 
@@ -224,7 +224,7 @@ app.post('/api/pontuacoes', requireAuth, async (req, res) => {
 
     const payload = {
       startup_id,
-      pontos: isRemoval ? 0 : ptsAbs,
+      pontos: isRemoval ? -ptsAbs : ptsAbs,
       descricao: (descricao || '').trim() || (isRemoval ? `Remoção de ${ptsAbs} pts` : 'Atividade manual'),
       categoria: (categoria || (isRemoval ? 'Ajuste' : 'Manual')).trim(),
       obs: (obs || '').trim(),
@@ -235,7 +235,7 @@ app.post('/api/pontuacoes', requireAuth, async (req, res) => {
     if (error) return res.status(500).json({ error: error.message });
 
     // Atualiza saldo diretamente (incremental) sem recalcular da soma
-    const newPts = (startupExists.pontos || 0) + (isRemoval ? -ptsAbs : ptsAbs);
+    const newPts = Math.max(0, (startupExists.pontos || 0) + (isRemoval ? -ptsAbs : ptsAbs));
     await supabase.from('startups').update({ pontos: newPts, nivel: getLevel(newPts) }).eq('id', startup_id);
     res.status(201).json(data);
   } catch (e) { res.status(500).json({ error: e.message }); }
@@ -308,10 +308,10 @@ app.delete('/api/pontuacoes/:id', requireAuth, async (req, res) => {
       .from('pontuacoes').select('startup_id, pontos').eq('id', req.params.id).single();
     const { error } = await supabase.from('pontuacoes').delete().eq('id', req.params.id);
     if (error) return res.status(500).json({ error: error.message });
-    // Só reverte o saldo se era uma entrada de adição (pontos > 0)
-    if (pontuacao?.startup_id && pontuacao.pontos > 0) {
+    // Reverte o saldo pelo valor da entrada (positivo = adição, negativo = remoção)
+    if (pontuacao?.startup_id && pontuacao.pontos) {
       const { data: startup } = await supabase.from('startups').select('pontos').eq('id', pontuacao.startup_id).single();
-      const newPts = (startup?.pontos || 0) - pontuacao.pontos;
+      const newPts = Math.max(0, (startup?.pontos || 0) - pontuacao.pontos);
       await supabase.from('startups').update({ pontos: newPts, nivel: getLevel(newPts) }).eq('id', pontuacao.startup_id);
     }
     res.json({ ok: true });
@@ -388,9 +388,10 @@ app.post('/api/sheets/sync', requireAuth, async (req, res) => {
     try {
       const { total, breakdown } = calcPoints(row);
 
-      // Remove todas as entradas anteriores (planilha é fonte da verdade)
+      // Remove só as entradas da sincronização anterior (planilha é fonte da verdade
+      // para essas categorias); lançamentos manuais/ajustes do admin são preservados.
       await supabase.from('pontuacoes')
-        .delete().eq('startup_id', startup.id);
+        .delete().eq('startup_id', startup.id).eq('lancado_por', 'Planilha');
 
       const inserts = Object.entries(breakdown)
         .filter(([, pts]) => pts > 0)
