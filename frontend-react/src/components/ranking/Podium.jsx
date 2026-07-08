@@ -4,12 +4,14 @@ const CFG = {
   3: { personaW: 250, personaH: 196, badge: '🥉 3º Lugar' },
 }
 
+const sc = (px) => `calc(var(--pod-scale, 1) * ${px}px)`
+
 function Persona({ startup }) {
   const imgStyle = {
     width: '100%',
     height: '100%',
     objectFit: startup.foto ? 'cover' : 'contain',
-    borderRadius: startup.foto ? 28 : 0,
+    borderRadius: startup.foto ? sc(28) : 0,
     filter: 'drop-shadow(0 18px 13px rgba(0,0,0,.35)) drop-shadow(0 0 14px rgba(96,196,216,.18))',
     transform: 'translateZ(0)',
     opacity: 0.98,
@@ -36,8 +38,8 @@ function Persona({ startup }) {
     >
       <div
         style={{
-          width: 96,
-          height: 96,
+          width: sc(96),
+          height: sc(96),
           borderRadius: '50%',
           border: '2px solid rgba(255,255,255,.35)',
           background:
@@ -46,7 +48,7 @@ function Persona({ startup }) {
             'inset 0 0 0 1px rgba(255,255,255,.08), 0 0 26px rgba(96,196,216,.18)',
           color: '#fff',
           fontWeight: 900,
-          fontSize: 34,
+          fontSize: sc(34),
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -74,7 +76,7 @@ function PodCard({ startup, rank }) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        maxWidth: 260,
+        maxWidth: sc(260),
         zIndex: 2,
       }}
     >
@@ -83,11 +85,11 @@ function PodCard({ startup, rank }) {
         aria-hidden="true"
         style={{
           position: 'absolute',
-          top: 30,
+          top: sc(30),
           left: '50%',
           transform: 'translateX(-50%)',
-          width: rank === 1 ? 240 : 220,
-          height: rank === 1 ? 360 : 320,
+          width: sc(rank === 1 ? 240 : 220),
+          height: sc(rank === 1 ? 360 : 320),
           borderRadius: '50%',
           background:
             `radial-gradient(55% 45% at 50% 55%, color-mix(in srgb, ${rankAccent} 22%, transparent) 0%, rgba(255,255,255,.06) 26%, transparent 60%)`,
@@ -105,13 +107,13 @@ function PodCard({ startup, rank }) {
           position: 'relative',
           zIndex: 5,
           textAlign: 'center',
-          marginBottom: 8,
-          paddingTop: 6,
+          marginBottom: sc(8),
+          paddingTop: sc(6),
         }}
       >
         <div
           style={{
-            fontSize: 12,
+            fontSize: sc(12),
             color: rankAccent,
             fontWeight: 800,
             letterSpacing: '.06em',
@@ -123,11 +125,11 @@ function PodCard({ startup, rank }) {
 
         <div
           style={{
-            fontSize: 17 + (rank === 1 ? 4 : 0),
+            fontSize: sc(17 + (rank === 1 ? 4 : 0)),
             fontWeight: 900,
             letterSpacing: '-.01em',
             lineHeight: 1.15,
-            marginTop: 2,
+            marginTop: sc(2),
           }}
         >
           {startup.name}
@@ -135,20 +137,20 @@ function PodCard({ startup, rank }) {
 
         <div
           style={{
-            fontSize: rank === 1 ? 30 : rank === 2 ? 24 : 22,
+            fontSize: sc(rank === 1 ? 30 : rank === 2 ? 24 : 22),
             color: rankPts,
             fontWeight: 900,
             lineHeight: 1,
-            marginTop: 3,
+            marginTop: sc(3),
           }}
         >
           {pts}
           <span
             style={{
-              fontSize: 12,
+              fontSize: sc(12),
               fontWeight: 700,
               color: 'rgba(255,255,255,.55)',
-              marginLeft: 6,
+              marginLeft: sc(6),
             }}
           >
             pts
@@ -160,8 +162,8 @@ function PodCard({ startup, rank }) {
       <div
         className="rk3d-persona"
         style={{
-          width: config.personaW,
-          height: config.personaH,
+          width: sc(config.personaW),
+          height: sc(config.personaH),
           position: 'relative',
           zIndex: 10,
         }}
@@ -172,10 +174,10 @@ function PodCard({ startup, rank }) {
           style={{
             position: 'absolute',
             left: '50%',
-            bottom: -10,
+            bottom: sc(-10),
             transform: 'translateX(-50%)',
-            width: rank === 1 ? 190 : rank === 2 ? 170 : 185,
-            height: rank === 1 ? 52 : 46,
+            width: sc(rank === 1 ? 190 : rank === 2 ? 170 : 185),
+            height: sc(rank === 1 ? 52 : 46),
             borderRadius: '50%',
             background: 'radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.55) 0%, rgba(0,0,0,.22) 35%, transparent 70%)',
             filter: 'blur(2px)',
@@ -190,10 +192,10 @@ function PodCard({ startup, rank }) {
           style={{
             position: 'absolute',
             left: '50%',
-            bottom: -26,
+            bottom: sc(-26),
             transform: 'translateX(-50%)',
-            width: rank === 1 ? 210 : 190,
-            height: rank === 1 ? 86 : 76,
+            width: sc(rank === 1 ? 210 : 190),
+            height: sc(rank === 1 ? 86 : 76),
             borderRadius: '50%',
             background:
               `radial-gradient(ellipse at 50% 60%, rgba(96,196,216,.35) 0%, rgba(96,196,216,.14) 30%, transparent 68%),
