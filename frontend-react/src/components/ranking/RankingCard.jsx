@@ -9,46 +9,6 @@ const LV_COLORS = {
   Explorador: '#B0C8CC',
 }
 
-function DetailItem({ item }) {
-  if (item.type === 'count') {
-    return (
-      <div className="rk3d-item">
-        <div className="rk3d-item-box count">{item.qty}</div>
-        <div>
-          <div className="rk3d-item-label">{item.label}</div>
-          <div className="rk3d-item-sub">{item.qty}{item.unit} × {item.per} pts</div>
-        </div>
-        <div className="rk3d-item-pts" style={{ color: '#FF9B26' }}>{item.pts} pts</div>
-      </div>
-    )
-  }
-  if (item.type === 'bool') {
-    return (
-      <div className="rk3d-item">
-        <div className={`rk3d-item-box ${item.ok ? 'yes' : 'no'}`}>{item.ok ? '✓' : ''}</div>
-        <div>
-          <div className={`rk3d-item-label${item.ok ? '' : ' muted'}`}>{item.label}</div>
-        </div>
-        <div>
-          <div className="rk3d-item-pts" style={{ color: item.ok ? '#3FD6A8' : 'rgba(255,255,255,.3)' }}>
-            {item.ok ? `+${item.val} pts` : '0 pts'}
-          </div>
-          {!item.ok && <div className="rk3d-item-ptssub">vale {item.val}</div>}
-        </div>
-      </div>
-    )
-  }
-  return (
-    <div className="rk3d-item">
-      <div className="rk3d-item-box no" />
-      <div className="rk3d-item-label">{item.label}</div>
-      <div className="rk3d-item-pts" style={{ color: item.pts > 0 ? '#3FD6A8' : '#FF6B6B' }}>
-        {item.pts > 0 ? `+${item.pts}` : item.pts} pts
-      </div>
-    </div>
-  )
-}
-
 export default function RankingCard({ startup, index, accentColor }) {
   const [open, setOpen] = useState(false)
   const pts = startup.pts || 0
@@ -121,7 +81,6 @@ export default function RankingCard({ startup, index, accentColor }) {
                   </div>
                   <span className="rk3d-cat-sub">{g.subtotal} pts</span>
                 </div>
-                {g.items.map((item, i) => <DetailItem item={item} key={i} />)}
               </div>
             ))}
           </div>
