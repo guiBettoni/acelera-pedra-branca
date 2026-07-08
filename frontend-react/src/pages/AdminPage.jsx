@@ -7,7 +7,7 @@ import { getLevel, CAT_CSS, uid, scoreBreakdown } from '../lib/utils'
 import PhotoCropModal from '../components/PhotoCropModal'
 import {
   apiCreateStartup, apiUpdateStartup, apiDeleteStartup,
-  apiLancarPontos, apiDeleteLog,
+  apiLancarPontos, apiDeleteLog, apiFetchSyncLogs,
 } from '../lib/api'
 
 const STAGE_NAMES = ['', 'Ideação', 'Operação', 'Tração', 'Escala']
@@ -865,6 +865,53 @@ function TabHistorico({ logs, startups, onDone, showToast }) {
 
 // ── Tab: Config ──────────────────────────────────────────────────────────────
 
+function SyncStatus() {
+  const [logs, setLogs] = useState(null)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    apiFetchSyncLogs().then(setLogs).catch(e => setError(e.message))
+  }, [])
+
+  const last = logs?.[0]
+  const lastDate = last ? new Date(last.criado_em).toLocaleString('pt-BR') : null
+
+  return (
+    <div className="fc" style={{ marginTop: '1.5rem' }}>
+      <h4>Sincronização com a planilha</h4>
+      {error && <div className="empty">Erro ao carregar histórico: {error}</div>}
+      {!error && logs === null && <div className="empty">Carregando...</div>}
+      {logs && logs.length === 0 && <div className="empty">Nenhuma sincronização registrada ainda.</div>}
+      {last && (
+        <p style={{ fontSize: 13, color: 'rgba(255,255,255,.7)', margin: '0 0 1rem' }}>
+          Última sincronização: <strong>{lastDate}</strong> — {last.synced_count} empresa(s)
+          {last.unmatched?.length > 0 && `, ${last.unmatched.length} não encontrada(s)`}
+          {last.errors?.length > 0 && `, ${last.errors.length} erro(s)`}
+        </p>
+      )}
+      {logs && logs.length > 0 && (
+        <div className="tbl-wrap">
+          <table className="atbl">
+            <thead><tr><th>Data/hora</th><th>Sincronizadas</th><th>Não encontradas</th><th>Erros</th></tr></thead>
+            <tbody>
+              {logs.map(l => (
+                <tr key={l.id}>
+                  <td>{new Date(l.criado_em).toLocaleString('pt-BR')}</td>
+                  <td className="td-pt">{l.synced_count}</td>
+                  <td style={{ fontSize: 12, color: 'rgba(255,255,255,.55)' }}>{l.unmatched?.join(', ') || '—'}</td>
+                  <td style={{ fontSize: 12, color: l.errors?.length ? '#FF6B6B' : 'rgba(255,255,255,.55)' }}>
+                    {l.errors?.length ? l.errors.map(e => e.nome).join(', ') : '—'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function TabConfig({ showToast }) {
   const [demoday, setDemoday] = useState(() => localStorage.getItem('apb_demoday') || '2026-07-23')
 
@@ -886,6 +933,7 @@ function TabConfig({ showToast }) {
           <button className="btn-s" onClick={save}>Salvar configurações</button>
         </div>
       </div>
+      <SyncStatus />
     </div>
   )
 }

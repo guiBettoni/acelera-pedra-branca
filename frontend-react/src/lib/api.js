@@ -98,6 +98,15 @@ export async function apiDeleteLog(id) {
   if (!r.ok) throw new Error('Delete log failed')
 }
 
+export async function apiFetchSyncLogs() {
+  const r = await fetch(`${BACKEND_URL}/api/sync-logs`, {
+    headers: authHeaders(),
+  })
+  if (r.status === 401) throw Object.assign(new Error('Unauthorized'), { status: 401 })
+  if (!r.ok) throw new Error('Fetch sync logs failed')
+  return r.json()
+}
+
 export async function apiFetchAtividades() {
   const r = await fetch(`${BACKEND_URL}/api/atividades`, {
     headers: authHeaders(),

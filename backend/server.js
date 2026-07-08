@@ -437,7 +437,20 @@ app.post('/api/sheets/sync', requireAuth, async (req, res) => {
     }
   }
 
+  await supabase.from('sync_logs').insert({
+    synced_count: synced.length,
+    unmatched,
+    errors,
+  });
+
   res.json({ synced, unmatched, errors });
+});
+
+app.get('/api/sync-logs', requireAuth, async (req, res) => {
+  const { data, error } = await supabase
+    .from('sync_logs').select('*').order('criado_em', { ascending: false }).limit(20);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
 });
 
 // ── Upload de foto para Supabase Storage ─────────────────────────────────────
