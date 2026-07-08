@@ -36,7 +36,7 @@ function syncToSite() {
   // Estrutura esperada das colunas (igual ao PDF):
   // A=Empresas, B=Aulas, C=Mentoria, D=Canvas, E=Entrevistas,
   // F=MVP, G=Pessoas testando, H=Clientes pagantes,
-  // I=Estagio inicial, J=Estagio atual
+  // I=Estagio inicial, J=Estagio atual, K=Faltas mentoria (-5 pts cada)
 
   for (var i = 1; i < data.length; i++) {
     var row = data[i];
@@ -57,6 +57,7 @@ function syncToSite() {
       pessoas_testando:  row[6],
       clientes_pagantes: row[7],
       estagio_atual:     row[9],
+      faltas_mentoria:   row[10],
     });
   }
 

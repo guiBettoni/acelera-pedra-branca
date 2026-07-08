@@ -348,17 +348,21 @@ app.post('/api/sheets/sync', requireAuth, async (req, res) => {
   }
 
   function calcPoints(row) {
-    const aulas    = Math.max(0, parseInt(row.aulas) || 0);
-    const mentoria = Math.max(0, parseInt(row.mentoria) || 0);
-    const canvas   = parseBoolean(row.canvas_feito) ? 15 : 0;
-    const entrev   = parseBoolean(row.entrevistas) ? 15 : 0;
-    const mvp      = parseBoolean(row.mvp_funcional) ? 30 : 0;
-    const pessoas  = parseBoolean(row.pessoas_testando) ? 30 : 0;
-    const clientes = parseBoolean(row.clientes_pagantes) ? 40 : 0;
+    const aulas      = Math.max(0, parseInt(row.aulas) || 0);
+    const mentoria   = Math.max(0, parseInt(row.mentoria) || 0);
+    const faltas     = Math.max(0, parseInt(row.faltas_mentoria) || 0);
+    const penalidade = faltas * -5;
+    const canvas     = parseBoolean(row.canvas_feito) ? 15 : 0;
+    const entrev     = parseBoolean(row.entrevistas) ? 15 : 0;
+    const mvp        = parseBoolean(row.mvp_funcional) ? 30 : 0;
+    const pessoas    = parseBoolean(row.pessoas_testando) ? 30 : 0;
+    const clientes   = parseBoolean(row.clientes_pagantes) ? 40 : 0;
+    const engajamento = aulas * 10 + mentoria * 5 + penalidade;
     return {
-      total: aulas * 10 + mentoria * 5 + canvas + entrev + mvp + pessoas + clientes,
+      faltas,
+      total: Math.max(0, engajamento + canvas + entrev + mvp + pessoas + clientes),
       breakdown: {
-        Engajamento:     aulas * 10 + mentoria * 5,
+        Engajamento:     engajamento,
         Desenvolvimento: canvas + entrev + mvp,
         Tração:          pessoas + clientes,
       },
@@ -386,7 +390,7 @@ app.post('/api/sheets/sync', requireAuth, async (req, res) => {
     if (!startup) { unmatched.push(row.nome); continue; }
 
     try {
-      const { total, breakdown } = calcPoints(row);
+      const { total, breakdown, faltas } = calcPoints(row);
 
       // Remove só as entradas da sincronização anterior (planilha é fonte da verdade
       // para essas categorias); lançamentos manuais/ajustes do admin são preservados.
@@ -394,7 +398,7 @@ app.post('/api/sheets/sync', requireAuth, async (req, res) => {
         .delete().eq('startup_id', startup.id).eq('lancado_por', 'Planilha');
 
       const inserts = Object.entries(breakdown)
-        .filter(([, pts]) => pts > 0)
+        .filter(([, pts]) => pts !== 0)
         .map(([cat, pts]) => ({
           startup_id:  startup.id,
           pontos:      pts,
@@ -421,6 +425,7 @@ app.post('/api/sheets/sync', requireAuth, async (req, res) => {
         mvp_funcional:     parseBoolean(row.mvp_funcional),
         pessoas_testando:  parseBoolean(row.pessoas_testando),
         clientes_pagantes: parseBoolean(row.clientes_pagantes),
+        faltas_mentoria:   faltas,
       };
       const estagioNum = parseInt(row.estagio_atual);
       if ([1, 2, 3, 4].includes(estagioNum)) metaUpdate.estagio = estagioNum;
