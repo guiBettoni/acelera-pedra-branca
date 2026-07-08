@@ -395,7 +395,7 @@ nav.nav-scrolled{
 .hact{font-size:12px;color:rgba(255,255,255,0.55);margin-top:1px}
 .hnote{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px;font-style:italic}
 .hpts{font-family:var(--head);font-size:15px;font-weight:700;color:var(--orange);flex-shrink:0}
-.hpts-ajuste{font-size:11px;font-weight:600;color:rgba(255,255,255,.60);text-transform:uppercase;letter-spacing:.5px}
+.hpts-remocao{color:#ff6b6b}
 .hdel{background:transparent;border:none;color:rgba(255,255,255,.35);font-size:13px;padding:2px 6px;flex-shrink:0;cursor:pointer;border-radius:4px;transition:color .15s}
 .hdel:hover{color:#F87171}
 .hedit{background:transparent;border:none;color:rgba(255,255,255,.35);font-size:14px;padding:2px 6px;flex-shrink:0;cursor:pointer;border-radius:4px;transition:color .15s,background .15s}

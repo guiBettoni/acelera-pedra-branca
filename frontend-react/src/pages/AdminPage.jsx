@@ -832,7 +832,7 @@ function TabHistorico({ logs, startups, onDone, showToast }) {
           {filtered.length === 0 && <div className="empty">Nenhum lançamento encontrado.</div>}
           {filtered.map(x => {
             const d = x.date ? x.date.split('-').reverse().join('/') : '—'
-            const isAdj = x.cat === 'Ajuste'
+            const isRemocao = x.pts < 0
             return (
               <div key={x.id} className="hrow">
                 <div className="hdate">{d}</div>
@@ -841,7 +841,7 @@ function TabHistorico({ logs, startups, onDone, showToast }) {
                   <div className="hact">{x.ativ || '—'}</div>
                   {x.obs && <div className="hnote">{x.obs}{x.by ? ` · por ${x.by}` : ''}</div>}
                 </div>
-                <div className={`hpts${isAdj ? ' hpts-ajuste' : ''}`}>{isAdj ? 'ajuste' : `+${x.pts}`}</div>
+                <div className={`hpts${isRemocao ? ' hpts-remocao' : ''}`}>{x.pts > 0 ? `+${x.pts}` : x.pts}</div>
                 <button className="hdel" onClick={() => handleDelete(x.id)} title="Remover">✕</button>
               </div>
             )
