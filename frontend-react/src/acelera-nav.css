@@ -181,6 +181,8 @@ nav.nav-scrolled{
 .hero-pill{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--orange);border:1px solid rgba(250,132,0,.30);border-radius:99px;padding:4px 14px;margin-bottom:2rem;position:relative;z-index:5;backdrop-filter:blur(8px);background:rgba(250,132,0,.08)}
 .pill-dot{width:6px;height:6px;background:var(--orange);border-radius:50%;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-status{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#F5C842;border:1px solid rgba(245,200,66,.30);border-radius:99px;padding:6px 16px;margin-bottom:1.75rem;position:relative;z-index:5;backdrop-filter:blur(8px);background:rgba(245,200,66,.08)}
+.hero-status-ico{font-size:14px;line-height:1}
 .hero h1{font-family:var(--head);font-size:clamp(52px,8vw,100px);font-weight:800;line-height:1.0;letter-spacing:-.03em;position:relative;z-index:5;margin-bottom:1.5rem}
 .hero h1 .hi{color:var(--orange);font-style:italic;font-weight:600}
 .hero-sub{font-size:clamp(14px,1.8vw,18px);color:rgba(255,255,255,0.55);max-width:520px;font-weight:400;position:relative;z-index:5;margin-bottom:2.5rem;line-height:1.55}
@@ -555,7 +557,8 @@ nav.nav-scrolled{
   /* HERO — fluxo normal, compactado para caber em telas pequenas */
   .hero{padding:5rem 1.25rem 2rem;min-height:100svh;justify-content:flex-start}
   .hero h1{font-size:clamp(38px,11vw,64px);letter-spacing:-.04em;margin-bottom:.75rem}
-  .hero-pill{margin-bottom:1rem}
+  .hero-pill{margin-bottom:.75rem}
+  .hero-status{margin-bottom:1rem;font-size:12px;padding:5px 14px}
   .hero-sub{font-size:14px;max-width:100%;margin-bottom:1.5rem}
   .hero-btns{flex-direction:column;align-items:stretch;margin-bottom:0}
   .btn-p,.btn-o{text-align:center;padding:14px 20px}
