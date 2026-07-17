@@ -78,10 +78,7 @@ export default function HomePage({ navigate }) {
           <div className="hero-spotlight" ref={spotRef} id="hero-spotlight" />
         </div>
         <div className="hero-pill" aria-hidden="true"><span className="pill-dot" />5ª Edição · 2026</div>
-        <div className="hero-status" role="status">
-          <span className="hero-status-ico" aria-hidden="true">🏁</span>
-          Aceleração concluída · Demoday em 23/07
-        </div>
+
         <h1>Acelera<span className="hi"> Pedra Branca</span></h1>
         <p className="hero-sub">
           Acompanhe em tempo real a evolução das startups que estão transformando Pedra Branca no hub de inovação do Sul do Brasil.
