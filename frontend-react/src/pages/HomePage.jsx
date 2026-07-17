@@ -115,7 +115,7 @@ export default function HomePage({ navigate }) {
           <div className="sec-tag">Sobre a Gamificação</div>
           <h2 className="sec-h" id="sobre-heading">Competição com<br /><em>propósito e método</em></h2>
           <p className="sec-sub">
-            O Acelera Pedra Branca transforma a jornada de aceleração em uma <strong>corrida de pontos</strong> — cada workshop concluído, mentoria registrada e entrega realizada vale pontos que movem sua startup no ranking em tempo real. A gamificação não é um detalhe: é o motor que mantém o engajamento, premia a consistência e torna o aprendizado mais divertido.
+            O Acelera Pedra Branca transforma a jornada de aceleração em uma <strong>corrida de pontos</strong> - cada workshop concluído, mentoria registrada e entrega realizada vale pontos que movem sua startup no ranking em tempo real. A gamificação não é um detalhe: é o motor que mantém o engajamento, premia a consistência e torna o aprendizado mais divertido.
           </p>
           <div className="pillars">
             <div className="pill-card">
