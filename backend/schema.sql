@@ -81,9 +81,9 @@ insert into public.startups (id,nome,area,nivel,pontos) values
 ('00000001-0000-0000-0000-000000000008','PDV Fluxo','Varejo / PME','Explorador',0),
 ('00000001-0000-0000-0000-000000000009','ZOOME','Audiovisual / Eventos','Explorador',0),
 ('00000001-0000-0000-0000-000000000010','Mr Foster','Hotelaria / Check-in','Explorador',0),
-('00000001-0000-0000-0000-000000000011','CompliDataX','Compliance / LGPD','Explorador',0),
+('00000001-0000-0000-0000-000000000011','MedScribe','Compliance / LGPD','Explorador',0),
 ('00000001-0000-0000-0000-000000000012','Cuida.VC','RH / GRC','Explorador',0),
-('00000001-0000-0000-0000-000000000013','L. Bonenberger','Edtech / Conteúdo','Explorador',0),
+('00000001-0000-0000-0000-000000000013','OCHS','Conteúdo Mobile','Explorador',0),
 ('00000001-0000-0000-0000-000000000014','Baos Innovation','IA Generativa','Explorador',0),
 ('00000001-0000-0000-0000-000000000015','Délia','Fintech / Mulheres MEI','Explorador',0)
 on conflict (id) do nothing;

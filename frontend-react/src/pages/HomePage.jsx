@@ -16,6 +16,7 @@ export default function HomePage({ navigate }) {
   const glowRef = useRef(null)
   const spotRef = useRef(null)
   const { startups, loading } = useStartups()
+  const daysLeft = daysUntil(DEMODAY)
 
   const totalPts = useMemo(
     () => startups.reduce((s, x) => s + (x.pts || 0), 0),
@@ -95,8 +96,8 @@ export default function HomePage({ navigate }) {
             <dd className="hnum-v">{loading ? '—' : startups.length || 15}</dd>
           </div>
           <div>
-            <dt className="hnum-l">Dias para o Demoday</dt>
-            <dd className="hnum-v">{daysUntil(DEMODAY)}</dd>
+            <dt className="hnum-l">{daysLeft === 0 ? 'Demo Day' : 'Dias para o Demoday'}</dt>
+            <dd className="hnum-v">{daysLeft === 0 ? 'Hoje 🎉' : daysLeft}</dd>
           </div>
           <div>
             <dt className="hnum-l">Pontos lançados</dt>
