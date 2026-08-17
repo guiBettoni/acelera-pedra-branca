@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import useMentores from '../hooks/useMentores'
 import { getInitials } from '../lib/utils'
 
@@ -46,6 +47,12 @@ function MentorCard({ m }) {
 
 export default function MentoriasTecnovaPage() {
   const { mentores } = useMentores('tecnova')
+
+  useEffect(() => {
+    const prevTitle = document.title
+    document.title = 'Mentorias Tecnova'
+    return () => { document.title = prevTitle }
+  }, [])
   const disponiveis = mentores.filter(m => m.status === 'aberta')
   const emBreve     = mentores.filter(m => m.status === 'em_breve')
   const fechadas    = mentores.filter(m => m.status === 'fechada')
