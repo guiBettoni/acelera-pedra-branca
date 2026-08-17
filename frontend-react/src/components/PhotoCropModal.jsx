@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Cropper from 'react-easy-crop'
 
 async function cropImageToBase64(imageSrc, croppedAreaPixels, size = 300) {
@@ -22,10 +22,22 @@ async function cropImageToBase64(imageSrc, croppedAreaPixels, size = 300) {
   })
 }
 
-export default function PhotoCropModal({ src, onConfirm, onCancel }) {
+export default function PhotoCropModal({ src, onConfirm, onCancel, onError }) {
   const [crop, setCrop]       = useState({ x: 0, y: 0 })
   const [zoom, setZoom]       = useState(1)
   const [croppedArea, setCroppedArea] = useState(null)
+  const [loadError, setLoadError] = useState(false)
+
+  useEffect(() => {
+    setLoadError(false)
+    const img = new Image()
+    img.onerror = () => {
+      setLoadError(true)
+      onError?.(new Error('Não foi possível abrir essa imagem — formato não suportado pelo navegador (comum em fotos HEIC do iPhone). Exporte como JPG ou PNG e tente de novo.'))
+    }
+    img.src = src
+    return () => { img.onerror = null }
+  }, [src])
 
   const onCropComplete = useCallback((_, croppedAreaPixels) => {
     setCroppedArea(croppedAreaPixels)
@@ -33,8 +45,29 @@ export default function PhotoCropModal({ src, onConfirm, onCancel }) {
 
   async function handleConfirm() {
     if (!croppedArea) return
-    const b64 = await cropImageToBase64(src, croppedArea, 300)
-    onConfirm(b64)
+    try {
+      const b64 = await cropImageToBase64(src, croppedArea, 300)
+      onConfirm(b64)
+    } catch (err) {
+      onError?.(err)
+      onCancel?.()
+    }
+  }
+
+  if (loadError) {
+    return (
+      <div className="crop-overlay" onClick={e => e.target === e.currentTarget && onCancel()}>
+        <div className="crop-modal">
+          <p className="crop-title">Não foi possível abrir essa foto</p>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', textAlign: 'center', margin: '0 0 1rem' }}>
+            O formato do arquivo não é suportado pelo navegador — isso é comum em fotos HEIC tiradas por iPhone. Exporte a foto como JPG ou PNG e envie novamente.
+          </p>
+          <div className="crop-actions">
+            <button className="btn-o crop-btn" onClick={onCancel}>Fechar</button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

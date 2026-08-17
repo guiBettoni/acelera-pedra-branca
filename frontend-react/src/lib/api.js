@@ -149,9 +149,9 @@ export async function apiDeleteAtividade(id) {
 
 // ── Mentores ──────────────────────────────────────────────────────────────────
 
-export async function fetchMentores() {
+export async function fetchMentores(programa = 'acelera') {
   const r = await fetch(
-    `${SUPABASE_URL}/rest/v1/mentores?select=id,nome,especialidade,bio,calendar_url,status,photo_url&order=criado_em`,
+    `${SUPABASE_URL}/rest/v1/mentores?select=id,nome,especialidade,bio,calendar_url,status,photo_url&programa=eq.${programa}&order=criado_em`,
     { headers: sbHeaders }
   )
   if (!r.ok) throw new Error('Mentores fetch failed')

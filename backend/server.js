@@ -492,13 +492,14 @@ const DEFAULT_MENTORES_SEED = [
 ];
 
 function toMentor(row) {
-  return { id: row.id, nome: row.nome, especialidade: row.especialidade, bio: row.bio, calendarUrl: row.calendar_url, status: row.status };
+  return { id: row.id, nome: row.nome, especialidade: row.especialidade, bio: row.bio, calendarUrl: row.calendar_url, status: row.status, photoUrl: row.photo_url || '' };
 }
 
 app.get('/api/mentores', async (req, res) => {
-  const { data, error } = await supabase.from('mentores').select('*').order('criado_em');
+  const programa = req.query.programa || 'acelera';
+  const { data, error } = await supabase.from('mentores').select('*').eq('programa', programa).order('criado_em');
   if (error) return res.status(500).json({ error: error.message });
-  if (data.length === 0) {
+  if (data.length === 0 && programa === 'acelera') {
     const { data: seeded, error: seedErr } = await supabase.from('mentores').insert(DEFAULT_MENTORES_SEED).select();
     if (seedErr) return res.status(500).json({ error: seedErr.message });
     return res.json(seeded.map(toMentor));
@@ -507,25 +508,26 @@ app.get('/api/mentores', async (req, res) => {
 });
 
 app.post('/api/mentores', requireAuth, async (req, res) => {
-  const { nome, especialidade, bio, calendarUrl, status } = req.body;
+  const { nome, especialidade, bio, calendarUrl, status, photoUrl, programa } = req.body;
   if (!nome?.trim()) return res.status(400).json({ error: 'Nome obrigatório' });
   const id = 'M' + Date.now().toString(36).slice(-4).toUpperCase();
   const { data, error } = await supabase.from('mentores').insert({
     id, nome: nome.trim(), especialidade: (especialidade || '').trim(),
     bio: (bio || '').trim(), calendar_url: (calendarUrl || '').trim(),
-    status: status || 'aberta',
+    status: status || 'aberta', photo_url: (photoUrl || '').trim(),
+    programa: programa || 'acelera',
   }).select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.status(201).json(toMentor(data));
 });
 
 app.put('/api/mentores/:id', requireAuth, async (req, res) => {
-  const { nome, especialidade, bio, calendarUrl, status } = req.body;
+  const { nome, especialidade, bio, calendarUrl, status, photoUrl } = req.body;
   if (!nome?.trim()) return res.status(400).json({ error: 'Nome obrigatório' });
   const { data, error } = await supabase.from('mentores').update({
     nome: nome.trim(), especialidade: (especialidade || '').trim(),
     bio: (bio || '').trim(), calendar_url: (calendarUrl || '').trim(),
-    status: status || 'aberta',
+    status: status || 'aberta', photo_url: (photoUrl || '').trim(),
   }).eq('id', req.params.id).select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(toMentor(data));

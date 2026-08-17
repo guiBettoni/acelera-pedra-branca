@@ -63,6 +63,8 @@ create table if not exists public.mentores (
   bio text not null default '',
   calendar_url text not null default '',
   status text not null default 'aberta' check (status in ('aberta','fechada','em_breve')),
+  photo_url text not null default '',
+  programa text not null default 'acelera',
   criado_em timestamptz not null default now()
 );
 

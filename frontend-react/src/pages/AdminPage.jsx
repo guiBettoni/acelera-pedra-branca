@@ -113,6 +113,7 @@ function Panel({ logout, showToast }) {
           { id: 'startups',    label: 'Startups' },
           { id: 'atividades',  label: 'Atividades' },
           { id: 'mentorias',   label: 'Mentorias' },
+          { id: 'mentorias-tecnova', label: 'Mentorias Tecnova' },
           { id: 'workshops',   label: 'Workshops' },
           { id: 'historico',   label: 'Histórico' },
           { id: 'config',      label: 'Configurações' },
@@ -127,6 +128,7 @@ function Panel({ logout, showToast }) {
       {tab === 'startups'   && <TabStartups startups={startups} logs={logs} onDone={refresh} showToast={showToast} />}
       {tab === 'atividades' && <TabAtividades atividades={atividades} setAtividades={setAtividades} showToast={showToast} />}
       {tab === 'mentorias'  && <TabMentorias showToast={showToast} />}
+      {tab === 'mentorias-tecnova' && <TabMentorias showToast={showToast} programa="tecnova" />}
       {tab === 'workshops'  && <TabWorkshops showToast={showToast} />}
       {tab === 'historico'  && <TabHistorico logs={logs} startups={startups} onDone={refresh} showToast={showToast} />}
       {tab === 'config'     && <TabConfig showToast={showToast} />}
@@ -300,6 +302,7 @@ function StartupForm({ initial, onSave, onCancel, showToast }) {
           src={cropSrc}
           onConfirm={b64 => { setFotoB64(b64); setFoto(b64); setCropSrc(null) }}
           onCancel={() => setCropSrc(null)}
+          onError={err => showToast(err?.message || 'Erro ao processar a imagem.')}
         />
       )}
     </form>
@@ -541,8 +544,8 @@ function MentorForm({ initial, onSave, onCancel }) {
   )
 }
 
-function TabMentorias({ showToast }) {
-  const { mentores, addMentor, updateMentor, deleteMentor, setMentorStatus } = useMentores()
+function TabMentorias({ showToast, programa = 'acelera' }) {
+  const { mentores, addMentor, updateMentor, deleteMentor, setMentorStatus } = useMentores(programa)
   const [editing, setEditing] = useState(null)
   const [adding,  setAdding]  = useState(false)
 

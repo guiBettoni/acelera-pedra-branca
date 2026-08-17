@@ -8,10 +8,13 @@ import HomePage from './pages/HomePage'
 import RankingPage from './pages/RankingPage'
 import AdminPage from './pages/AdminPage'
 import MentoriasPage from './pages/MentoriasPage'
+import MentoriasTecnovaPage from './pages/MentoriasTecnovaPage'
+
+const PAGES = ['home', 'ranking', 'admin', 'mentorias', 'mentorias-tecnova']
 
 function getInitialPage() {
   const h = window.location.hash.replace('#', '')
-  if (['home', 'ranking', 'admin', 'mentorias'].includes(h)) return h
+  if (PAGES.includes(h)) return h
   return 'home'
 }
 
@@ -33,11 +36,15 @@ export default function App() {
   useEffect(() => {
     function onHashChange() {
       const h = window.location.hash.replace('#', '')
-      if (['home', 'ranking', 'admin', 'mentorias'].includes(h)) setPage(h)
+      if (PAGES.includes(h)) setPage(h)
     }
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [])
+
+  if (page === 'mentorias-tecnova') {
+    return <MentoriasTecnovaPage />
+  }
 
   return (
     <>

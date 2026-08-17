@@ -9,7 +9,8 @@ export function useToast() {
     setMsg(text)
     setVisible(true)
     clearTimeout(timer.current)
-    timer.current = setTimeout(() => setVisible(false), 3000)
+    const duration = Math.min(8000, Math.max(3000, text.length * 70))
+    timer.current = setTimeout(() => setVisible(false), duration)
   }, [])
 
   useEffect(() => () => clearTimeout(timer.current), [])

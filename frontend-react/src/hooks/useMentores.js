@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { fetchMentores, apiCreateMentor, apiUpdateMentor, apiDeleteMentor } from '../lib/api'
 
-const CACHE_KEY = 'apb_mentores'
+const CACHE_KEY_BASE = 'apb_mentores'
 
 export const STATUS_OPTIONS = [
   { value: 'aberta',   label: 'Aberta' },
@@ -25,38 +25,29 @@ export const DEFAULT_MENTORES = [
   { id: 'W13', nome: 'Willian Furtado de Farias Jr.', especialidade: 'Pitch & Vendas',              bio: 'Especialista em pitch, apresentações de alto impacto e estratégias de vendas consultivas. Ajuda founders a comunicar valor, conquistar investidores e fechar contratos.',                                                                                                                                  calendarUrl: '', status: 'em_breve' },
 ]
 
-function readCache() {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY)
-    const parsed = raw ? JSON.parse(raw) : null
-    if (!parsed?.length) return DEFAULT_MENTORES
-    return parsed.map(m => m.status ? m : { ...m, status: m.disponivel ? 'aberta' : 'em_breve' })
-  } catch {
-    return DEFAULT_MENTORES
-  }
+function writeCache(cacheKey, data) {
+  try { localStorage.setItem(cacheKey, JSON.stringify(data)) } catch {}
 }
 
-function writeCache(data) {
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)) } catch {}
-}
-
-export default function useMentores() {
-  const [mentores, setMentores] = useState(DEFAULT_MENTORES)
+export default function useMentores(programa = 'acelera') {
+  const cacheKey = `${CACHE_KEY_BASE}_${programa}`
+  const fallback = programa === 'acelera' ? DEFAULT_MENTORES : []
+  const [mentores, setMentores] = useState(fallback)
 
   const load = useCallback(async () => {
     try {
-      const data = await fetchMentores()
+      const data = await fetchMentores(programa)
       setMentores(data)
-      writeCache(data)
+      writeCache(cacheKey, data)
     } catch {
-      // API indisponível: mantém DEFAULT_MENTORES (todos os browsers veem o mesmo)
+      // API indisponível: mantém o cache/fallback (todos os browsers veem o mesmo)
     }
-  }, [])
+  }, [programa, cacheKey])
 
   useEffect(() => { load() }, [load])
 
   async function addMentor(data) {
-    await apiCreateMentor(data)
+    await apiCreateMentor({ ...data, programa })
     await load()
   }
 

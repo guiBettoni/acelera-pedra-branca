@@ -30,7 +30,7 @@ export default function HomePage({ navigate }) {
     function onScroll() {
       if (raf) return
       raf = requestAnimationFrame(() => {
-        bg.style.transform = `translateY(${window.scrollY * 0.35}px)`
+        bg.style.transform = `translate3d(0, ${window.scrollY * 0.35}px, 0)`
         raf = null
       })
     }

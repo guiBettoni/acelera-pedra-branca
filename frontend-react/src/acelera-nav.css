@@ -149,7 +149,7 @@ nav.nav-scrolled{
   background-size:cover;
   background-position:center center;
   will-change:transform;
-  transform:translateY(0px);
+  transform:translate3d(0,0,0);
   filter:brightness(0.35) saturate(1.15);
   z-index:0;
 }
@@ -1462,6 +1462,32 @@ body{font-size:max(14px, 1rem)}
   .ment-hero{padding:5rem 1.25rem 3rem}
   .ment-section{padding:0 1.25rem 4rem}
   .ment-grid{grid-template-columns:1fr}
+}
+
+/* ══════════════════════════════════════════════
+   PÁGINA MENTORIAS TECNOVA III (standalone, sem Nav/Footer do Acelera)
+══════════════════════════════════════════════ */
+
+.tecnova-standalone{min-height:100vh;display:flex;flex-direction:column}
+.tecnova-standalone .ment-hero{padding-top:4rem}
+
+.tecnova-bar{
+  padding:1.25rem 2rem;
+  border-bottom:1px solid var(--border);
+  text-align:center;
+}
+.tecnova-bar--footer{
+  border-bottom:none;
+  border-top:1px solid var(--border);
+  margin-top:auto;
+}
+.tecnova-brand{
+  font-family:var(--head);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.65);
 }
 
 /* Alto contraste — reforçar bordas e texto */

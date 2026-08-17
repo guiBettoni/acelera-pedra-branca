@@ -6,12 +6,17 @@ export default function Nav({ page, navigate }) {
   const [activeNav, setActiveNav] = useState(page)
 
   useEffect(() => {
+    let raf
     function onScroll() {
-      const nav = document.getElementById('main-nav')
-      if (nav) nav.classList.toggle('nav-scrolled', window.scrollY > 40)
+      if (raf) return
+      raf = requestAnimationFrame(() => {
+        const nav = document.getElementById('main-nav')
+        if (nav) nav.classList.toggle('nav-scrolled', window.scrollY > 40)
+        raf = null
+      })
     }
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => { window.removeEventListener('scroll', onScroll); if (raf) cancelAnimationFrame(raf) }
   }, [])
 
   function go(p, e) {
