@@ -45,12 +45,12 @@ function MentorCard({ m }) {
   )
 }
 
-export default function MentoriasTecnovaPage({ navigate }) {
+export default function MentoriasTecnovaPage() {
   const { mentores } = useMentores('tecnova')
 
   useEffect(() => {
     const prevTitle = document.title
-    document.title = 'Mentorias Tecnova'
+    document.title = 'Tecnova III'
     return () => { document.title = prevTitle }
   }, [])
   const disponiveis = mentores.filter(m => m.status === 'aberta')
@@ -58,11 +58,9 @@ export default function MentoriasTecnovaPage({ navigate }) {
   const fechadas    = mentores.filter(m => m.status === 'fechada')
 
   return (
-    <div id="page-mentorias-tecnova" className="tecnova-standalone">
+    <div id="page-tecnova" className="tecnova-standalone">
       <header className="tecnova-bar">
-        <button type="button" className="tecnova-brand tecnova-brand--link" onClick={() => navigate?.('tecnova')}>
-          ← Voltar para Tecnova III
-        </button>
+        <span className="tecnova-brand">INAITEC · Tecnova III</span>
       </header>
 
       <main id="main-content" tabIndex={-1}>
