@@ -9,8 +9,9 @@ import RankingPage from './pages/RankingPage'
 import AdminPage from './pages/AdminPage'
 import MentoriasPage from './pages/MentoriasPage'
 import MentoriasTecnovaPage from './pages/MentoriasTecnovaPage'
+import TecnovaPage from './pages/TecnovaPage'
 
-const PAGES = ['home', 'ranking', 'admin', 'mentorias', 'mentorias-tecnova']
+const PAGES = ['home', 'ranking', 'admin', 'mentorias', 'mentorias-tecnova', 'tecnova']
 
 function getInitialPage() {
   const h = window.location.hash.replace('#', '')
@@ -42,8 +43,12 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [])
 
+  if (page === 'tecnova') {
+    return <TecnovaPage navigate={navigate} />
+  }
+
   if (page === 'mentorias-tecnova') {
-    return <MentoriasTecnovaPage />
+    return <MentoriasTecnovaPage navigate={navigate} />
   }
 
   return (

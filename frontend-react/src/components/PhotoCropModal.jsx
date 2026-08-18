@@ -63,7 +63,7 @@ export default function PhotoCropModal({ src, onConfirm, onCancel, onError }) {
             O formato do arquivo não é suportado pelo navegador — isso é comum em fotos HEIC tiradas por iPhone. Exporte a foto como JPG ou PNG e envie novamente.
           </p>
           <div className="crop-actions">
-            <button className="btn-o crop-btn" onClick={onCancel}>Fechar</button>
+            <button type="button" className="btn-o crop-btn" onClick={onCancel}>Fechar</button>
           </div>
         </div>
       </div>
@@ -97,8 +97,8 @@ export default function PhotoCropModal({ src, onConfirm, onCancel, onError }) {
           />
         </div>
         <div className="crop-actions">
-          <button className="btn-o crop-btn" onClick={onCancel}>Cancelar</button>
-          <button className="btn-p crop-btn" onClick={handleConfirm}>Usar foto</button>
+          <button type="button" className="btn-o crop-btn" onClick={onCancel}>Cancelar</button>
+          <button type="button" className="btn-p crop-btn" onClick={handleConfirm}>Usar foto</button>
         </div>
       </div>
     </div>

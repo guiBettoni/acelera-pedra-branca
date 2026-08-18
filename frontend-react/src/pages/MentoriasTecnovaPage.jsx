@@ -45,7 +45,7 @@ function MentorCard({ m }) {
   )
 }
 
-export default function MentoriasTecnovaPage() {
+export default function MentoriasTecnovaPage({ navigate }) {
   const { mentores } = useMentores('tecnova')
 
   useEffect(() => {
@@ -60,19 +60,21 @@ export default function MentoriasTecnovaPage() {
   return (
     <div id="page-mentorias-tecnova" className="tecnova-standalone">
       <header className="tecnova-bar">
-        <span className="tecnova-brand">INAITEC · Tecnova III</span>
+        <button type="button" className="tecnova-brand tecnova-brand--link" onClick={() => navigate?.('tecnova')}>
+          ← Voltar para Tecnova III
+        </button>
       </header>
 
       <main id="main-content" tabIndex={-1}>
         <div className="ment-hero">
           <p className="sec-tag">Tecnova III · Mentorias</p>
           <h1 className="ment-title">
-            Conecte-se com quem<br />
-            <em>já percorreu esse caminho</em>
+            Especialistas para os<br />
+            <em>desafios que mais importam</em>
           </h1>
           <p className="ment-sub">
-            Sessões individuais de 1 hora, one-on-one.
-            Quando um mentor abre sua agenda, o horário aparece aqui — é só escolher e confirmar.
+            Sessões individuais de uma hora. Escolha um especialista com agenda aberta na
+            sua área prioritária e confirme direto o horário.
           </p>
         </div>
 
