@@ -50,7 +50,7 @@ export default function MentoriasTecnovaPage() {
 
   useEffect(() => {
     const prevTitle = document.title
-    document.title = 'Tecnova III'
+    document.title = 'Tecnova III - Mentorias'
     return () => { document.title = prevTitle }
   }, [])
   const disponiveis = mentores.filter(m => m.status === 'aberta')
