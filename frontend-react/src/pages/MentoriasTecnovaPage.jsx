@@ -67,8 +67,8 @@ export default function MentoriasTecnovaPage() {
         <div className="ment-hero">
           <p className="sec-tag">Tecnova III · Mentorias</p>
           <h1 className="ment-title">
-            Especialistas para os<br />
-            <em>desafios que mais importam</em>
+            Apoio especializado INAITEC<br />
+            <em>no desenvolvimento de soluções inovadoras</em>
           </h1>
           <p className="ment-sub">
             Sessões individuais de uma hora. Escolha um especialista com agenda aberta na
