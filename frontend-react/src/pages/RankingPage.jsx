@@ -23,7 +23,7 @@ function personaFor(startup) {
 }
 
 export default function RankingPage() {
-  const { startups, loading, lastUpdated } = useStartups()
+  const { startups, loading } = useStartups()
 
   const maxPts = startups[0]?.pts || 0
   const startupsWithMax = useMemo(
@@ -38,16 +38,15 @@ export default function RankingPage() {
         <div className="rk-header-top">
           <div>
             <div className="rk-eyebrow" aria-hidden="true">Acelera Pedra Branca · 5ª Edição</div>
-            <h1 className="rk-title">Ranking <em>ao vivo</em></h1>
+            <h1 className="rk-title">Ranking <em>final</em></h1>
           </div>
           <div
             className="live"
             role="status"
             aria-live="polite"
-            aria-label={lastUpdated ? `Ranking atualizado em ${lastUpdated.toLocaleDateString('pt-BR')}` : 'Ranking atualizado'}
+            aria-label="Resultado final da 5ª edição, Demo Day em 23/07/2026"
           >
-            <span className="live-d" aria-hidden="true" />
-            Atualizado
+            Resultado final
           </div>
         </div>
       </div>

@@ -82,10 +82,10 @@ export default function HomePage({ navigate }) {
 
         <h1>Acelera<span className="hi"> Pedra Branca</span></h1>
         <p className="hero-sub">
-          Acompanhe em tempo real a evolução das startups que estão transformando Pedra Branca no hub de inovação do Sul do Brasil.
+          Veja como as startups da 5ª edição evoluíram até o Demo Day — e quem chegou ao topo do ranking.
         </p>
         <div className="hero-btns">
-          <button className="btn-p" onClick={() => navigate('ranking')}>Ver Ranking</button>
+          <button className="btn-p" onClick={() => navigate('ranking')}>Ver ranking final</button>
           <button className="btn-o" onClick={() => document.getElementById('sobre')?.scrollIntoView({ behavior: 'smooth' })}>
             Sobre o programa
           </button>
@@ -97,7 +97,7 @@ export default function HomePage({ navigate }) {
           </div>
           <div>
             <dt className="hnum-l">{daysLeft === 0 ? 'Demo Day' : 'Dias para o Demoday'}</dt>
-            <dd className="hnum-v">{daysLeft === 0 ? 'Hoje 🎉' : daysLeft}</dd>
+            <dd className={`hnum-v${daysLeft === 0 ? ' hnum-v--date' : ''}`}>{daysLeft === 0 ? '23/07/2026' : daysLeft}</dd>
           </div>
           <div>
             <dt className="hnum-l">Pontos lançados</dt>
@@ -155,7 +155,7 @@ export default function HomePage({ navigate }) {
                 { title: 'Pré-Seleção', done: true },
                 { title: 'Bootcamp', sub: 'Kickoff · City Lab', done: true },
                 { title: 'Aceleração', sub: 'Trilha + Mentorias', done: true },
-                { title: 'Demo Day', date: '23 · 07 · 2026', finish: true },
+                { title: 'Demo Day', date: '23 · 07 · 2026', done: true, finish: true },
               ].map((step, i) => {
                 const state = step.active ? 'Em andamento' : step.done ? 'Concluído' : step.finish ? 'Evento final' : 'Pendente'
                 return (
@@ -216,10 +216,10 @@ export default function HomePage({ navigate }) {
             Aprenda com quem<br /><em>já construiu</em>
           </h2>
           <p className="mentoria-cta-sub">
-            Sessões one-on-one com os especialistas da trilha. Quando uma agenda abre, você escolhe e confirma.
+            Sessões one-on-one com os especialistas da trilha acompanharam as startups durante toda a aceleração.
           </p>
           <button className="btn-p mentoria-cta-btn" onClick={() => navigate('mentorias')}>
-            Agendar mentoria →
+            Conheça os mentores →
           </button>
         </div>
       </section>

@@ -1030,3 +1030,14 @@ select.fc-inp:focus {
     animation: none !important;
   }
 }
+
+/* ── Hero: data do Demo Day no lugar do contador ─────────────── */
+@media (max-width: 768px) {
+  /* colunas podem encolher: evita a grade 2×2 estourar a largura da tela */
+  .hero-nums { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .hero-nums > div { min-width: 0; padding: .875rem .5rem !important; }
+  .hero-nums .hnum-v--date { font-size: clamp(15px, 4.6vw, 22px); line-height: 26px; }
+}
+@media (max-width: 480px) {
+  .hero-nums .hnum-v--date { line-height: 20px; }
+}

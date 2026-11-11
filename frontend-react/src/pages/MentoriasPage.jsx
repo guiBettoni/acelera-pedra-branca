@@ -8,8 +8,8 @@ function Initials({ nome }) {
 
 const TAG_LABEL = { aberta: 'Agenda aberta', fechada: 'Fechada', em_breve: 'Em breve' }
 
-function MentorCard({ m }) {
-  const inactive = m.status !== 'aberta'
+function MentorCard({ m, vitrine = false }) {
+  const inactive = !vitrine && m.status !== 'aberta'
   const photo = m.photoUrl || MENTOR_PHOTOS[m.id] || null
   return (
     <div className={`ment-card${inactive ? ' ment-card--soon' : ''}`}>
@@ -22,7 +22,7 @@ function MentorCard({ m }) {
         </div>
         <div className="ment-info">
           <span className={`ment-tag${inactive ? ' ment-tag--soon' : ''}`}>
-            {TAG_LABEL[m.status] ?? 'Em breve'}
+            {vitrine ? 'Mentor · 5ª Edição' : (TAG_LABEL[m.status] ?? 'Em breve')}
           </span>
           <h2 className="ment-nome">{m.nome}</h2>
           {m.especialidade && <p className="ment-esp">{m.especialidade}</p>}
@@ -55,22 +55,22 @@ export default function MentoriasPage() {
   return (
     <div id="page-mentorias">
       <div className="ment-hero">
-        <p className="sec-tag">Acelera Pedra Branca · Mentorias</p>
+        <p className="sec-tag">Acelera Pedra Branca · Mentores</p>
         <h1 className="ment-title">
-          Conecte-se com quem<br />
-          <em>já percorreu esse caminho</em>
+          Conheça quem<br />
+          <em>guiou a 5ª edição</em>
         </h1>
         <p className="ment-sub">
-          Sessões individuais de 1 hora, one-on-one.
-          Quando um mentor abre sua agenda, o horário aparece aqui — é só escolher e confirmar.
+          Sessões individuais de 1 hora, one-on-one, com os especialistas
+          que acompanharam as startups da 5ª edição.
         </p>
       </div>
 
       <div className="ment-section">
         <div className="si">
           {disponiveis.length === 0 ? (
-            <div className="ment-empty">
-              <p>Nenhuma agenda aberta no momento. Em breve novos horários.</p>
+            <div className="ment-grid">
+              {mentores.map(m => <MentorCard key={m.id} m={m} vitrine />)}
             </div>
           ) : (
             <div className="ment-grid">
@@ -80,7 +80,7 @@ export default function MentoriasPage() {
         </div>
       </div>
 
-      {emBreve.length > 0 && (
+      {disponiveis.length > 0 && emBreve.length > 0 && (
         <div className="ment-section ment-section--dim">
           <div className="si">
             <p className="sec-tag" style={{ marginBottom: '1.5rem' }}>Em breve</p>
@@ -91,7 +91,7 @@ export default function MentoriasPage() {
         </div>
       )}
 
-      {fechadas.length > 0 && (
+      {disponiveis.length > 0 && fechadas.length > 0 && (
         <div className="ment-section ment-section--dim">
           <div className="si">
             <p className="sec-tag" style={{ marginBottom: '1.5rem' }}>Agenda encerrada</p>
