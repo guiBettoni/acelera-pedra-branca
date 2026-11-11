@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import useStartups from '../hooks/useStartups'
 import { RKPAL } from '../lib/utils'
 import Podium from '../components/ranking/Podium'
@@ -23,9 +23,7 @@ function personaFor(startup) {
 }
 
 export default function RankingPage() {
-  const { startups, loading, lastUpdated, refresh } = useStartups({ autoRefresh: true })
-
-  useEffect(() => { refresh() }, [refresh])
+  const { startups, loading, lastUpdated } = useStartups()
 
   const maxPts = startups[0]?.pts || 0
   const startupsWithMax = useMemo(
@@ -46,10 +44,10 @@ export default function RankingPage() {
             className="live"
             role="status"
             aria-live="polite"
-            aria-label={lastUpdated ? `Ranking atualizado às ${lastUpdated.toLocaleTimeString('pt-BR')}` : 'Conectando ao ranking...'}
+            aria-label={lastUpdated ? `Ranking atualizado em ${lastUpdated.toLocaleDateString('pt-BR')}` : 'Ranking atualizado'}
           >
             <span className="live-d" aria-hidden="true" />
-            {lastUpdated ? 'Atualizado' : 'Conectando...'}
+            Atualizado
           </div>
         </div>
       </div>

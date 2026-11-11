@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react'
-import { BACKEND_URL } from './lib/utils'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import Toast, { useToast } from './components/Toast'
 import AccessibilityPanel from './components/AccessibilityPanel'
 import HomePage from './pages/HomePage'
 import RankingPage from './pages/RankingPage'
-import AdminPage from './pages/AdminPage'
 import MentoriasPage from './pages/MentoriasPage'
 import MentoriasTecnovaPage from './pages/MentoriasTecnovaPage'
 
-const PAGES = ['home', 'ranking', 'admin', 'mentorias', 'tecnova']
+// Site estático: o painel admin (AdminPage) dependia do backend/Supabase e foi desligado.
+const PAGES = ['home', 'ranking', 'mentorias', 'tecnova']
 
 function getInitialPage() {
   const h = window.location.hash.replace('#', '')
@@ -20,10 +19,7 @@ function getInitialPage() {
 
 export default function App() {
   const [page, setPage] = useState(getInitialPage)
-  const { msg, visible, showToast } = useToast()
-
-  // Acorda o backend Render silenciosamente no carregamento
-  useEffect(() => { fetch(`${BACKEND_URL}/api/ping`).catch(() => {}) }, [])
+  const { msg, visible } = useToast()
 
   function navigate(p, scrollTop = true) {
     setPage(p)
@@ -53,7 +49,6 @@ export default function App() {
       <main id="main-content" tabIndex={-1}>
         {page === 'home'      && <HomePage navigate={navigate} />}
         {page === 'ranking'   && <RankingPage />}
-        {page === 'admin'     && <AdminPage showToast={showToast} />}
         {page === 'mentorias' && <MentoriasPage />}
       </main>
       <Footer navigate={navigate} />

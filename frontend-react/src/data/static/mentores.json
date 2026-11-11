@@ -1,0 +1,152 @@
+[
+  {
+    "id": "W01",
+    "nome": "Lucas Teixeira",
+    "especialidade": "Design & Estratégia",
+    "bio": "Especialista em Design Thinking e estratégia de negócios, Lucas conduz processos de inovação com foco em prototipação e validação ágil de modelos de negócio.",
+    "calendarUrl": "https://calendar.app.google/WMsQqG9wj99SRpGg6",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "W02",
+    "nome": "Diego Chierighini",
+    "especialidade": "Lean Startup",
+    "bio": "Empreendedor serial com experiência em metodologias ágeis e Lean Startup, Diego ajuda startups a validar hipóteses com velocidade e eficiência de recursos.",
+    "calendarUrl": "",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "W03",
+    "nome": "Lucas Branco Pulla",
+    "especialidade": "Marketing & Audiência",
+    "bio": "Especialista em persona, pesquisa de público e estratégias de posicionamento. Fundador da Sum8, ajuda startups a entender profundamente quem é o seu cliente.",
+    "calendarUrl": "",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "W04",
+    "nome": "Leonardo Rocha",
+    "especialidade": "Inteligência de Mercado",
+    "bio": "Lidera a BU de Sales & Marketing da Trillia, empresa do ecossistema B3, desenvolvendo soluções de IA e inteligência de mercado. Ex-PagBank, onde atuou em CRM e sistemas de recomendação por 3 anos.",
+    "calendarUrl": "",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "W05",
+    "nome": "Mariana Baima",
+    "especialidade": "Comunicação Estratégica",
+    "bio": "Jornalista pela UFSC, com especialização em Gestão da Comunicação (FECAP) e formação em Marketing (The CMOs). Fundadora da Primeira Via Comunicação Integrada em 1999. Mais de 25 anos liderando projetos de assessoria de imprensa, inbound marketing e gestão de crises.",
+    "calendarUrl": "",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "W07",
+    "nome": "Saulo Messias da Silva",
+    "especialidade": "Planejamento Estratégico",
+    "bio": "Especialista em planejamento estratégico e gestão de negócios, com experiência em estruturação de OKRs, modelagem de crescimento e tomada de decisão baseada em dados.",
+    "calendarUrl": "",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "W13",
+    "nome": "Willian Furtado de Farias Jr.",
+    "especialidade": "Pitch & Vendas",
+    "bio": "Especialista em pitch, apresentações de alto impacto e estratégias de vendas consultivas. Ajuda founders a comunicar valor, conquistar investidores e fechar contratos.",
+    "calendarUrl": "https://calendar.app.google/XfL3L5DEuVgYKtCB8",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "W12",
+    "nome": "Yul Ian Francesconi Gutiérrez",
+    "especialidade": "Storytelling",
+    "bio": "Empreendedor formado em cinema. Sócio da produtora audiovisual ZOOME, com atuação no Brasil, Dubai, EUA e Espanha. Fundador da Yul Company (streetwear). Cursando MBA em Gestão de Projetos.",
+    "calendarUrl": "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0JelkzjdEskEPoYtBB0Jf1TmkZ0psXUGEzLWBzokFGvfsRPvux41EjdK-Ga2GyBlVlCVrmfuar",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "W11",
+    "nome": "Vanessa Milis Vieira",
+    "especialidade": "Cultura & Liderança",
+    "bio": "Especialista em cultura organizacional e desenvolvimento de lideranças, com foco em construção de times de alta performance e ambientes de inovação sustentável.",
+    "calendarUrl": "https://calendar.app.google/KgMTRzzygEqHfcuG6",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "W09",
+    "nome": "Fabiana Naya Silveira",
+    "especialidade": "Finanças",
+    "bio": "Empresária, graduada em Administração pela UNIVALI, especialista em finanças corporativas. Larga experiência em gestão financeira, organização contábil, processos organizacionais e gestão de pessoas.",
+    "calendarUrl": "https://calendar.app.google/dR7NYD4PsuUkLgH56",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "W06",
+    "nome": "Raphael Bonelli",
+    "especialidade": "Design & Identidade Visual",
+    "bio": "Designer gráfico com mais de 20 anos de experiência na área, professor de fotografia e design, tradutor de livros técnicos na área e certificado full-stack pela Digital Marketer.",
+    "calendarUrl": "https://calendar.app.google/JAy8TANMJUBJ9Mf2A",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "W10",
+    "nome": "Eduardo Jacob Murakami",
+    "especialidade": "Direito Empresarial",
+    "bio": "Advogado especializado em legislação para empreendedores, com expertise em constituição de empresas, contratos, proteção de propriedade intelectual e compliance para startups.",
+    "calendarUrl": "https://calendar.app.google/cSCNg8FsNE8PFe4a8",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "MJBC8",
+    "nome": "Vinícius Teixeira",
+    "especialidade": "Engenheiro de Software",
+    "bio": "",
+    "calendarUrl": "https://calendar.app.google/h1htjgDDURTfwtZY7",
+    "status": "fechada",
+    "photoUrl": "",
+    "programa": "acelera"
+  },
+  {
+    "id": "M3UIE",
+    "nome": "Lucas Branco Pulla",
+    "especialidade": "Marketing",
+    "bio": "Especialista em persona, pesquisa de público e estratégias de posicionamento. Fundador da Sum8, ajuda startups a entender profundamente quem é o seu cliente.",
+    "calendarUrl": "https://calendar.app.google/cXzLVeRBwCnQaeQp7",
+    "status": "aberta",
+    "photoUrl": "/fotos/mentores/M3UIE.jpg",
+    "programa": "tecnova"
+  },
+  {
+    "id": "MIXTH",
+    "nome": "Vanessa Milis Vieira",
+    "especialidade": "Cultura & Liderança",
+    "bio": "Especialista em cultura organizacional e desenvolvimento de lideranças, com foco em construção de times de alta performance e ambientes de inovação sustentável.",
+    "calendarUrl": "https://calendar.app.google/4yMBMAUwvvKVnkZr7",
+    "status": "aberta",
+    "photoUrl": "/fotos/mentores/MIXTH.jpg",
+    "programa": "tecnova"
+  }
+]

@@ -13,3 +13,13 @@ npm-debug.log*
 # Sistema operacional
 .DS_Store
 Thumbs.db
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Backup bruto do Supabase (contém e-mails das startups)
+/backup-supabase/
